@@ -2,73 +2,154 @@
 <html lang="en">
 
 <head>
+
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rohit Kumar Choubey | Project Management Portfolio</title>
-
-<meta name="description" content="Portfolio of Rohit Kumar Choubey - Project Management & EPC Export Projects Specialist">
-<meta name="keywords" content="Project Management, EPC Projects, Export Projects, Quantity Surveying, Cost Optimization">
-
-<link href="assets/img/favicon.png" rel="icon">
+<title>Rohit Kumar Choubey | Portfolio</title>
 
 <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-<link href="assets/vendor/aos/aos.css" rel="stylesheet">
 
-<link href="assets/css/main.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:'Poppins',sans-serif;
+line-height:1.7;
+background:#f9fbfd;
+}
+
+section{
+padding:80px 0;
+}
+
+h1,h2,h3{
+font-weight:600;
+}
+
+.hero{
+text-align:center;
+padding:120px 20px;
+background:linear-gradient(120deg,#0d6efd,#00c6ff);
+color:white;
+}
+
+.hero h1{
+font-size:48px;
+margin-bottom:15px;
+}
+
+.hero p{
+font-size:20px;
+opacity:0.9;
+}
+
+.social a{
+color:white;
+font-size:22px;
+margin:0 10px;
+}
+
+.section-title{
+text-align:center;
+margin-bottom:50px;
+}
+
+.section-title h2{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.highlight-box{
+background:white;
+padding:30px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+.highlight-number{
+font-size:34px;
+font-weight:700;
+color:#0d6efd;
+}
+
+.skills .progress{
+height:30px;
+background:#e9ecef;
+margin-bottom:25px;
+overflow:hidden;
+transform:skewX(-15deg);
+}
+
+.skills .skill{
+display:block;
+font-weight:600;
+margin-bottom:6px;
+transform:skewX(15deg);
+}
+
+.progress-bar{
+height:100%;
+background:linear-gradient(90deg,#0d6efd,#00c6ff);
+animation:glow 3s infinite alternate;
+}
+
+@keyframes glow{
+0%{box-shadow:0 0 6px rgba(13,110,253,0.4);}
+100%{box-shadow:0 0 18px rgba(0,198,255,0.8);}
+}
+
+.resume-item{
+margin-bottom:30px;
+}
+
+.resume-item h4{
+font-weight:600;
+}
+
+.project-card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+footer{
+background:#111;
+color:white;
+padding:30px;
+text-align:center;
+}
+
+</style>
+
 </head>
 
-<body class="index-page">
+<body>
 
-<header id="header" class="header d-flex flex-column justify-content-center">
-
-<i class="header-toggle d-xl-none bi bi-list"></i>
-
-<nav id="navmenu" class="navmenu">
-<ul>
-<li><a href="#hero" class="active"><i class="bi bi-house navicon"></i><span>Home</span></a></li>
-<li><a href="#about"><i class="bi bi-person navicon"></i><span>About</span></a></li>
-<li><a href="#skills"><i class="bi bi-bar-chart navicon"></i><span>Skills</span></a></li>
-<li><a href="#resume"><i class="bi bi-file-earmark-text navicon"></i><span>Experience</span></a></li>
-<li><a href="#portfolio"><i class="bi bi-images navicon"></i><span>Projects</span></a></li>
-<li><a href="#contact"><i class="bi bi-envelope navicon"></i><span>Contact</span></a></li>
-</ul>
-</nav>
-
-</header>
-
-<main class="main">
 
 <!-- HERO -->
 
-<section id="hero" class="hero section light-background">
+<section class="hero">
 
-<div class="container" data-aos="zoom-out">
-
-<div class="row justify-content-center">
-
-<div class="col-lg-9 text-center">
-
-<h2>Rohit Kumar Choubey</h2>
+<h1>Rohit Kumar Choubey</h1>
 
 <p>
-I'm
-<span class="typed" data-typed-items="Project Management Professional,EPC Export Project Specialist,Business Strategy Leader,Cost Optimization Expert">
-Project Management Professional
-</span>
+Project Management | EPC Export Projects | Business Strategy
 </p>
 
-<div class="social-links">
+<div class="social">
 
-<a href="https://linkedin.com/in/rohit-choubey-4272a2a2"><i class="bi bi-linkedin"></i></a>
-<a href="mailto:rohitkr99@gmail.com"><i class="bi bi-envelope"></i></a>
+<a href="https://linkedin.com/in/rohit-choubey-4272a2a2">
+<i class="bi bi-linkedin"></i>
+</a>
 
-</div>
-
-</div>
-
-</div>
+<a href="mailto:rohitkr99@gmail.com">
+<i class="bi bi-envelope"></i>
+</a>
 
 </div>
 
@@ -77,36 +158,64 @@ Project Management Professional
 
 <!-- ABOUT -->
 
-<section id="about" class="about section">
+<section>
 
-<div class="container section-title">
+<div class="container">
 
-<h2>About</h2>
+<div class="section-title">
+
+<h2>About Me</h2>
 
 <p>
-Results-driven Project Management and Business Strategy professional with more than 13 years of experience across industrial manufacturing, EPC export projects, and government programs. Currently leading prefabricated piping export projects in Thailand valued at approximately THB 500 Million with a strong focus on delivery excellence, digital transformation, and profitability.
+Project Management and Business Strategy professional with 13+ years of experience across industrial manufacturing, EPC export projects, and large-scale government programs.
+Currently leading prefabricated piping export projects in Thailand valued at approximately THB 500 Million with focus on delivery excellence, cost optimization and digital transformation.
 </p>
 
 </div>
 
+</div>
+
+</section>
+
+
+<!-- CAREER HIGHLIGHTS -->
+
+<section>
+
 <div class="container">
 
-<div class="row justify-content-center">
+<div class="section-title">
+<h2>Career Highlights</h2>
+</div>
 
-<div class="col-lg-8">
+<div class="row text-center">
 
-<ul>
+<div class="col-md-3">
+<div class="highlight-box">
+<div class="highlight-number">13+</div>
+Years Experience
+</div>
+</div>
 
-<li><strong>Location:</strong> Chonburi, Thailand</li>
+<div class="col-md-3">
+<div class="highlight-box">
+<div class="highlight-number">500M+</div>
+THB Project Value
+</div>
+</div>
 
-<li><strong>Email:</strong> rohitkr99@gmail.com</li>
+<div class="col-md-3">
+<div class="highlight-box">
+<div class="highlight-number">20+</div>
+International Projects
+</div>
+</div>
 
-<li><strong>Experience:</strong> 13+ Years</li>
-
-<li><strong>Education:</strong> B.Tech Mechanical Engineering</li>
-
-</ul>
-
+<div class="col-md-3">
+<div class="highlight-box">
+<div class="highlight-number">7+</div>
+Years in Thailand
+</div>
 </div>
 
 </div>
@@ -118,50 +227,13 @@ Results-driven Project Management and Business Strategy professional with more t
 
 <!-- SKILLS -->
 
-<section id="skills" class="skills section">
-
-<style>
-
-.skills .progress {
-  height: 30px;
-  background: #e9ecef;
-  margin-bottom: 25px;
-  overflow: hidden;
-  transform: skewX(-15deg);
-}
-
-.skills .skill {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  transform: skewX(15deg);
-}
-
-.skills .progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg,#0d6efd,#00c6ff);
-  animation: skillGlow 3s infinite alternate;
-  transition: width 1.5s ease-in-out;
-}
-
-@keyframes skillGlow {
-  0% {
-    box-shadow: 0 0 6px rgba(13,110,253,0.4);
-  }
-  100% {
-    box-shadow: 0 0 18px rgba(0,198,255,0.9);
-  }
-}
-
-</style>
-
-
-<div class="container section-title">
-<h2>Core Skills</h2>
-<p>Key competencies across project management, EPC execution and business strategy</p>
-</div>
+<section class="skills">
 
 <div class="container">
+
+<div class="section-title">
+<h2>Core Skills</h2>
+</div>
 
 <div class="row">
 
@@ -183,22 +255,16 @@ Results-driven Project Management and Business Strategy professional with more t
 </div>
 
 <div class="progress">
-<span class="skill">Quantity Surveying (BOQ / BOM / MTO)</span>
+<span class="skill">Quantity Surveying</span>
 <div class="progress-bar" style="width:93%"></div>
 </div>
 
 <div class="progress">
-<span class="skill">Project Planning & Scheduling</span>
+<span class="skill">Project Scheduling</span>
 <div class="progress-bar" style="width:88%"></div>
 </div>
 
-<div class="progress">
-<span class="skill">Commercial Management</span>
-<div class="progress-bar" style="width:87%"></div>
 </div>
-
-</div>
-
 
 <div class="col-lg-6">
 
@@ -218,17 +284,12 @@ Results-driven Project Management and Business Strategy professional with more t
 </div>
 
 <div class="progress">
-<span class="skill">Material Planning & Inventory Control</span>
-<div class="progress-bar" style="width:92%"></div>
-</div>
-
-<div class="progress">
-<span class="skill">Stakeholder & Client Management</span>
+<span class="skill">Stakeholder Management</span>
 <div class="progress-bar" style="width:95%"></div>
 </div>
 
 <div class="progress">
-<span class="skill">Process Improvement & Operational Excellence</span>
+<span class="skill">Operational Excellence</span>
 <div class="progress-bar" style="width:88%"></div>
 </div>
 
@@ -240,37 +301,40 @@ Results-driven Project Management and Business Strategy professional with more t
 
 </section>
 
+
 <!-- EXPERIENCE -->
 
-<section id="resume" class="resume section">
-
-<div class="container section-title">
-
-<h2>Professional Experience</h2>
-
-</div>
+<section>
 
 <div class="container">
 
-<h3>Manager – Project Management & Business Strategy</h3>
+<div class="section-title">
+<h2>Professional Experience</h2>
+</div>
+
+<div class="resume-item">
+
+<h4>Manager – Project Management & Business Strategy</h4>
 
 <p><em>DEE Piping Systems (Thailand) Co., Ltd. | 2018 – Present</em></p>
 
 <ul>
 
-<li>Leading prefabricated piping export projects valued at ~THB 500 Million.</li>
+<li>Lead prefabricated piping export projects valued at ~THB 500 Million.</li>
 
-<li>Developing L1/L2 project schedules and milestone tracking.</li>
+<li>Develop project schedules, milestone tracking and reporting systems.</li>
 
-<li>Coordinating engineering, procurement, QA/QC, logistics, and finance teams.</li>
+<li>Coordinate engineering, procurement, QA/QC, logistics and finance teams.</li>
 
-<li>Managing client communication, technical clarifications and approvals.</li>
-
-<li>Overseeing BOM finalization and material planning through ERP.</li>
+<li>Manage client communication, technical clarifications and approvals.</li>
 
 </ul>
 
-<h3>Senior Engineer – Project Analyst</h3>
+</div>
+
+<div class="resume-item">
+
+<h4>Senior Engineer – Project Analyst</h4>
 
 <p><em>DEE Development Engineers Ltd. | 2012 – 2018</em></p>
 
@@ -278,11 +342,13 @@ Results-driven Project Management and Business Strategy professional with more t
 
 <li>Managed techno-commercial coordination with clients and consultants.</li>
 
-<li>Developed MIS dashboards and reporting systems for management.</li>
+<li>Developed MIS dashboards and management reporting systems.</li>
 
-<li>Led ERP implementation including barcode integration and digital documentation.</li>
+<li>Supported ERP implementation including barcode and DMS integration.</li>
 
 </ul>
+
+</div>
 
 </div>
 
@@ -291,29 +357,52 @@ Results-driven Project Management and Business Strategy professional with more t
 
 <!-- PROJECTS -->
 
-<section id="portfolio" class="portfolio section">
-
-<div class="container section-title">
-
-<h2>Major Projects</h2>
-
-</div>
+<section>
 
 <div class="container">
 
-<ul>
+<div class="section-title">
+<h2>Major Projects</h2>
+</div>
 
-<li>Tilenga Project – Upstream Facilities (8000 MT)</li>
+<div class="row">
 
-<li>Fifth Transmission Pipeline Phase II (1605 MT)</li>
+<div class="col-md-4">
+<div class="project-card">
+<h4>Tilenga Project</h4>
+<p>Upstream Facilities – 8000 MT</p>
+</div>
+</div>
 
-<li>Tanjung Jati Power Plant Piping (1200 MT)</li>
+<div class="col-md-4">
+<div class="project-card">
+<h4>Fifth Transmission Pipeline</h4>
+<p>Pipeline Execution – 1605 MT</p>
+</div>
+</div>
 
-<li>Bacalhau FPSO Piping System (750 MT)</li>
+<div class="col-md-4">
+<div class="project-card">
+<h4>Tanjung Jati Power Plant</h4>
+<p>External Piping – 1200 MT</p>
+</div>
+</div>
 
-<li>Dangote Boiler External Piping (500 MT)</li>
+<div class="col-md-4">
+<div class="project-card">
+<h4>Bacalhau FPSO</h4>
+<p>Offshore Piping – 750 MT</p>
+</div>
+</div>
 
-</ul>
+<div class="col-md-4">
+<div class="project-card">
+<h4>Dangote Boiler Project</h4>
+<p>External Piping – 500 MT</p>
+</div>
+</div>
+
+</div>
 
 </div>
 
@@ -322,17 +411,13 @@ Results-driven Project Management and Business Strategy professional with more t
 
 <!-- CONTACT -->
 
-<section id="contact" class="contact section">
-
-<div class="container section-title">
-
-<h2>Contact</h2>
-
-<p>For project collaboration or professional opportunities</p>
-
-</div>
+<section>
 
 <div class="container">
+
+<div class="section-title">
+<h2>Contact</h2>
+</div>
 
 <p><strong>Email:</strong> rohitkr99@gmail.com</p>
 
@@ -344,29 +429,15 @@ Results-driven Project Management and Business Strategy professional with more t
 
 </section>
 
-</main>
 
+<footer>
 
-<footer id="footer" class="footer">
-
-<div class="container text-center">
-
-<h3>Rohit Kumar Choubey</h3>
-
-<p>Project Management | EPC Export Projects | Business Strategy</p>
-
-<div class="copyright">
-
-© Rohit Kumar Choubey
-
-</div>
-
-</div>
+Rohit Kumar Choubey | Project Management Portfolio
 
 </footer>
 
+
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/aos/aos.js"></script>
 
 </body>
 </html>
