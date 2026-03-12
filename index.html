@@ -6,160 +6,273 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Rohit Kumar Choubey | Project Portfolio</title>
+<title>Rohit Kumar Choubey | Portfolio</title>
 
-<link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 
-/* Typography */
+/* GLOBAL */
 
 body{
 font-family:'Roboto',sans-serif;
 background:#f8f9fc;
 line-height:1.8;
 color:#333;
+scroll-behavior:smooth;
 }
 
 h1,h2,h3,h4{
 font-family:'Playfair Display',serif;
 }
 
-/* Sections */
-
 section{
 padding:90px 0;
 }
 
-.section-title{
-text-align:center;
-margin-bottom:60px;
+.container{
+max-width:1100px;
 }
 
-.section-title h2{
-font-size:36px;
+/* SIDEBAR NAVIGATION */
+
+#sidebar{
+
+position:fixed;
+left:0;
+top:0;
+
+height:100vh;
+width:80px;
+
+background:white;
+
+box-shadow:2px 0 20px rgba(0,0,0,0.05);
+
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+
+z-index:1000;
+
+}
+
+#sidebar a{
+
+display:block;
+font-size:22px;
+color:#444;
+
+margin:18px 0;
+
+transition:0.3s;
+
+}
+
+#sidebar a:hover{
+
+color:#0d6efd;
+transform:scale(1.2);
+
+}
+
+.main{
+margin-left:90px;
 }
 
 /* HERO */
 
 .hero{
+
 text-align:center;
-padding:120px 20px;
+padding:140px 20px;
 background:linear-gradient(120deg,#0d6efd,#00c6ff);
 color:white;
+
 }
 
 .hero h1{
-font-size:52px;
-margin-bottom:10px;
+font-size:54px;
 }
 
 .hero p{
 font-size:22px;
 }
 
-.social a{
-color:white;
-font-size:24px;
-margin:0 10px;
+/* TITLES */
+
+.section-title{
+
+text-align:center;
+margin-bottom:60px;
+
 }
 
-/* Highlights */
+.section-title h2{
+
+font-size:36px;
+
+}
+
+/* HIGHLIGHTS */
 
 .highlight-box{
+
 background:white;
+
 padding:35px;
+
 border-radius:10px;
+
 text-align:center;
+
 box-shadow:0 10px 30px rgba(0,0,0,0.05);
+
 }
 
 .highlight-number{
-font-size:36px;
+
+font-size:40px;
 font-weight:700;
 color:#0d6efd;
+
 }
 
-/* Skills */
+/* SKILL CARDS */
 
-.skills .progress{
-height:28px;
-background:#e9ecef;
-margin-bottom:30px;
-overflow:hidden;
-transform:skewX(-15deg);
+.skill-card{
+
+background:white;
+
+padding:25px;
+
+border-radius:8px;
+
+text-align:center;
+
+font-size:18px;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.05);
+
+transition:0.3s;
+
+margin-bottom:25px;
+
 }
 
-.skills .skill{
-display:block;
-margin-bottom:8px;
-font-weight:500;
-transform:skewX(15deg);
+.skill-card:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 12px 30px rgba(0,0,0,0.12);
+
+color:#0d6efd;
+
 }
 
-.progress-bar{
-height:100%;
-background:linear-gradient(90deg,#0d6efd,#00c6ff);
-animation:glow 3s infinite alternate;
-}
-
-@keyframes glow{
-0%{box-shadow:0 0 6px rgba(13,110,253,0.4);}
-100%{box-shadow:0 0 18px rgba(0,198,255,0.8);}
-}
-
-/* Resume timeline */
+/* RESUME TIMELINE */
 
 .resume-title{
 margin-bottom:25px;
+font-size:26px;
+}
+
+.resume-block{
+
+border-left:2px solid #0d6efd;
+
+padding-left:35px;
+
+margin-bottom:45px;
+
+position:relative;
+
 }
 
 .resume-item{
+
 position:relative;
-padding-left:35px;
-margin-bottom:50px;
-border-left:2px solid #0d6efd;
+margin-bottom:35px;
+
 }
 
 .resume-item::before{
+
 content:"";
+
 position:absolute;
-left:-9px;
-top:0;
-width:16px;
-height:16px;
+
+left:-44px;
+top:5px;
+
+width:14px;
+height:14px;
+
 border-radius:50%;
+
 border:3px solid #0d6efd;
+
 background:white;
+
 }
 
-/* Projects */
+/* PROJECT CARDS */
 
 .project-card{
+
 background:white;
+
 padding:30px;
+
 border-radius:10px;
+
 box-shadow:0 10px 25px rgba(0,0,0,0.05);
+
 margin-bottom:25px;
+
 }
 
-/* Footer */
+/* FOOTER */
 
 footer{
+
 background:#111;
 color:white;
+
 padding:30px;
+
 text-align:center;
+
 }
 
 </style>
 
 </head>
 
+
 <body>
+
+
+<!-- SIDEBAR -->
+
+<div id="sidebar">
+
+<a href="#about"><i class="bi bi-person"></i></a>
+<a href="#highlights"><i class="bi bi-bar-chart"></i></a>
+<a href="#skills"><i class="bi bi-gear"></i></a>
+<a href="#resume"><i class="bi bi-file-earmark-text"></i></a>
+<a href="#projects"><i class="bi bi-kanban"></i></a>
+<a href="#contact"><i class="bi bi-envelope"></i></a>
+
+</div>
+
+
+
+<div class="main">
 
 <!-- HERO -->
 
@@ -171,24 +284,13 @@ text-align:center;
 Project Management | EPC Export Projects | Business Strategy
 </p>
 
-<div class="social">
-
-<a href="https://linkedin.com/in/rohit-choubey-4272a2a2">
-<i class="bi bi-linkedin"></i>
-</a>
-
-<a href="mailto:rohitkr99@gmail.com">
-<i class="bi bi-envelope"></i>
-</a>
-
-</div>
-
 </section>
+
 
 
 <!-- ABOUT -->
 
-<section>
+<section id="about">
 
 <div class="container">
 
@@ -197,7 +299,7 @@ Project Management | EPC Export Projects | Business Strategy
 <h2>About Me</h2>
 
 <p style="font-size:21px; max-width:900px; margin:auto;">
-Project Management and Business Strategy professional with 13+ years of experience across industrial manufacturing, EPC export projects and large-scale programs. Currently leading prefabricated piping export projects in Thailand valued at ~ THB 1+ Billion with focus on delivery excellence, cost optimization and digital transformation.
+Project Management and Business Strategy professional with 13+ years of experience across industrial manufacturing, EPC export projects and large-scale programs. Currently leading prefabricated piping export projects in Thailand valued at over THB 1 Billion with focus on delivery excellence, cost optimization, and digital transformation.
 </p>
 
 </div>
@@ -207,9 +309,10 @@ Project Management and Business Strategy professional with 13+ years of experien
 </section>
 
 
-<!-- CAREER HIGHLIGHTS -->
 
-<section>
+<!-- HIGHLIGHTS -->
+
+<section id="highlights">
 
 <div class="container">
 
@@ -229,7 +332,7 @@ Years Experience
 <div class="col-md-3">
 <div class="highlight-box">
 <div class="highlight-number">1Bn+</div>
-THB Project Portfolio
+THB Projects Delivered
 </div>
 </div>
 
@@ -254,9 +357,10 @@ Years in Thailand
 </section>
 
 
+
 <!-- SKILLS -->
 
-<section class="skills">
+<section id="skills">
 
 <div class="container">
 
@@ -266,64 +370,19 @@ Years in Thailand
 
 <div class="row">
 
-<div class="col-lg-6">
+<div class="col-md-4"><div class="skill-card">Project Management</div></div>
+<div class="col-md-4"><div class="skill-card">EPC Export Project Execution</div></div>
+<div class="col-md-4"><div class="skill-card">Cost Optimization</div></div>
 
-<div class="progress">
-<span class="skill">Project Management</span>
-<div class="progress-bar" style="width:94%"></div>
-</div>
+<div class="col-md-4"><div class="skill-card">Quantity Surveying (BOQ / BOM)</div></div>
+<div class="col-md-4"><div class="skill-card">Project Planning & Scheduling</div></div>
+<div class="col-md-4"><div class="skill-card">ERP Systems (MS Dynamics NAV)</div></div>
 
-<div class="progress">
-<span class="skill">EPC Export Project Execution</span>
-<div class="progress-bar" style="width:92%"></div>
-</div>
+<div class="col-md-4"><div class="skill-card">Procurement & Vendor Negotiation</div></div>
+<div class="col-md-4"><div class="skill-card">Supply Chain Coordination</div></div>
+<div class="col-md-4"><div class="skill-card">Stakeholder Management</div></div>
 
-<div class="progress">
-<span class="skill">Cost Optimization</span>
-<div class="progress-bar" style="width:90%"></div>
-</div>
-
-<div class="progress">
-<span class="skill">Quantity Surveying</span>
-<div class="progress-bar" style="width:93%"></div>
-</div>
-
-<div class="progress">
-<span class="skill">Project Scheduling</span>
-<div class="progress-bar" style="width:88%"></div>
-</div>
-
-</div>
-
-
-<div class="col-lg-6">
-
-<div class="progress">
-<span class="skill">ERP Systems (MS Dynamics NAV)</span>
-<div class="progress-bar" style="width:91%"></div>
-</div>
-
-<div class="progress">
-<span class="skill">Procurement & Vendor Negotiation</span>
-<div class="progress-bar" style="width:89%"></div>
-</div>
-
-<div class="progress">
-<span class="skill">Supply Chain Coordination</span>
-<div class="progress-bar" style="width:90%"></div>
-</div>
-
-<div class="progress">
-<span class="skill">Stakeholder Management</span>
-<div class="progress-bar" style="width:95%"></div>
-</div>
-
-<div class="progress">
-<span class="skill">Operational Excellence</span>
-<div class="progress-bar" style="width:88%"></div>
-</div>
-
-</div>
+<div class="col-md-4"><div class="skill-card">Operational Excellence</div></div>
 
 </div>
 
@@ -332,9 +391,10 @@ Years in Thailand
 </section>
 
 
+
 <!-- RESUME -->
 
-<section>
+<section id="resume">
 
 <div class="container">
 
@@ -350,12 +410,14 @@ Years in Thailand
 
 <h3 class="resume-title">Summary</h3>
 
+<div class="resume-block">
+
 <div class="resume-item">
 
 <h4>Rohit Kumar Choubey</h4>
 
 <p>
-Results-driven Project Management and Business Strategy professional with 13+ years of experience in EPC export projects, cost optimization, ERP reporting and cross-functional leadership.
+Results-driven Project Management and Business Strategy professional with 13+ years of experience in EPC export projects, cost optimization and ERP reporting.
 </p>
 
 <ul>
@@ -368,15 +430,18 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 
 </div>
 
+</div>
+
+
 
 <h3 class="resume-title">Education</h3>
+
+<div class="resume-block">
 
 <div class="resume-item">
 
 <h4>B.Tech – Mechanical Engineering</h4>
-
 <h5>2012</h5>
-
 <p>BSAITM, Faridabad</p>
 
 </div>
@@ -384,14 +449,15 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 <div class="resume-item">
 
 <h4>Higher Secondary</h4>
-
 <h5>2008</h5>
-
 <p>CBSE, Faridabad</p>
 
 </div>
 
 </div>
+
+</div>
+
 
 
 <!-- RIGHT -->
@@ -399,6 +465,8 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 <div class="col-lg-6">
 
 <h3 class="resume-title">Professional Experience</h3>
+
+<div class="resume-block">
 
 <div class="resume-item">
 
@@ -410,7 +478,7 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 
 <ul>
 
-<li>Lead prefabricated piping export projects valued at ~THB 500 Million.</li>
+<li>Lead prefabricated piping export projects valued at over THB 1 Billion.</li>
 
 <li>Develop L1/L2 schedules, milestone tracking and reporting systems.</li>
 
@@ -468,12 +536,15 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 
 </div>
 
+</div>
+
 </section>
+
 
 
 <!-- PROJECTS -->
 
-<section>
+<section id="projects">
 
 <div class="container">
 
@@ -513,7 +584,7 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 
 <div class="col-md-4">
 <div class="project-card">
-<h4>Dangote Boiler</h4>
+<h4>Dangote Boiler Project</h4>
 <p>External Piping – 500 MT</p>
 </div>
 </div>
@@ -525,9 +596,10 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 </section>
 
 
+
 <!-- CONTACT -->
 
-<section>
+<section id="contact">
 
 <div class="container">
 
@@ -546,13 +618,16 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 </section>
 
 
+
 <footer>
 
 Rohit Kumar Choubey | Project Management Portfolio
 
 </footer>
 
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</div>
 
 </body>
+
 </html>
