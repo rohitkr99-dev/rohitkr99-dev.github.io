@@ -11,23 +11,39 @@
 <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 
+/* Typography */
+
 body{
-font-family:'Poppins',sans-serif;
-background:#f9fbfd;
-line-height:1.7;
+font-family:'Roboto',sans-serif;
+background:#f8f9fc;
+line-height:1.8;
+color:#333;
 }
+
+h1,h2,h3,h4{
+font-family:'Playfair Display',serif;
+}
+
+/* Sections */
 
 section{
-padding:80px 0;
+padding:90px 0;
 }
 
-h1,h2,h3{
-font-weight:600;
+.section-title{
+text-align:center;
+margin-bottom:60px;
 }
+
+.section-title h2{
+font-size:36px;
+}
+
+/* HERO */
 
 .hero{
 text-align:center;
@@ -37,56 +53,50 @@ color:white;
 }
 
 .hero h1{
-font-size:48px;
+font-size:52px;
 margin-bottom:10px;
 }
 
 .hero p{
-font-size:20px;
+font-size:22px;
 }
 
 .social a{
 color:white;
-font-size:22px;
+font-size:24px;
 margin:0 10px;
 }
 
-.section-title{
-text-align:center;
-margin-bottom:50px;
-}
-
-.section-title h2{
-font-size:34px;
-margin-bottom:10px;
-}
+/* Highlights */
 
 .highlight-box{
 background:white;
-padding:30px;
+padding:35px;
 border-radius:10px;
 text-align:center;
-box-shadow:0 10px 25px rgba(0,0,0,0.05);
+box-shadow:0 10px 30px rgba(0,0,0,0.05);
 }
 
 .highlight-number{
-font-size:34px;
+font-size:36px;
 font-weight:700;
 color:#0d6efd;
 }
 
+/* Skills */
+
 .skills .progress{
-height:30px;
+height:28px;
 background:#e9ecef;
-margin-bottom:25px;
+margin-bottom:30px;
 overflow:hidden;
 transform:skewX(-15deg);
 }
 
 .skills .skill{
 display:block;
-font-weight:600;
-margin-bottom:6px;
+margin-bottom:8px;
+font-weight:500;
 transform:skewX(15deg);
 }
 
@@ -101,33 +111,42 @@ animation:glow 3s infinite alternate;
 100%{box-shadow:0 0 18px rgba(0,198,255,0.8);}
 }
 
-/* Timeline styling (my small tip already applied) */
+/* Resume timeline */
+
+.resume-title{
+margin-bottom:25px;
+}
 
 .resume-item{
-padding-left:20px;
-border-left:2px solid #0d6efd;
-margin-bottom:30px;
 position:relative;
+padding-left:35px;
+margin-bottom:50px;
+border-left:2px solid #0d6efd;
 }
 
 .resume-item::before{
 content:"";
 position:absolute;
-left:-8px;
-top:5px;
-width:14px;
-height:14px;
+left:-9px;
+top:0;
+width:16px;
+height:16px;
 border-radius:50%;
-background:#0d6efd;
+border:3px solid #0d6efd;
+background:white;
 }
+
+/* Projects */
 
 .project-card{
 background:white;
-padding:25px;
+padding:30px;
 border-radius:10px;
 box-shadow:0 10px 25px rgba(0,0,0,0.05);
-margin-bottom:20px;
+margin-bottom:25px;
 }
+
+/* Footer */
 
 footer{
 background:#111;
@@ -146,7 +165,7 @@ text-align:center;
 
 <section class="hero">
 
-<h1>Rohit Kumar Choubey</h1>
+<h1>ROHIT KUMAR CHOUBEY</h1>
 
 <p>
 Project Management | EPC Export Projects | Business Strategy
@@ -169,7 +188,7 @@ Project Management | EPC Export Projects | Business Strategy
 
 <!-- ABOUT -->
 
-<section id="about">
+<section>
 
 <div class="container">
 
@@ -177,15 +196,16 @@ Project Management | EPC Export Projects | Business Strategy
 
 <h2>About Me</h2>
 
-<p class="about-text"><p style="font-size:30px;">
-Project Management and Business Strategy professional with 13+ years of experience across industrial manufacturing, EPC export projects and large-scale programs. Currently leading prefabricated piping export projects in Thailand valued at ~THB 1+ Billion with focus on delivery excellence, cost optimization, and digital transformation.
-</p></p>
+<p style="font-size:21px; max-width:900px; margin:auto;">
+Project Management and Business Strategy professional with 13+ years of experience across industrial manufacturing, EPC export projects and large-scale programs. Currently leading prefabricated piping export projects in Thailand valued at approximately THB 500 Million with focus on delivery excellence, cost optimization and digital transformation.
+</p>
 
 </div>
 
 </div>
 
 </section>
+
 
 <!-- CAREER HIGHLIGHTS -->
 
@@ -208,7 +228,7 @@ Years Experience
 
 <div class="col-md-3">
 <div class="highlight-box">
-<div class="highlight-number">1Bn+</div>
+<div class="highlight-number">500M+</div>
 THB Project Portfolio
 </div>
 </div>
@@ -269,7 +289,7 @@ Years in Thailand
 </div>
 
 <div class="progress">
-<span class="skill">Project Planning & Scheduling</span>
+<span class="skill">Project Scheduling</span>
 <div class="progress-bar" style="width:88%"></div>
 </div>
 
@@ -314,7 +334,7 @@ Years in Thailand
 
 <!-- RESUME -->
 
-<section id="resume">
+<section>
 
 <div class="container">
 
