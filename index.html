@@ -219,11 +219,54 @@ background:white;
 /* PROJECT CARDS */
 
 .project-card{
-background:white;
-padding:30px;
+height:320px;
 border-radius:10px;
-box-shadow:0 10px 25px rgba(0,0,0,0.05);
-margin-bottom:25px;
+background-size:cover;
+background-position:center;
+position:relative;
+margin-bottom:30px;
+display:flex;
+align-items:flex-end;
+overflow:hidden;
+}
+
+.project-card:hover{
+transform:scale(1.03);
+box-shadow:0 18px 40px rgba(0,0,0,0.25);
+}
+  
+.project-overlay{
+background:rgba(0,0,0,0.65);
+color:white;
+padding:25px;
+width:100%;
+}
+
+.project-overlay h4{
+margin-bottom:12px;
+}
+
+.project-overlay ul{
+padding-left:18px;
+margin:0;
+}
+
+/* Background Images */
+
+.project-tilenga{
+background-image:url('tilenga.jpg');
+}
+
+.project-pipeline{
+background-image:url('pipeline.jpg');
+}
+
+.project-power{
+background-image:url('powerplant.jpg');
+}
+
+.project-fpso{
+background-image:url('fpso.jpg');
 }
 
 /* FOOTER */
@@ -586,115 +629,111 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 <div class="container">
 
 <div class="section-title">
+
 <h2>Major EPC Projects</h2>
+
 <p>
-Selected international piping fabrication and export projects across oil & gas, power and offshore sectors. Client details withheld due to confidentiality agreements.
+Selected international piping fabrication and export projects across oil & gas, power and offshore sectors.
 </p>
+
+<p style="font-size:14px;color:#666;">
+Client details withheld due to confidentiality agreements.
+</p>
+
+<p>
+Total fabrication scope across projects exceeds <strong>13,000 MT</strong> of piping systems delivered for international EPC programs.
+</p>
+
 </div>
+
 
 <div class="row">
 
 <!-- PROJECT 1 -->
 
 <div class="col-md-6">
-<div class="project-card">
+<div class="project-card project-tilenga">
+
+<div class="project-overlay">
 
 <h4>Tilenga Project – Upstream Facilities</h4>
 
-<p class="project-meta">
-<strong>Location:</strong> Uganda | Oil & Gas Development
-</p>
-
 <ul>
-<li><strong>Scope:</strong> Supply of Prefabricated piping products and primary/secondary supports</li>
-<li><strong>Volume:</strong> 8000 MT</li>
+<li><strong>Location:</strong> Uganda</li>
 <li><strong>Industry:</strong> Upstream Oil & Gas</li>
-<li><strong>Role:</strong> Project Planning, Coordination and Delivery Management</li>
+<li><strong>Scope:</strong> Prefabricated piping fabrication</li>
+<li><strong>Volume:</strong> 8000 MT</li>
+<li><strong>Role:</strong> Project coordination & delivery</li>
 </ul>
 
 </div>
+
 </div>
+</div>
+
 
 <!-- PROJECT 2 -->
 
 <div class="col-md-6">
-<div class="project-card">
+<div class="project-card project-pipeline">
+
+<div class="project-overlay">
 
 <h4>Fifth Transmission Pipeline – Phase II</h4>
 
-<p class="project-meta">
-<strong>Sector:</strong> Pipeline Infrastructure
-</p>
-
 <ul>
-<li><strong>Scope:</strong> Supply of Prefabricated piping products</li>
-<li><strong>Volume:</strong> 1605 MT</li>
 <li><strong>Industry:</strong> Oil & Gas Pipeline</li>
-<li><strong>Role:</strong> Planning, Scheduling and Delivery Coordination</li>
+<li><strong>Scope:</strong> Pipe spool fabrication</li>
+<li><strong>Volume:</strong> 1605 MT</li>
+<li><strong>Role:</strong> Planning & scheduling coordination</li>
 </ul>
 
 </div>
+
 </div>
+</div>
+
 
 <!-- PROJECT 3 -->
 
 <div class="col-md-6">
-<div class="project-card">
+<div class="project-card project-power">
+
+<div class="project-overlay">
 
 <h4>Tanjung Jati Power Plant – Units 5 & 6</h4>
 
-<p class="project-meta">
-<strong>Location:</strong> Indonesia
-</p>
-
 <ul>
-<li><strong>Scope:</strong> Supply of Prefabricated piping products</li>
-<li><strong>Volume:</strong> 1200 MT</li>
+<li><strong>Location:</strong> Indonesia</li>
 <li><strong>Industry:</strong> Thermal Power Generation</li>
-<li><strong>Role:</strong> Engineering Coordination, Project Execution & Delivery Coordination</li>
+<li><strong>Scope:</strong> External piping fabrication</li>
+<li><strong>Volume:</strong> 1200 MT</li>
+<li><strong>Role:</strong> Engineering coordination & execution</li>
 </ul>
 
 </div>
+
 </div>
+</div>
+
 
 <!-- PROJECT 4 -->
 
 <div class="col-md-6">
-<div class="project-card">
+<div class="project-card project-fpso">
+
+<div class="project-overlay">
 
 <h4>Bacalhau FPSO Project</h4>
 
-<p class="project-meta">
-<strong>Sector:</strong> Offshore Oil & Gas
-</p>
-
 <ul>
-<li><strong>Scope:</strong> Fabrication of offshore piping systems</li>
+<li><strong>Industry:</strong> Offshore Oil & Gas</li>
+<li><strong>Scope:</strong> Offshore piping fabrication</li>
 <li><strong>Volume:</strong> 750 MT</li>
-<li><strong>Industry:</strong> FPSO Offshore Production</li>
-<li><strong>Role:</strong> Planning, Export Coordination and Documentation</li>
+<li><strong>Role:</strong> Planning & export coordination</li>
 </ul>
 
 </div>
-</div>
-
-<!-- PROJECT 5 -->
-
-<div class="col-md-6">
-<div class="project-card">
-
-<h4>Refinery Boiler External Piping Project</h4>
-
-<p class="project-meta">
-<strong>Location:</strong> West Africa
-</p>
-
-<ul>
-<li><strong>Scope:</strong> Boiler external piping fabrication</li>
-<li><strong>Volume:</strong> 500 MT</li>
-<li><strong>Industry:</strong> Oil Refining</li>
-<li><strong>Role:</strong> Production Planning and Project Coordination</li>
-</ul>
 
 </div>
 </div>
