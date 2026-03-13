@@ -358,7 +358,7 @@ Project Management and Business Strategy professional with 13+ years of experien
 
 <div class="col-md-3">
 <div class="highlight-box">
-<div class="highlight-number counter" data-target="13">0</div>
+<div class="highlight-number counter" data-target="13">0</div>+
 Years Experience
 </div>
 </div>
@@ -789,9 +789,31 @@ Rohit Kumar Choubey | Project Management Portfolio
 
 <script>
 
-AOS.init({
-duration:900,
-once:true
+const counters = document.querySelectorAll('.counter');
+
+counters.forEach(counter => {
+
+counter.innerText = '0';
+
+const updateCounter = () => {
+
+const target = +counter.getAttribute('data-target');
+const current = +counter.innerText;
+
+const increment = target / 100;
+
+if(current < target){
+counter.innerText = Math.ceil(current + increment);
+setTimeout(updateCounter, 20);
+}
+else{
+counter.innerText = target;
+}
+
+};
+
+updateCounter();
+
 });
 
 </script>
