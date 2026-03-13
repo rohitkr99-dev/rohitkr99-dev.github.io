@@ -10,7 +10,6 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
 <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
@@ -91,33 +90,17 @@ font-weight:700;
 
 .hero-title{
 margin:20px 0;
-font-weight:400;
 }
 
 .hero-text{
 font-size:18px;
-max-width:520px;
 margin-bottom:30px;
-}
-
-.hero-buttons a{
-margin-bottom:10px;
 }
 
 .hero-img{
 width:260px;
 border-radius:50%;
 border:6px solid rgba(255,255,255,0.4);
-}
-
-.hero-stats h3{
-font-size:36px;
-font-weight:700;
-}
-
-.hero-stats p{
-margin:0;
-font-size:16px;
 }
 
 /* TITLES */
@@ -147,7 +130,7 @@ font-weight:700;
 color:#0d6efd;
 }
 
-/* SKILL CARDS */
+/* SKILLS */
 
 .skill-card{
 background:white;
@@ -166,7 +149,7 @@ box-shadow:0 12px 30px rgba(0,0,0,0.12);
 color:#0d6efd;
 }
 
-/* RESUME TIMELINE */
+/* RESUME */
 
 .resume-title{
 font-size:26px;
@@ -204,19 +187,7 @@ transform:translateX(5px);
 box-shadow:0 10px 30px rgba(0,0,0,0.12);
 }
 
-.resume-item::before{
-content:"";
-position:absolute;
-left:-32px;
-top:24px;
-width:14px;
-height:14px;
-border-radius:50%;
-border:3px solid #0d6efd;
-background:white;
-}
-
-/* PROJECT CARDS */
+/* PROJECTS */
 
 .project-card{
 height:320px;
@@ -228,6 +199,7 @@ margin-bottom:30px;
 display:flex;
 align-items:flex-end;
 overflow:hidden;
+transition:transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .project-card:hover{
@@ -235,10 +207,6 @@ transform:scale(1.03);
 box-shadow:0 18px 40px rgba(0,0,0,0.25);
 }
 
-.project-card:hover .project-overlay{
-background:rgba(0,0,0,0.75);
-}
-  
 .project-overlay{
 background:rgba(0,0,0,0.65);
 color:white;
@@ -246,32 +214,14 @@ padding:25px;
 width:100%;
 }
 
-.project-overlay h4{
-margin-bottom:12px;
+.project-card:hover .project-overlay{
+background:rgba(0,0,0,0.75);
 }
 
-.project-overlay ul{
-padding-left:18px;
-margin:0;
-}
-
-/* Background Images */
-
-.project-tilenga{
-background-image:url('tilenga.jpg');
-}
-
-.project-pipeline{
-background-image:url('pipeline.jpg');
-}
-
-.project-power{
-background-image:url('powerplant.jpg');
-}
-
-.project-fpso{
-background-image:url('fpso.jpg');
-}
+.project-tilenga{background-image:url('tilenga.jpg');}
+.project-pipeline{background-image:url('pipeline.jpg');}
+.project-power{background-image:url('powerplant.jpg');}
+.project-fpso{background-image:url('fpso.jpg');}
 
 /* FOOTER */
 
@@ -312,21 +262,17 @@ text-align:center;
 
 <div class="row align-items-center">
 
-<!-- LEFT CONTENT -->
-
 <div class="col-lg-6">
 
-<h1>Rohit Kumar Choubey</h1>
+<h1>ROHIT KUMAR CHOUBEY</h1>
 
 <h4 class="hero-title">
 Project Management Leader | EPC Export Projects | Business Strategy
 </h4>
 
 <p class="hero-text">
-Project Management and Business Strategy professional with 13+ years of experience delivering large-scale EPC export projects, optimizing costs, and leading cross-functional teams across international operations.
+Project Management professional with 13+ years experience delivering large-scale EPC export projects and leading cross-functional international teams.
 </p>
-
-<div class="hero-buttons">
 
 <a href="Resume_Rohit_Choubey_PM.pdf" class="btn btn-light btn-lg me-3" target="_blank">
 <i class="bi bi-download"></i> Download Resume
@@ -338,23 +284,45 @@ Project Management and Business Strategy professional with 13+ years of experien
 
 </div>
 
-</div>
-
-
-<!-- RIGHT PHOTO -->
-
 <div class="col-lg-6 text-center">
-
 <img src="profile.jpg" class="hero-img">
-
 </div>
 
 </div>
 
+</div>
 
-<!-- METRICS -->
+</section>
 
-<div class="row hero-stats text-center mt-5">
+<!-- ABOUT -->
+
+<section id="about" data-aos="fade-up">
+
+<div class="container">
+
+<div class="section-title">
+<h2>About Me</h2>
+<p style="font-size:20px; max-width:900px; margin:auto;">
+Project Management and Business Strategy professional with 13+ years of experience across industrial manufacturing and EPC export programs. Currently managing prefabricated piping export projects in Thailand valued at over THB 1 Billion while driving cost optimization and operational excellence.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CAREER HIGHLIGHTS -->
+
+<section id="highlights" data-aos="fade-up">
+
+<div class="container">
+
+<div class="section-title">
+<h2>Career Highlights</h2>
+</div>
+
+<div class="row text-center">
 
 <div class="col-md-3">
 <div class="highlight-box">
@@ -372,81 +340,14 @@ THB Million Project Portfolio
 
 <div class="col-md-3">
 <div class="highlight-box">
-<div class="highlight-number counter" data-target="20">0</div>
+<div class="highlight-number counter" data-target="20">0</div>+
 International Projects
 </div>
 </div>
 
 <div class="col-md-3">
 <div class="highlight-box">
-<div class="highlight-number counter" data-target="7">0</div>
-Years in Thailand
-</div>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ABOUT -->
-
-<section id="about" data-aos="fade-up">
-
-<div class="container">
-
-<div class="section-title">
-
-<h2>About Me</h2>
-
-<p style="font-size:21px; max-width:900px; margin:auto;">
-Project Management and Business Strategy professional with 13+ years of experience across industrial manufacturing, EPC export projects and large-scale programs. Currently managing prefabricated piping export projects in Thailand valued at over THB 1 Billion while driving cost optimization, operational excellence and digital transformation initiatives.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- HIGHLIGHTS -->
-
-<section id="highlights" data-aos="fade-up">
-
-<div class="container">
-
-<div class="section-title">
-<h2>Career Highlights</h2>
-</div>
-
-<div class="row text-center">
-
-<div class="col-md-3">
-<div class="highlight-box">
-<div class="highlight-number">13+</div>
-Years Experience
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="highlight-box">
-<div class="highlight-number">1Bn+</div>
-THB Project Portfolio
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="highlight-box">
-<div class="highlight-number">20+</div>
-International Projects
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="highlight-box">
-<div class="highlight-number">7+</div>
+<div class="highlight-number counter" data-target="7">0</div>+
 Years in Thailand
 </div>
 </div>
@@ -474,158 +375,13 @@ Years in Thailand
 <div class="col-md-4"><div class="skill-card">EPC Export Project Execution</div></div>
 <div class="col-md-4"><div class="skill-card">Cost Optimization</div></div>
 
-<div class="col-md-4"><div class="skill-card">Quantity Surveying (BOQ / BOM)</div></div>
 <div class="col-md-4"><div class="skill-card">Project Planning & Scheduling</div></div>
+<div class="col-md-4"><div class="skill-card">Quantity Surveying</div></div>
 <div class="col-md-4"><div class="skill-card">ERP Systems (MS Dynamics NAV)</div></div>
 
 <div class="col-md-4"><div class="skill-card">Procurement & Vendor Negotiation</div></div>
 <div class="col-md-4"><div class="skill-card">Supply Chain Coordination</div></div>
 <div class="col-md-4"><div class="skill-card">Stakeholder Management</div></div>
-
-<div class="col-md-4"><div class="skill-card">Operational Excellence</div></div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- RESUME -->
-
-<section id="resume" data-aos="fade-up">
-
-<div class="container">
-
-<div class="section-title">
-<h2>Resume</h2>
-</div>
-
-<div class="row">
-
-<!-- LEFT -->
-
-<div class="col-lg-6">
-
-<h3 class="resume-title">Summary</h3>
-
-<div class="resume-block">
-
-<div class="resume-item">
-
-<h4>Rohit Kumar Choubey</h4>
-
-<p>
-Results-driven Project Management and Business Strategy professional with 13+ years of experience in EPC export projects, cost optimization and ERP reporting.
-</p>
-
-<ul>
-<li>Chonburi, Thailand</li>
-<li>+66 84 587 8078</li>
-<li>rohitkr99@gmail.com</li>
-</ul>
-
-</div>
-
-</div>
-
-
-<h3 class="resume-title">Education</h3>
-
-<div class="resume-block">
-
-<div class="resume-item">
-
-<h4>B.Tech – Mechanical Engineering</h4>
-<h5>2012</h5>
-<p>BSAITM, Faridabad</p>
-
-</div>
-
-<div class="resume-item">
-
-<h4>Higher Secondary</h4>
-<h5>2008</h5>
-<p>CBSE, Faridabad</p>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- RIGHT -->
-
-<div class="col-lg-6">
-
-<h3 class="resume-title">Professional Experience</h3>
-
-<div class="resume-block">
-
-<div class="resume-item">
-
-<h4>Manager – Project Management & Business Strategy</h4>
-
-<h5>2018 – Present</h5>
-
-<p>DEE Piping Systems (Thailand) Co., Ltd.</p>
-
-<ul>
-
-<li>Lead prefabricated piping export projects valued at over THB 1 Billion.</li>
-
-<li>Develop L1/L2 schedules, milestone tracking and reporting systems.</li>
-
-<li>Coordinate engineering, procurement, QA/QC and logistics teams.</li>
-
-<li>Manage client technical clarifications and project approvals.</li>
-
-</ul>
-
-</div>
-
-<div class="resume-item">
-
-<h4>District Project Lead – National Nutrition Mission</h4>
-
-<h5>2018</h5>
-
-<p>Tata Trusts, Varanasi</p>
-
-<ul>
-
-<li>Coordinated between government bodies, NGOs and consultants.</li>
-
-<li>Delivered 300+ hours of structured training for field supervisors.</li>
-
-</ul>
-
-</div>
-
-<div class="resume-item">
-
-<h4>Senior Engineer – Project Analyst</h4>
-
-<h5>2012 – 2018</h5>
-
-<p>DEE Development Engineers Ltd.</p>
-
-<ul>
-
-<li>Managed techno-commercial coordination with clients.</li>
-
-<li>Developed MIS dashboards for management decision-making.</li>
-
-<li>Led ERP implementation including barcode and DMS systems.</li>
-
-</ul>
-
-</div>
-
-</div>
-
-</div>
 
 </div>
 
@@ -644,109 +400,66 @@ Results-driven Project Management and Business Strategy professional with 13+ ye
 
 <h2>Major EPC Projects</h2>
 
-<p>
-Selected international piping fabrication and export projects across oil & gas, power and offshore sectors.
-</p>
+<p>Selected international piping fabrication and export projects across oil & gas, power and offshore sectors.</p>
 
 <p style="font-size:14px;color:#666;">
 Client details withheld due to confidentiality agreements.
 </p>
 
 <p>
-Total fabrication scope across projects exceeds <strong>13,000 MT</strong> of piping systems delivered for international EPC programs.
+Total fabrication scope across projects exceeds <strong>13,000 MT</strong>.
 </p>
 
 </div>
 
-
 <div class="row">
-
-<!-- PROJECT 1 -->
 
 <div class="col-md-6">
 <div class="project-card project-tilenga">
-
 <div class="project-overlay">
-
 <h4>Tilenga Project – Upstream Facilities</h4>
-
 <ul>
-<li><strong>Location:</strong> Uganda</li>
-<li><strong>Industry:</strong> Upstream Oil & Gas</li>
-<li><strong>Scope:</strong> Prefabricated piping fabrication</li>
-<li><strong>Volume:</strong> 8000 MT</li>
-<li><strong>Role:</strong> Project coordination & delivery</li>
+<li>Location: Uganda</li>
+<li>Scope: Prefabricated piping</li>
+<li>Volume: 8000 MT</li>
 </ul>
-
-</div>
-
 </div>
 </div>
-
-
-<!-- PROJECT 2 -->
+</div>
 
 <div class="col-md-6">
 <div class="project-card project-pipeline">
-
 <div class="project-overlay">
-
-<h4>Fifth Transmission Pipeline – Phase II</h4>
-
+<h4>Fifth Transmission Pipeline</h4>
 <ul>
-<li><strong>Industry:</strong> Oil & Gas Pipeline</li>
-<li><strong>Scope:</strong> Pipe spool fabrication</li>
-<li><strong>Volume:</strong> 1605 MT</li>
-<li><strong>Role:</strong> Planning & scheduling coordination</li>
+<li>Industry: Oil & Gas Pipeline</li>
+<li>Volume: 1605 MT</li>
 </ul>
-
-</div>
-
 </div>
 </div>
-
-
-<!-- PROJECT 3 -->
+</div>
 
 <div class="col-md-6">
 <div class="project-card project-power">
-
 <div class="project-overlay">
-
-<h4>Tanjung Jati Power Plant – Units 5 & 6</h4>
-
+<h4>Tanjung Jati Power Plant</h4>
 <ul>
-<li><strong>Location:</strong> Indonesia</li>
-<li><strong>Industry:</strong> Thermal Power Generation</li>
-<li><strong>Scope:</strong> External piping fabrication</li>
-<li><strong>Volume:</strong> 1200 MT</li>
-<li><strong>Role:</strong> Engineering coordination & execution</li>
+<li>Location: Indonesia</li>
+<li>Volume: 1200 MT</li>
 </ul>
-
-</div>
-
 </div>
 </div>
-
-
-<!-- PROJECT 4 -->
+</div>
 
 <div class="col-md-6">
 <div class="project-card project-fpso">
-
 <div class="project-overlay">
-
 <h4>Bacalhau FPSO Project</h4>
-
 <ul>
-<li><strong>Industry:</strong> Offshore Oil & Gas</li>
-<li><strong>Scope:</strong> Offshore piping fabrication</li>
-<li><strong>Volume:</strong> 750 MT</li>
-<li><strong>Role:</strong> Planning & export coordination</li>
+<li>Industry: Offshore Oil & Gas</li>
+<li>Volume: 750 MT</li>
 </ul>
-
 </div>
-
 </div>
 </div>
 
@@ -758,7 +471,7 @@ Total fabrication scope across projects exceeds <strong>13,000 MT</strong> of pi
 
 <!-- CONTACT -->
 
-<section id="contact" data-aos="fade-up">
+<section id="contact">
 
 <div class="container">
 
@@ -767,20 +480,15 @@ Total fabrication scope across projects exceeds <strong>13,000 MT</strong> of pi
 </div>
 
 <p><strong>Email:</strong> rohitkr99@gmail.com</p>
-
 <p><strong>Location:</strong> Chonburi, Thailand</p>
-
 <p><strong>LinkedIn:</strong> linkedin.com/in/rohit-choubey-4272a2a2</p>
 
 </div>
 
 </section>
 
-
 <footer>
-
 Rohit Kumar Choubey | Project Management Portfolio
-
 </footer>
 
 </div>
@@ -789,35 +497,45 @@ Rohit Kumar Choubey | Project Management Portfolio
 
 <script>
 
-const counters = document.querySelectorAll('.counter');
+AOS.init({duration:900,once:true});
 
-counters.forEach(counter => {
+document.addEventListener("DOMContentLoaded", function(){
 
-counter.innerText = '0';
+const counters=document.querySelectorAll(".counter");
 
-const updateCounter = () => {
+counters.forEach(counter=>{
 
-const target = +counter.getAttribute('data-target');
-const current = +counter.innerText;
+const target=+counter.getAttribute("data-target");
 
-const increment = target / 100;
+let count=0;
 
-if(current < target){
-counter.innerText = Math.ceil(current + increment);
-setTimeout(updateCounter, 20);
-}
-else{
-counter.innerText = target;
+const update=()=>{
+
+const increment=target/120;
+
+count+=increment;
+
+if(count<target){
+
+counter.innerText=Math.ceil(count);
+
+requestAnimationFrame(update);
+
+}else{
+
+counter.innerText=target;
+
 }
 
 };
 
-updateCounter();
+update();
+
+});
 
 });
 
 </script>
 
 </body>
-
 </html>
