@@ -61,11 +61,25 @@ font-weight:500;
 /* HERO */
 
 .hero{
-background: linear-gradient(135deg,#0d6efd,#0dcaf0,#6610f2);
-background-size:200% 200%;
-animation: gradientMove 12s ease infinite;
+position:relative;
+background:url('hero-cover.jpg') center/cover no-repeat;
 color:white;
-padding:140px 0;
+padding:160px 0;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.55);
+}
+
+.hero .container{
+position:relative;
+z-index:2;
 }
 
 @keyframes gradientMove{
@@ -82,8 +96,9 @@ font-weight:700;
 .hero-img{
 width:260px;
 border-radius:50%;
-border:6px solid rgba(255,255,255,0.4);
-backdrop-filter:blur(10px);
+border:6px solid rgba(255,255,255,0.9);
+box-shadow:0 15px 40px rgba(0,0,0,0.5);
+background:white;
 }
 
 /* SECTION TITLES */
@@ -283,8 +298,8 @@ margin-top:30px;
 
 <h4>Project Management Leader | EPC Export Projects</h4>
 
-<p>
-13+ years delivering international EPC piping fabrication projects across engineering, procurement and global logistics.
+<p style="font-size:18px;margin-top:20px;max-width:500px;">
+Delivering complex EPC fabrication projects across global energy, infrastructure and industrial sectors.
 </p>
 
 <a href="Resume_Rohit_Choubey_PM.pdf" class="btn btn-light btn-lg me-3" target="_blank">
