@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rohit Kumar Choubey | Senior EPC Project Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#c9a84c;--gold-light:#e8cc7a;--gold-dim:rgba(201,168,76,0.15);
+  --glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.10);
+  --text:#f0ece2;--text-muted:rgba(240,236,226,0.55);--dark:#06080f;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden}
+
+/* ── NAVBAR ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:22px 60px;display:flex;align-items:center;justify-content:space-between;
+  transition:background 0.4s,border-color 0.4s;
+}
+nav.scrolled{background:rgba(6,8,15,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:3px;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:36px;list-style:none;align-items:center}
+.nav-links a{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,236,226,0.7);text-decoration:none;transition:color 0.3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{padding:10px 24px;border-radius:30px;background:linear-gradient(135deg,var(--gold),#9a7020);color:#05080f!important;font-weight:500!important;transition:all 0.3s!important}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.35)!important}
+
+/* ── HERO ── */
+#hero{position:relative;width:100%;height:100vh;min-height:700px;overflow:hidden;display:flex;align-items:center;justify-content:flex-start}
+
+/* Full-bleed photo — exactly like Craftivo reference */
+.hero-photo-bg{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  /* Desaturate + darken so it blends into the dark bg naturally */
+  filter:grayscale(35%) brightness(0.5) contrast(1.1);
+  transform:scale(1.05);
+  animation:slowZoom 22s ease-in-out infinite alternate;
+  z-index:0;
+}
+@keyframes slowZoom{from{transform:scale(1.05)}to{transform:scale(1.11)}}
+
+/* Layered gradient fades — left side melts to pure dark, bottom dissolves */
+.hero-vignette{
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(to right, rgba(6,8,15,0.97) 0%, rgba(6,8,15,0.80) 30%, rgba(6,8,15,0.40) 55%, rgba(6,8,15,0.05) 75%, transparent 100%),
+    linear-gradient(to top,   rgba(6,8,15,1)    0%, rgba(6,8,15,0.80) 20%, rgba(6,8,15,0.10) 45%, transparent 65%),
+    linear-gradient(to bottom,rgba(6,8,15,0.70) 0%, transparent 18%);
+}
+
+.hero-content{
+  position:relative;z-index:10;width:100%;max-width:1140px;
+  margin:0 auto;padding:0 60px;
+  display:flex;flex-direction:column;align-items:flex-start;
+}
+
+.hero-eyebrow{
+  font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);
+  margin-bottom:22px;display:flex;align-items:center;gap:14px;
+  animation:fadeUp 1s 0.1s both;
+}
+.hero-eyebrow::before{content:'';width:36px;height:1px;background:var(--gold)}
+
+.hero-greeting{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.2vw,28px);
+  font-weight:300;font-style:italic;color:rgba(240,236,226,0.65);
+  margin-bottom:6px;animation:fadeUp 1s 0.2s both;
+}
+
+.hero-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(54px,8vw,108px);font-weight:700;line-height:0.93;
+  letter-spacing:-2px;margin-bottom:24px;animation:fadeUp 1s 0.3s both;
+}
+.hero-name .ln1{
+  display:block;
+  background:linear-gradient(135deg,#ffffff 0%,rgba(240,236,226,0.82) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-name .ln2{
+  display:block;
+  background:linear-gradient(135deg,var(--gold-light) 0%,var(--gold) 55%,#9a7020 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-role{
+  font-size:clamp(14px,1.4vw,17px);font-weight:300;letter-spacing:2px;
+  color:rgba(240,236,226,0.58);margin-bottom:36px;text-transform:uppercase;
+  animation:fadeUp 1s 0.4s both;
+}
+.hero-typed{
+  color:var(--gold);font-style:italic;font-family:'Cormorant Garamond',serif;
+  font-size:clamp(17px,1.8vw,22px);letter-spacing:1px;text-transform:none;
+  border-right:2px solid var(--gold);padding-right:3px;
+  animation:fadeUp 1s 0.45s both, blink 0.8s 2s step-end infinite;
+}
+@keyframes blink{0%,100%{border-color:var(--gold)}50%{border-color:transparent}}
+
+.hero-socials{display:flex;gap:14px;margin-bottom:44px;animation:fadeUp 1s 0.55s both}
+.social-btn{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;
+  color:rgba(240,236,226,0.6);text-decoration:none;
+  font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;
+  transition:all 0.3s;
+}
+.social-btn:hover{background:var(--gold-dim);border-color:rgba(201,168,76,0.4);color:var(--gold);transform:translateY(-3px)}
+
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;animation:fadeUp 1s 0.65s both}
+.btn-gold{
+  padding:14px 36px;border-radius:50px;
+  background:linear-gradient(135deg,var(--gold),#9a7020);
+  color:#05080f;font-size:13px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;
+  text-decoration:none;transition:all 0.3s;border:none;cursor:pointer;
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,0.35)}
+.btn-ghost{
+  padding:14px 36px;border-radius:50px;
+  background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.15);color:var(--text);
+  font-size:13px;font-weight:400;letter-spacing:1.5px;text-transform:uppercase;
+  text-decoration:none;transition:all 0.3s;
+}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Stats — bottom right corner */
+.hero-stats-bar{
+  position:absolute;bottom:52px;right:60px;z-index:10;
+  display:flex;gap:36px;align-items:center;
+  animation:fadeUp 1s 0.85s both;
+}
+.stat-item{text-align:center}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3vw,44px);
+  font-weight:600;color:var(--gold);line-height:1;
+}
+.stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,236,226,0.38);margin-top:6px}
+.stat-sep{width:1px;height:44px;background:rgba(255,255,255,0.1)}
+
+/* Scroll indicator */
+.scroll-hint{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:10;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:rgba(240,236,226,0.3);font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  animation:fadeUp 1s 1.1s both;
+}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:0.3}50%{opacity:1}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTIONS ── */
+.section{padding:120px 0}
+.container{max-width:1140px;margin:0 auto;padding:0 60px}
+.section-label{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:block}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4vw,54px);font-weight:300;line-height:1.1;margin-bottom:48px}
+.section-title strong{font-weight:700}
+.gold-rule{width:50px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:28px}
+
+/* ── ABOUT ── */
+#about{background:linear-gradient(180deg,var(--dark) 0%,#090c16 100%)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-text{font-size:16px;line-height:1.9;color:var(--text-muted);margin-bottom:20px}
+.tag-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.tag{padding:6px 16px;border-radius:24px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.18);font-size:11px;letter-spacing:1px;color:var(--gold);text-transform:uppercase}
+.about-photo-wrap{position:relative}
+.about-photo{
+  width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center top;
+  border-radius:4px;display:block;
+  filter:grayscale(20%) brightness(0.72) contrast(1.1);
+}
+.about-photo-fade{
+  position:absolute;inset:0;border-radius:4px;
+  background:linear-gradient(to right,rgba(6,8,15,0.55) 0%,transparent 40%),
+             linear-gradient(to top,rgba(6,8,15,0.9) 0%,transparent 38%);
+}
+.about-photo-border{position:absolute;inset:0;border-radius:4px;border:1px solid rgba(201,168,76,0.15);pointer-events:none}
+
+/* ── METRICS ── */
+#highlights{background:#090c16;border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border)}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);max-width:1140px;margin:0 auto;padding:0 60px}
+.metric-item{padding:60px 40px;text-align:center;border-right:1px solid var(--glass-border);transition:background 0.4s}
+.metric-item:last-child{border-right:none}
+.metric-item:hover{background:rgba(201,168,76,0.03)}
+.metric-num{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,4vw,62px);font-weight:600;background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.metric-label{font-size:11px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:10px}
+
+/* ── SKILLS ── */
+#skills{background:var(--dark)}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--glass-border);border:1px solid var(--glass-border)}
+.skill-item{
+  padding:26px 28px;background:var(--dark);display:flex;align-items:center;gap:14px;
+  font-size:14px;color:var(--text-muted);letter-spacing:0.5px;transition:all 0.3s;
+}
+.skill-item:hover{background:rgba(201,168,76,0.04);color:var(--text)}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+/* ── TIMELINE ── */
+#timeline{background:#090c16}
+.timeline{position:relative;padding-left:44px;max-width:800px}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,var(--gold) 0%,rgba(201,168,76,0.06) 100%)}
+.tl-item{position:relative;margin-bottom:52px}
+.tl-dot{position:absolute;left:-50px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 18px rgba(201,168,76,0.55)}
+.tl-period{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.tl-role{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:4px}
+.tl-company{font-size:14px;color:var(--text-muted);margin-bottom:14px}
+.tl-desc{font-size:14px;line-height:1.85;color:var(--text-muted)}
+.tl-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tl-badge{padding:4px 14px;border-radius:20px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.15);font-size:11px;letter-spacing:1px;color:var(--gold)}
+
+/* ── PROJECTS ── */
+#projects{background:var(--dark)}
+.projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.project-card{position:relative;overflow:hidden;border-radius:8px;aspect-ratio:4/3;background:#0d111e;transition:transform 0.4s}
+.project-card.wide{grid-column:span 2;aspect-ratio:16/9}
+.project-card:hover{transform:scale(1.02)}
+.project-img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(25%) brightness(0.45) contrast(1.1);transition:filter 0.4s}
+.project-card:hover .project-img{filter:grayscale(10%) brightness(0.62) contrast(1.05)}
+.project-overlay{
+  position:absolute;inset:0;padding:28px;display:flex;flex-direction:column;justify-content:flex-end;
+  background:linear-gradient(to top,rgba(5,8,20,0.95) 0%,rgba(5,8,20,0.2) 50%,transparent 100%);
+}
+.project-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.project-name{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2vw,24px);font-weight:600;margin-bottom:6px}
+.project-sub{font-size:13px;color:var(--text-muted);line-height:1.5}
+
+/* ── CONTACT ── */
+#contact{background:linear-gradient(180deg,#090c16 0%,var(--dark) 100%)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.contact-intro{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3vw,46px);font-weight:300;line-height:1.25;margin-bottom:40px}
+.contact-intro strong{font-weight:700;color:var(--gold)}
+.contact-items{display:flex;flex-direction:column;gap:14px}
+.contact-row{
+  display:flex;align-items:center;gap:18px;padding:18px 22px;border-radius:10px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  color:var(--text-muted);text-decoration:none;font-size:14px;transition:all 0.3s;
+}
+.contact-row:hover{border-color:rgba(201,168,76,0.3);color:var(--gold);background:var(--gold-dim)}
+.c-icon{width:42px;height:42px;border-radius:10px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.18);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--gold);flex-shrink:0;font-family:'DM Sans',sans-serif}
+.form-card{background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(20px);border-radius:16px;padding:44px}
+.fg{margin-bottom:20px}
+.fg label{display:block;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.fg input,.fg textarea{width:100%;padding:13px 18px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;resize:none;transition:border-color 0.3s}
+.fg input:focus,.fg textarea:focus{border-color:rgba(201,168,76,0.4)}
+.fg textarea{height:120px}
+
+/* ── FOOTER ── */
+footer{padding:36px 60px;border-top:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;background:var(--dark)}
+.footer-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);letter-spacing:3px}
+.footer-note{font-size:12px;color:var(--text-muted)}
+
+/* ── FLOATING CTA ── */
+.float-cta{
+  position:fixed;bottom:32px;right:32px;z-index:300;
+  padding:13px 26px;border-radius:40px;
+  background:linear-gradient(135deg,rgba(201,168,76,0.92),rgba(140,100,30,0.92));
+  backdrop-filter:blur(12px);color:#05080f;font-size:12px;font-weight:500;
+  letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;
+  box-shadow:0 8px 32px rgba(201,168,76,0.25);transition:all 0.3s;
+}
+.float-cta:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(201,168,76,0.4)}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.reveal.up{opacity:1;transform:translateY(0)}
+.d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:16px 24px}.nav-links{display:none}
+  .container{padding:0 24px}
+  .hero-content{padding:0 24px}
+  .hero-stats-bar{right:24px;gap:20px;bottom:88px}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .metrics-row{grid-template-columns:repeat(2,1fr);padding:0 24px}
+  .metric-item{border-right:none;border-bottom:1px solid var(--glass-border)}
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+  .projects-grid{grid-template-columns:1fr}
+  .project-card.wide{grid-column:span 1;aspect-ratio:4/3}
+  footer{flex-direction:column;gap:10px;text-align:center;padding:24px}
+}
+</style>
+</head>
+<body>
+
+<a href="#" class="float-cta">↓ Download CV</a>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">RKC</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#highlights">Highlights</a></li>
+    <li><a href="#skills">Capabilities</a></li>
+    <li><a href="#timeline">Career</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact" class="nav-cta">Get In Touch</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+
+  <!-- Profile photo fills entire hero and blends into dark bg -->
+  <img
+    src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/profile.jpg"
+    alt=""
+    class="hero-photo-bg"
+    aria-hidden="true"
+    onerror="this.style.opacity='0'"
+  >
+  <div class="hero-vignette"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Senior Project Manager</div>
+    <p class="hero-greeting">Hi, I'm</p>
+    <h1 class="hero-name">
+      <span class="ln1">Rohit Kumar</span>
+      <span class="ln2">Choubey</span>
+    </h1>
+    <p class="hero-role">I'm a <span class="hero-typed" id="typed-text">EPC Project Manager</span></p>
+
+    <div class="hero-socials">
+      <a href="https://linkedin.com/in/rohit-choubey-4272a2a2" target="_blank" class="social-btn" title="LinkedIn">in</a>
+      <a href="#" class="social-btn" title="Download CV">↓</a>
+      <a href="#contact" class="social-btn" title="Contact">@</a>
+      <a href="https://github.com/rohitkr99-dev" target="_blank" class="social-btn" title="GitHub">gh</a>
+    </div>
+
+    <div class="hero-btns">
+      <a href="#" class="btn-gold">Download Resume</a>
+      <a href="#projects" class="btn-ghost">View Projects</a>
+    </div>
+  </div>
+
+  <!-- Stats bottom-right -->
+  <div class="hero-stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">13+</div>
+      <div class="stat-label">Yrs Exp.</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <div class="stat-num">20+</div>
+      <div class="stat-label">Projects</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <div class="stat-num">7+</div>
+      <div class="stat-label">In Thailand</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about" class="section">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <span class="section-label reveal">About Me</span>
+        <h2 class="section-title reveal">Engineering precision<br><strong>meets global leadership</strong></h2>
+        <div class="gold-rule reveal"></div>
+        <p class="about-text reveal">A results-driven project management professional with over 13 years of experience in EPC piping fabrication export projects across global energy and infrastructure sectors.</p>
+        <p class="about-text reveal d1">Based in Thailand for 7+ years, I specialize in coordinating cross-functional teams across engineering, fabrication, procurement, QA/QC, and international logistics to deliver complex projects on time and within budget.</p>
+        <p class="about-text reveal d2">My mechanical engineering foundation gives me deep technical understanding that bridges on-ground fabrication realities with high-level project strategy.</p>
+        <div class="tag-row reveal d3">
+          <span class="tag">Piping Fabrication</span><span class="tag">EPC Projects</span>
+          <span class="tag">Cost Control</span><span class="tag">Thailand</span>
+          <span class="tag">Oil &amp; Gas</span><span class="tag">Logistics</span>
+          <span class="tag">Mechanical Eng.</span>
+        </div>
+      </div>
+      <div class="about-photo-wrap reveal d2">
+        <img
+          src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/profile.jpg"
+          alt="Rohit Kumar Choubey"
+          class="about-photo"
+          onerror="this.parentElement.style.display='none'"
+        >
+        <div class="about-photo-fade"></div>
+        <div class="about-photo-border"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HIGHLIGHTS ═══ -->
+<section id="highlights">
+  <div class="metrics-row">
+    <div class="metric-item reveal"><div class="metric-num">13+</div><div class="metric-label">Years Experience</div></div>
+    <div class="metric-item reveal d1"><div class="metric-num">20+</div><div class="metric-label">Global Projects</div></div>
+    <div class="metric-item reveal d2"><div class="metric-num">1B+</div><div class="metric-label">THB Project Value</div></div>
+    <div class="metric-item reveal d3"><div class="metric-num">7+</div><div class="metric-label">Years in Thailand</div></div>
+  </div>
+</section>
+
+<!-- ═══ CAPABILITIES ═══ -->
+<section id="skills" class="section">
+  <div class="container">
+    <span class="section-label reveal">Competencies</span>
+    <h2 class="section-title reveal">Core <strong>Capabilities</strong></h2>
+    <div class="skills-grid reveal d1">
+      <div class="skill-item"><span class="sdot"></span>Project Planning &amp; Execution</div>
+      <div class="skill-item"><span class="sdot"></span>EPC Export Projects</div>
+      <div class="skill-item"><span class="sdot"></span>Cost Control &amp; Optimization</div>
+      <div class="skill-item"><span class="sdot"></span>Procurement Management</div>
+      <div class="skill-item"><span class="sdot"></span>Piping Fabrication</div>
+      <div class="skill-item"><span class="sdot"></span>International Logistics</div>
+      <div class="skill-item"><span class="sdot"></span>Stakeholder Management</div>
+      <div class="skill-item"><span class="sdot"></span>QA / QC Coordination</div>
+      <div class="skill-item"><span class="sdot"></span>Contract Management</div>
+      <div class="skill-item"><span class="sdot"></span>Risk Management</div>
+      <div class="skill-item"><span class="sdot"></span>Engineering Coordination</div>
+      <div class="skill-item"><span class="sdot"></span>MS Project / Primavera</div>
+      <div class="skill-item"><span class="sdot"></span>Oil &amp; Gas Sector</div>
+      <div class="skill-item"><span class="sdot"></span>Power Generation Projects</div>
+      <div class="skill-item"><span class="sdot"></span>Multicultural Team Leadership</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAREER ═══ -->
+<section id="timeline" class="section">
+  <div class="container">
+    <span class="section-label reveal">Professional Journey</span>
+    <h2 class="section-title reveal">Career <strong>Timeline</strong></h2>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-dot"></div>
+        <div class="tl-period">2017 – Present</div>
+        <div class="tl-role">Senior Project Manager</div>
+        <div class="tl-company">EPC Piping Fabrication &amp; Export — Thailand</div>
+        <div class="tl-desc">Leading end-to-end delivery of complex piping fabrication export projects for global energy clients. Managing cross-functional teams in engineering, procurement, fabrication, QA/QC and international logistics. Portfolio exceeds THB 1B+ across 20+ projects in oil &amp; gas, power and infrastructure sectors.</div>
+        <div class="tl-badges"><span class="tl-badge">EPC Projects</span><span class="tl-badge">Oil &amp; Gas</span><span class="tl-badge">Thailand</span><span class="tl-badge">Team Leadership</span></div>
+      </div>
+      <div class="tl-item reveal d1">
+        <div class="tl-dot"></div>
+        <div class="tl-period">2012 – 2017</div>
+        <div class="tl-role">Project Engineer / Manager</div>
+        <div class="tl-company">Energy &amp; Infrastructure Sector</div>
+        <div class="tl-desc">Managed engineering, procurement and construction phases of piping and mechanical fabrication projects. Built expertise in cost control, client coordination, and international project delivery across energy and infrastructure sectors.</div>
+        <div class="tl-badges"><span class="tl-badge">Piping Engineering</span><span class="tl-badge">Procurement</span><span class="tl-badge">Cost Control</span></div>
+      </div>
+      <div class="tl-item reveal d2">
+        <div class="tl-dot"></div>
+        <div class="tl-period">Education</div>
+        <div class="tl-role">Mechanical Engineering</div>
+        <div class="tl-company">B.E. — Engineering Degree</div>
+        <div class="tl-desc">Strong mechanical engineering foundation enabling deep technical understanding of piping systems, fabrication processes, and structural requirements across energy and infrastructure sectors globally.</div>
+        <div class="tl-badges"><span class="tl-badge">Mechanical Engineering</span><span class="tl-badge">Technical Expertise</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJECTS ═══ -->
+<section id="projects" class="section">
+  <div class="container">
+    <span class="section-label reveal">Portfolio</span>
+    <h2 class="section-title reveal">Featured <strong>Projects</strong></h2>
+    <div class="projects-grid">
+      <div class="project-card wide reveal">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/fpso.jpg" alt="FPSO" class="project-img" onerror="this.style.display='none'">
+        <div class="project-overlay">
+          <div class="project-tag">Oil &amp; Gas · Offshore</div>
+          <div class="project-name">FPSO Piping Fabrication</div>
+          <div class="project-sub">Floating Production Storage &amp; Offloading — complex piping systems for offshore energy production</div>
+        </div>
+      </div>
+      <div class="project-card reveal d1">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/tilenga.jpg" alt="Tilenga" class="project-img" onerror="this.style.display='none'">
+        <div class="project-overlay">
+          <div class="project-tag">East Africa · Upstream</div>
+          <div class="project-name">Tilenga Oil Project</div>
+          <div class="project-sub">Major upstream oil development — piping fabrication export to East Africa</div>
+        </div>
+      </div>
+      <div class="project-card reveal d1">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/pipeline.jpg" alt="Pipeline" class="project-img" onerror="this.style.display='none'">
+        <div class="project-overlay">
+          <div class="project-tag">Energy · Pipeline</div>
+          <div class="project-name">Pipeline Infrastructure</div>
+          <div class="project-sub">Large-diameter pipeline fabrication and export for energy transmission networks</div>
+        </div>
+      </div>
+      <div class="project-card reveal d2">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/powerplant.jpg" alt="Power Plant" class="project-img" onerror="this.style.display='none'">
+        <div class="project-overlay">
+          <div class="project-tag">Power · Infrastructure</div>
+          <div class="project-name">Power Plant Systems</div>
+          <div class="project-sub">Mechanical piping fabrication for power generation facilities globally</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact" class="section">
+  <div class="container">
+    <span class="section-label reveal">Get In Touch</span>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-intro reveal">Open to senior PM roles in<br><strong>global EPC &amp; energy sectors</strong></p>
+        <div class="contact-items reveal d1">
+          <a href="https://linkedin.com/in/rohit-choubey-4272a2a2" target="_blank" class="contact-row">
+            <div class="c-icon">in</div>
+            <div><div style="font-size:11px;letter-spacing:2px;margin-bottom:3px;color:var(--text-muted)">LINKEDIN</div>rohit-choubey-4272a2a2</div>
+          </a>
+          <a href="#" class="contact-row">
+            <div class="c-icon">↓</div>
+            <div><div style="font-size:11px;letter-spacing:2px;margin-bottom:3px;color:var(--text-muted)">RESUME</div>Download PDF</div>
+          </a>
+          <div class="contact-row">
+            <div class="c-icon">📍</div>
+            <div><div style="font-size:11px;letter-spacing:2px;margin-bottom:3px;color:var(--text-muted)">LOCATION</div>Thailand · Open to relocation</div>
+          </div>
+          <div class="contact-row">
+            <div class="c-icon">⚡</div>
+            <div><div style="font-size:11px;letter-spacing:2px;margin-bottom:3px;color:var(--text-muted)">SECTORS</div>Oil &amp; Gas · Power · Infrastructure</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-card reveal d2">
+        <div class="fg"><label>Your Name</label><input type="text" placeholder="e.g. Sarah Johnson"></div>
+        <div class="fg"><label>Company</label><input type="text" placeholder="e.g. Acme Energy Ltd"></div>
+        <div class="fg"><label>Email</label><input type="email" placeholder="hello@company.com"></div>
+        <div class="fg"><label>Message</label><textarea placeholder="Tell me about the opportunity…"></textarea></div>
+        <button class="btn-gold" style="width:100%;border:none;cursor:pointer;text-align:center">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">ROHIT KUMAR CHOUBEY</div>
+  <div class="footer-note">Senior EPC Project Manager · Thailand · 2025</div>
+</footer>
+
+<script>
+/* Navbar scroll */
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+
+/* Scroll reveal */
+const els = document.querySelectorAll('.reveal');
+new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('up')});
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'}).observe
+? (()=>{const o=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('up')});},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});els.forEach(el=>o.observe(el))})()
+: els.forEach(el=>el.classList.add('up'));
+
+/* Typed text */
+const roles=['EPC Project Manager','Piping Fabrication Expert','Global Energy Leader','Cost Control Specialist'];
+let ri=0,ci=0,del=false;
+const typed=document.getElementById('typed-text');
+function type(){
+  const w=roles[ri];
+  if(!del){typed.textContent=w.slice(0,++ci);if(ci===w.length){del=true;setTimeout(type,2400);return}}
+  else{typed.textContent=w.slice(0,--ci);if(ci===0){del=false;ri=(ri+1)%roles.length}}
+  setTimeout(type,del?52:92);
+}
+type();
+
+/* Subtle mouse parallax on hero photo */
+document.addEventListener('mousemove',(e)=>{
+  const img=document.querySelector('.hero-photo-bg');
+  if(!img)return;
+  const x=(e.clientX/window.innerWidth-0.5)*8;
+  const y=(e.clientY/window.innerHeight-0.5)*8;
+  img.style.transform=`scale(1.07) translate(${x}px,${y}px)`;
+});
+</script>
+</body>
+</html>
