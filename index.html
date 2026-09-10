@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rohit Kumar Choubey | Senior EPC Project Manager</title>
+<title>Rohit Kumar Choubey | Project Manager &amp; Business Strategy</title>
+<meta name="description" content="Rohit Kumar Choubey — Project Manager & Business Strategy professional with 14+ years delivering EPC piping, industrial manufacturing and digital transformation projects across Asia-Pacific, the Americas and Africa.">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -27,9 +28,9 @@ nav.scrolled{
 }
 .logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;
   letter-spacing:3px;color:var(--gold);text-decoration:none}
-.nav-links{display:flex;gap:36px;list-style:none;align-items:center}
+.nav-links{display:flex;gap:28px;list-style:none;align-items:center}
 .nav-links a{font-size:12px;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(240,236,226,0.65);text-decoration:none;transition:color 0.3s}
+  color:rgba(240,236,226,0.65);text-decoration:none;transition:color 0.3s;white-space:nowrap}
 .nav-links a:hover{color:var(--gold)}
 .nav-cta{
   padding:10px 26px;border-radius:30px;
@@ -45,7 +46,6 @@ nav.scrolled{
   background:#07090f;
 }
 
-/* Photo — positioned right half, blends naturally because suit=dark bg */
 .hero-photo-wrap{
   position:absolute;
   right:0;top:0;bottom:0;
@@ -60,16 +60,13 @@ nav.scrolled{
   max-width:100%;
   object-fit:cover;
   object-position:top center;
-  /* Slight desaturate + subtle darken — suit is already nearly black so blends perfectly */
   filter:brightness(0.82) contrast(1.08) saturate(0.85);
   display:block;
 }
 
-/* Gradient mask fades photo edges into the dark bg */
 .hero-photo-mask{
   position:absolute;inset:0;z-index:2;
   background:
-    /* Left edge — hard fade so photo melts into text side */
     linear-gradient(to right,
       var(--dark) 0%,
       rgba(7,9,15,0.85) 15%,
@@ -77,21 +74,18 @@ nav.scrolled{
       rgba(7,9,15,0.10) 55%,
       transparent 75%
     ),
-    /* Bottom edge — body fades into floor */
     linear-gradient(to top,
       var(--dark) 0%,
       rgba(7,9,15,0.70) 12%,
       rgba(7,9,15,0.10) 30%,
       transparent 50%
     ),
-    /* Top edge — subtle */
     linear-gradient(to bottom,
       rgba(7,9,15,0.55) 0%,
       transparent 18%
     );
 }
 
-/* Ambient glow behind the figure — looks cinematic */
 .hero-photo-glow{
   position:absolute;inset:0;z-index:0;
   background:radial-gradient(ellipse 60% 80% at 70% 50%,
@@ -100,7 +94,6 @@ nav.scrolled{
   );
 }
 
-/* Text content — left side */
 .hero-content{
   position:relative;z-index:10;
   padding:0 64px;
@@ -156,7 +149,6 @@ nav.scrolled{
 }
 @keyframes blink{0%,100%{border-color:var(--gold)}50%{border-color:transparent}}
 
-/* Socials */
 .socials{display:flex;gap:13px;margin-bottom:44px;animation:fadeUp 1s 0.5s both}
 .soc{
   width:46px;height:46px;border-radius:50%;
@@ -168,7 +160,6 @@ nav.scrolled{
 }
 .soc:hover{background:var(--gold-dim);border-color:rgba(201,168,76,0.45);color:var(--gold);transform:translateY(-3px)}
 
-/* Buttons */
 .btns{display:flex;gap:16px;flex-wrap:wrap;animation:fadeUp 1s 0.6s both}
 .btn-a{
   padding:15px 38px;border-radius:50px;
@@ -186,7 +177,6 @@ nav.scrolled{
 }
 .btn-b:hover{border-color:var(--gold);color:var(--gold)}
 
-/* Stats — bottom right */
 .hero-stats{
   position:absolute;bottom:52px;right:64px;z-index:10;
   display:flex;align-items:center;gap:38px;
@@ -203,7 +193,6 @@ nav.scrolled{
 .s-lbl{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(240,236,226,0.35);margin-top:6px}
 .s-div{width:1px;height:40px;background:rgba(255,255,255,0.10)}
 
-/* Scroll hint */
 .scroll-hint{
   position:absolute;bottom:42px;left:50%;transform:translateX(-50%);z-index:10;
   display:flex;flex-direction:column;align-items:center;gap:8px;
@@ -240,8 +229,17 @@ nav.scrolled{
   border:1px solid rgba(201,168,76,0.18);font-size:10px;letter-spacing:1.5px;
   color:var(--gold);text-transform:uppercase}
 
-/* About photo — same blending treatment */
-
+/* Quick-facts detail grid (About) */
+.detail-grid{
+  margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--glass-b);border:1px solid var(--glass-b);border-radius:14px;overflow:hidden;
+}
+.detail-item{
+  background:#08101a;padding:22px 24px;display:flex;flex-direction:column;gap:4px;transition:background 0.3s;
+}
+.detail-item:hover{background:rgba(201,168,76,0.05)}
+.detail-item span{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
+.detail-item strong{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--text)}
 
 /* ─── METRICS ─── */
 #metrics{background:#08101a;border-top:1px solid var(--glass-b);border-bottom:1px solid var(--glass-b)}
@@ -254,15 +252,20 @@ nav.scrolled{
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
 .m-lbl{font-size:10px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:10px}
 
-/* ─── SKILLS ─── */
-#skills{background:var(--dark)}
-.sk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
-  background:var(--glass-b);border:1px solid var(--glass-b)}
-.sk-item{padding:26px 28px;background:var(--dark);
-  display:flex;align-items:center;gap:14px;
-  font-size:14px;color:var(--muted);transition:all 0.3s}
-.sk-item:hover{background:rgba(201,168,76,0.04);color:var(--text)}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+/* ─── CORE COMPETENCIES ─── */
+#competencies{background:var(--dark)}
+.cc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cc-card{
+  padding:28px 26px;border-radius:14px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  backdrop-filter:blur(10px);transition:all 0.35s;
+}
+.cc-card:hover{background:rgba(201,168,76,0.06);border-color:rgba(201,168,76,0.22);transform:translateY(-4px)}
+.cc-icon{font-size:22px;margin-bottom:12px}
+.cc-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.cc-text{font-size:13px;line-height:1.65;color:var(--muted)}
+.tools-strip{margin-top:44px;padding-top:36px;border-top:1px solid var(--glass-b)}
+.tools-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:block}
 
 /* ─── TIMELINE ─── */
 #timeline{background:#08101a}
@@ -270,12 +273,14 @@ nav.scrolled{
 .tl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;
   background:linear-gradient(180deg,var(--gold) 0%,rgba(201,168,76,0.05) 100%)}
 .tl-i{position:relative;margin-bottom:52px}
+.tl-i:last-child{margin-bottom:0}
 .tl-dot{position:absolute;left:-50px;top:8px;width:12px;height:12px;border-radius:50%;
   background:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.6)}
 .tl-per{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
 .tl-role{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:4px}
 .tl-co{font-size:14px;color:var(--muted);margin-bottom:14px}
 .tl-desc{font-size:14px;line-height:1.88;color:var(--muted)}
+.tl-desc li{margin-left:18px;margin-bottom:6px}
 .tl-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .tl-tag{padding:4px 14px;border-radius:20px;background:var(--gold-dim);
   border:1px solid rgba(201,168,76,0.15);font-size:11px;letter-spacing:1px;color:var(--gold)}
@@ -295,6 +300,31 @@ nav.scrolled{
 .pr-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
 .pr-name{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2vw,24px);font-weight:600;margin-bottom:6px}
 .pr-sub{font-size:13px;color:var(--muted);line-height:1.55}
+.pr-meta{font-size:11px;color:rgba(240,236,226,0.42);letter-spacing:1px;margin-top:8px}
+.more-projects{margin-top:28px;font-size:13px;color:var(--muted);line-height:1.9}
+.more-projects strong{color:var(--text);font-weight:500}
+
+/* ─── TECHNICAL PROJECTS ─── */
+#tech-projects{background:#08101a}
+.tp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.tp-card{
+  padding:30px 32px;border-radius:14px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  backdrop-filter:blur(10px);transition:all 0.35s;display:flex;flex-direction:column;
+}
+.tp-card:hover{background:rgba(201,168,76,0.05);border-color:rgba(201,168,76,0.2);transform:translateY(-4px)}
+.tp-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:10px;color:var(--text)}
+.tp-desc{font-size:13.5px;line-height:1.75;color:var(--muted);margin-bottom:18px;flex-grow:1}
+.tp-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.tp-tag{padding:4px 12px;border-radius:16px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);font-size:10.5px;letter-spacing:0.5px;color:var(--muted)}
+.tp-links{display:flex;gap:12px}
+.tp-link{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);
+  text-decoration:none;padding:9px 18px;border-radius:24px;border:1px solid rgba(201,168,76,0.28);
+  transition:all 0.3s}
+.tp-link:hover{background:var(--gold-dim);border-color:var(--gold)}
+.tp-link.ghost{color:var(--muted);border-color:var(--glass-b)}
+.tp-link.ghost:hover{color:var(--text);border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.04)}
 
 /* ─── CONTACT ─── */
 #contact{background:linear-gradient(180deg,#08101a 0%,var(--dark) 100%)}
@@ -322,6 +352,7 @@ nav.scrolled{
   outline:none;resize:none;transition:border-color 0.3s}
 .fg input:focus,.fg textarea:focus{border-color:rgba(201,168,76,0.42)}
 .fg textarea{height:120px}
+.form-note{font-size:11px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.6}
 
 /* ─── FOOTER ─── */
 footer{padding:36px 64px;border-top:1px solid var(--glass-b);
@@ -357,16 +388,21 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
   .about-grid,.ct-grid{grid-template-columns:1fr}
   .m-row{grid-template-columns:repeat(2,1fr);padding:0 24px}
   .m-item{border-right:none;border-bottom:1px solid var(--glass-b)}
-  .sk-grid{grid-template-columns:1fr 1fr}
+  .detail-grid{grid-template-columns:1fr 1fr}
+  .cc-grid{grid-template-columns:1fr 1fr}
+  .tp-grid{grid-template-columns:1fr}
   .pr-grid{grid-template-columns:1fr}
   .pr-card.wide{grid-column:span 1;aspect-ratio:4/3}
   footer{flex-direction:column;gap:10px;text-align:center;padding:24px}
+}
+@media(max-width:600px){
+  .detail-grid,.cc-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<a href="Resume_Rohit_Choubey_PM.pdf" class="float-dl">↓ Download CV</a>
+<a href="Resume_Rohit_Choubey.pdf" class="float-dl">↓ Download CV</a>
 
 <!-- NAVBAR -->
 <nav id="nav">
@@ -374,9 +410,10 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#metrics">Highlights</a></li>
-    <li><a href="#skills">Capabilities</a></li>
+    <li><a href="#competencies">Skills</a></li>
     <li><a href="#timeline">Career</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#tech-projects">Tech</a></li>
     <li><a href="#contact" class="nav-cta">Get In Touch</a></li>
   </ul>
 </nav>
@@ -384,16 +421,14 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
 <!-- ═══════ HERO ═══════ -->
 <section id="hero">
 
-  <!-- Photo — right side, blends because suit is dark -->
   <div class="hero-photo-wrap">
     <div class="hero-photo-glow"></div>
     <img src="profile1.jpg" alt="Rohit Kumar Choubey" class="hero-photo">
     <div class="hero-photo-mask"></div>
   </div>
 
-  <!-- Text — left side -->
   <div class="hero-content">
-    <div class="eyebrow">Senior Project Manager</div>
+    <div class="eyebrow">Project Manager &amp; Business Strategy</div>
     <p class="hi-line">Hi, I'm</p>
     <h1 class="hero-name">
       <span class="w">Rohit Kumar</span>
@@ -402,23 +437,22 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
     <p class="hero-role">I'M A <span class="typed-wrap" id="typed">EPC Project Manager</span></p>
 
     <div class="socials">
-      <a href="https://linkedin.com/in/rohit-choubey-4272a2a2" target="_blank" class="soc" title="LinkedIn">in</a>
-      <a href="Resume_Rohit_Choubey_PM.pdf" class="soc" title="Download CV">↓</a>
+      <a href="https://linkedin.com/in/rohit-choubey-4272a2a2" target="_blank" rel="noopener" class="soc" title="LinkedIn">in</a>
+      <a href="Resume_Rohit_Choubey.pdf" class="soc" title="Download CV">↓</a>
       <a href="#contact" class="soc" title="Contact">@</a>
-      <a href="https://github.com/rohitkr99-dev" target="_blank" class="soc" title="GitHub">gh</a>
+      <a href="https://github.com/rohitkr99-dev" target="_blank" rel="noopener" class="soc" title="GitHub">gh</a>
     </div>
 
     <div class="btns">
-      <a href="Resume_Rohit_Choubey_PM.pdf" class="btn-a">Download Resume</a>
+      <a href="Resume_Rohit_Choubey.pdf" class="btn-a">Download Resume</a>
       <a href="#projects" class="btn-b">View Projects</a>
     </div>
   </div>
 
-  <!-- Stats bottom-right -->
   <div class="hero-stats">
-    <div class="s-item"><div class="s-num">13+</div><div class="s-lbl">Yrs Exp.</div></div>
+    <div class="s-item"><div class="s-num">14+</div><div class="s-lbl">Yrs Exp.</div></div>
     <div class="s-div"></div>
-    <div class="s-item"><div class="s-num">20+</div><div class="s-lbl">Projects</div></div>
+    <div class="s-item"><div class="s-num">11+</div><div class="s-lbl">Projects</div></div>
     <div class="s-div"></div>
     <div class="s-item"><div class="s-num">7+</div><div class="s-lbl">In Thailand</div></div>
   </div>
@@ -437,16 +471,16 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
       <!-- LEFT — bio text + tags -->
       <div>
         <span class="s-label r">About Me</span>
-        <h2 class="s-title r">Engineering precision<br><strong>meets global leadership</strong></h2>
+        <h2 class="s-title r">Engineering precision<br><strong>meets business strategy</strong></h2>
         <div class="gold-rule r"></div>
-        <p class="ab-text r">A results-driven project management professional with over 13 years of experience in EPC piping fabrication export projects across global energy and infrastructure sectors.</p>
-        <p class="ab-text r d1">Based in Thailand for 7+ years, I specialize in coordinating cross-functional teams across engineering, fabrication, procurement, QA/QC, and international logistics to deliver complex projects on time and within budget.</p>
-        <p class="ab-text r d2">My mechanical engineering foundation bridges on-ground fabrication realities with high-level project strategy — giving clients confidence at every stage.</p>
+        <p class="ab-text r">A results-driven Project Management &amp; Business Strategy professional with 14+ years of experience across international prefabricated piping, EPC, industrial manufacturing, and government-scale programs.</p>
+        <p class="ab-text r d1">Based in Thailand, I've delivered 11+ high-value piping and export projects worth THB 1Bn+ across Asia-Pacific, the Americas, and Africa — including the 8,000 MT Tilenga Upstream Facilities program, the largest in scope to date.</p>
+        <p class="ab-text r d2">My mechanical engineering foundation, combined with ERP-driven digital transformation and data analytics (Power BI, Tableau, SQL) and AI-assisted tools, bridges on-the-ground execution with high-level commercial strategy.</p>
         <div class="tags r d3">
-          <span class="tag">Piping Fabrication</span><span class="tag">EPC Projects</span>
-          <span class="tag">Cost Control</span><span class="tag">Thailand</span>
-          <span class="tag">Oil &amp; Gas</span><span class="tag">Logistics</span>
-          <span class="tag">Mechanical Eng.</span><span class="tag">Power Generation</span>
+          <span class="tag">Piping &amp; EPC</span><span class="tag">Business Strategy</span>
+          <span class="tag">ERP · MS Dynamics NAV</span><span class="tag">Data Analytics</span>
+          <span class="tag">Thailand</span><span class="tag">Cost Optimization</span>
+          <span class="tag">Contract Management</span><span class="tag">Digital Transformation</span>
         </div>
       </div>
 
@@ -455,25 +489,35 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
         <div class="ab-card r d1">
           <div class="ab-card-icon">⚙️</div>
           <div class="ab-card-title">End-to-End EPC Delivery</div>
-          <div class="ab-card-text">From contract award through final export — managing every phase of complex piping fabrication projects for global energy clients.</div>
+          <div class="ab-card-text">From contract award through final export — leading 11+ international piping fabrication projects worth THB 1Bn+ for global energy clients.</div>
         </div>
         <div class="ab-card r d2">
           <div class="ab-card-icon">🌏</div>
           <div class="ab-card-title">International Footprint</div>
-          <div class="ab-card-text">7+ years based in Thailand with projects spanning East Africa, the Middle East, Asia, and beyond — fluent in multicultural project environments.</div>
+          <div class="ab-card-text">Delivering projects across Asia-Pacific, the Americas, and Africa — including the 8,000 MT Tilenga Upstream Facilities program, the largest in scope to date.</div>
         </div>
         <div class="ab-card r d3">
           <div class="ab-card-icon">📊</div>
-          <div class="ab-card-title">Cost & Schedule Control</div>
-          <div class="ab-card-text">Proven track record managing THB 1B+ in project value — optimizing procurement, fabrication scheduling, and logistics for maximum efficiency.</div>
+          <div class="ab-card-title">Data-Driven Delivery</div>
+          <div class="ab-card-text">Applying ERP (MS Dynamics NAV), Power BI, Tableau, and SQL — plus AI-assisted tools like Claude and ChatGPT — to sharpen decision-making and reporting accuracy.</div>
         </div>
         <div class="ab-card r d4">
           <div class="ab-card-icon">🤝</div>
           <div class="ab-card-title">Stakeholder Leadership</div>
-          <div class="ab-card-text">Strong client-facing communication and cross-functional team leadership — bridging technical teams, contractors, and executive stakeholders seamlessly.</div>
+          <div class="ab-card-text">Leading cross-functional teams across Engineering, Procurement, QA/QC, Logistics, and Finance while strengthening client and vendor relationships.</div>
         </div>
       </div>
 
+    </div>
+
+    <!-- Quick facts -->
+    <div class="detail-grid r d2">
+      <div class="detail-item"><span>Experience</span><strong>14+ Years</strong></div>
+      <div class="detail-item"><span>Degree</span><strong>B.Tech, Mechanical Engineering</strong></div>
+      <div class="detail-item"><span>Based In</span><strong>Chonburi, Thailand</strong></div>
+      <div class="detail-item"><span>Email</span><strong>rohitkr99@gmail.com</strong></div>
+      <div class="detail-item"><span>Phone</span><strong>+66 84-587-8078</strong></div>
+      <div class="detail-item"><span>Availability</span><strong>Open to Opportunities</strong></div>
     </div>
   </div>
 </section>
@@ -481,34 +525,74 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
 <!-- ═══════ METRICS ═══════ -->
 <section id="metrics">
   <div class="m-row">
-    <div class="m-item r"><div class="m-num">13+</div><div class="m-lbl">Years Experience</div></div>
-    <div class="m-item r d1"><div class="m-num">20+</div><div class="m-lbl">Global Projects</div></div>
+    <div class="m-item r"><div class="m-num">14+</div><div class="m-lbl">Years Experience</div></div>
+    <div class="m-item r d1"><div class="m-num">11+</div><div class="m-lbl">Projects Delivered</div></div>
     <div class="m-item r d2"><div class="m-num">1B+</div><div class="m-lbl">THB Project Value</div></div>
     <div class="m-item r d3"><div class="m-num">7+</div><div class="m-lbl">Years in Thailand</div></div>
   </div>
 </section>
 
-<!-- ═══════ SKILLS ═══════ -->
-<section id="skills" class="section">
+<!-- ═══════ CORE COMPETENCIES ═══════ -->
+<section id="competencies" class="section">
   <div class="wrap">
     <span class="s-label r">Competencies</span>
-    <h2 class="s-title r">Core <strong>Capabilities</strong></h2>
-    <div class="sk-grid r d1">
-      <div class="sk-item"><span class="dot"></span>Project Planning &amp; Execution</div>
-      <div class="sk-item"><span class="dot"></span>EPC Export Projects</div>
-      <div class="sk-item"><span class="dot"></span>Cost Control &amp; Optimization</div>
-      <div class="sk-item"><span class="dot"></span>Procurement Management</div>
-      <div class="sk-item"><span class="dot"></span>Piping Fabrication</div>
-      <div class="sk-item"><span class="dot"></span>International Logistics</div>
-      <div class="sk-item"><span class="dot"></span>Stakeholder Management</div>
-      <div class="sk-item"><span class="dot"></span>QA / QC Coordination</div>
-      <div class="sk-item"><span class="dot"></span>Contract Management</div>
-      <div class="sk-item"><span class="dot"></span>Risk Management</div>
-      <div class="sk-item"><span class="dot"></span>Engineering Coordination</div>
-      <div class="sk-item"><span class="dot"></span>MS Project / Primavera</div>
-      <div class="sk-item"><span class="dot"></span>Oil &amp; Gas Sector</div>
-      <div class="sk-item"><span class="dot"></span>Power Generation Projects</div>
-      <div class="sk-item"><span class="dot"></span>Multicultural Team Leadership</div>
+    <h2 class="s-title r">Core <strong>Competencies</strong></h2>
+    <div class="cc-grid r d1">
+      <div class="cc-card">
+        <div class="cc-icon">📅</div>
+        <div class="cc-title">Planning, Scheduling &amp; Controls</div>
+        <div class="cc-text">L1/L2 schedules, earned value management, and milestone tracking across multi-million-dollar programs.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">📃</div>
+        <div class="cc-title">Commercial &amp; Contract Management</div>
+        <div class="cc-text">Budgeting, cost optimization, and vendor/contractor contract negotiation.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">📐</div>
+        <div class="cc-title">Quantity Surveying</div>
+        <div class="cc-text">BOQ, BOM and MTO reconciliation through to final accounts.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">💻</div>
+        <div class="cc-title">ERP &amp; Digital Transformation</div>
+        <div class="cc-text">MS Dynamics NAV, barcode integration, and online document management systems.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">📈</div>
+        <div class="cc-title">Data Analytics &amp; BI</div>
+        <div class="cc-text">Power BI, Tableau, SQL and advanced Excel for delivery and inventory reporting.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">🚚</div>
+        <div class="cc-title">Procurement &amp; Supply Chain</div>
+        <div class="cc-text">Vendor negotiation, supply coordination, and international export documentation.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">🤝</div>
+        <div class="cc-title">Stakeholder Management</div>
+        <div class="cc-text">Client, consultant, and cross-functional team alignment across every project phase.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">⚠️</div>
+        <div class="cc-title">Risk Management</div>
+        <div class="cc-text">Process improvement, scope-change control, and contingency planning.</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">👥</div>
+        <div class="cc-title">Team Leadership</div>
+        <div class="cc-text">Coaching and mentoring engineers, contractors, and cross-functional teams.</div>
+      </div>
+    </div>
+
+    <div class="tools-strip r d2">
+      <span class="tools-label">Tools &amp; Technical Skills</span>
+      <div class="tags">
+        <span class="tag">ERP · MS Dynamics NAV</span><span class="tag">Power BI</span>
+        <span class="tag">Tableau</span><span class="tag">SQL</span>
+        <span class="tag">Advanced Excel</span><span class="tag">Claude</span>
+        <span class="tag">ChatGPT</span><span class="tag">GitHub</span>
+      </div>
     </div>
   </div>
 </section>
@@ -521,68 +605,140 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
     <div class="tl">
       <div class="tl-i r">
         <div class="tl-dot"></div>
-        <div class="tl-per">2017 – Present</div>
-        <div class="tl-role">Senior Project Manager</div>
-        <div class="tl-co">EPC Piping Fabrication &amp; Export — Thailand</div>
-        <div class="tl-desc">Leading end-to-end delivery of complex piping fabrication export projects for global energy clients. Managing cross-functional teams in engineering, procurement, fabrication, QA/QC, and international logistics. Portfolio exceeds THB 1B+ across 20+ projects in oil &amp; gas, power, and infrastructure sectors.</div>
-        <div class="tl-tags"><span class="tl-tag">EPC Projects</span><span class="tl-tag">Oil &amp; Gas</span><span class="tl-tag">Thailand</span><span class="tl-tag">Team Leadership</span></div>
+        <div class="tl-per">Sep 2018 – Present</div>
+        <div class="tl-role">Manager, Project Management &amp; Business Strategy</div>
+        <div class="tl-co">DEE Piping Systems (Thailand) Co., Ltd. — Chachoengsao, Thailand</div>
+        <div class="tl-desc">Leading end-to-end delivery of prefabricated piping export projects valued at ~THB 1Bn, owning scope, schedule, cost and quality across the full project lifecycle. Directed 11+ EPC/export projects across Asia-Pacific, the Americas and Africa, including the current 8,000 MT Tilenga Upstream Facilities program. Own L1/L2 scheduling, monthly progress reporting and earned value analysis; partner with Engineering, Procurement, QA/QC, Logistics and Finance; finalize BOM and drive material planning via MS Dynamics NAV ERP.</div>
+        <div class="tl-tags"><span class="tl-tag">EPC Projects</span><span class="tl-tag">ERP &amp; Digital Transformation</span><span class="tl-tag">Thailand</span><span class="tl-tag">Team Leadership</span></div>
       </div>
       <div class="tl-i r d1">
         <div class="tl-dot"></div>
-        <div class="tl-per">2012 – 2017</div>
-        <div class="tl-role">Project Engineer / Manager</div>
-        <div class="tl-co">Energy &amp; Infrastructure Sector</div>
-        <div class="tl-desc">Managed engineering, procurement, and construction phases of piping and mechanical fabrication projects. Built expertise in cost control, client coordination, and international project delivery across energy and infrastructure sectors.</div>
-        <div class="tl-tags"><span class="tl-tag">Piping Engineering</span><span class="tl-tag">Procurement</span><span class="tl-tag">Cost Control</span></div>
+        <div class="tl-per">May 2018 – Aug 2018</div>
+        <div class="tl-role">District Project Lead, National Nutrition Mission</div>
+        <div class="tl-co">Tata Trusts — Varanasi, India</div>
+        <div class="tl-desc">Served as point of contact between Government bodies, NGOs and consultants for large-scale nutrition and health outreach programs. Delivered 300+ man-hours of structured field-supervisor training under ISSNIP, and finalized the E-SHABRI beneficiary-identification project in 30 days versus a 5-month lag.</div>
+        <div class="tl-tags"><span class="tl-tag">Government Programs</span><span class="tl-tag">Training</span><span class="tl-tag">Process Digitization</span></div>
       </div>
       <div class="tl-i r d2">
         <div class="tl-dot"></div>
-        <div class="tl-per">Education</div>
-        <div class="tl-role">Mechanical Engineering</div>
-        <div class="tl-co">B.E. — Engineering Degree</div>
-        <div class="tl-desc">Strong mechanical engineering foundation enabling deep technical understanding of piping systems, fabrication processes, and structural requirements across energy and infrastructure sectors globally.</div>
-        <div class="tl-tags"><span class="tl-tag">Mechanical Engineering</span><span class="tl-tag">Technical Expertise</span></div>
+        <div class="tl-per">Aug 2012 – Apr 2018</div>
+        <div class="tl-role">Senior Engineer, Project Analyst</div>
+        <div class="tl-co">DEE Development Engineers Ltd. — Faridabad, India</div>
+        <div class="tl-desc">Managed techno-commercial coordination with clients and consultants, developed MIS dashboards for senior management, and played a key role in ERP (MS Dynamics) process design, barcode integration, and DMS implementation — eliminating THB 100 Mn of unusable inventory in 6 months.</div>
+        <div class="tl-tags"><span class="tl-tag">ERP Implementation</span><span class="tl-tag">MIS Reporting</span><span class="tl-tag">Barcode Systems</span></div>
+      </div>
+      <div class="tl-i r d3">
+        <div class="tl-dot"></div>
+        <div class="tl-per">Education · 2012</div>
+        <div class="tl-role">B.Tech, Mechanical Engineering</div>
+        <div class="tl-co">BSAITM, Faridabad</div>
+        <div class="tl-desc">Mechanical engineering foundation underpinning a career bridging on-ground fabrication realities with high-level project strategy.</div>
+        <div class="tl-tags"><span class="tl-tag">Mechanical Engineering</span></div>
+      </div>
+      <div class="tl-i r d4">
+        <div class="tl-dot"></div>
+        <div class="tl-per">Certifications</div>
+        <div class="tl-role">Professional Certifications</div>
+        <div class="tl-co">Continuous learning &amp; skills development</div>
+        <div class="tl-tags">
+          <span class="tl-tag">Lean Six Sigma Yellow Belt (ICYB)</span>
+          <span class="tl-tag">Certified Lean Practitioner</span>
+          <span class="tl-tag">Excel: Advanced Formulas &amp; Functions</span>
+          <span class="tl-tag">PowerPoint: Designing Better Slides</span>
+          <span class="tl-tag">Building Thought Leadership on LinkedIn</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════ PROJECTS ═══════ -->
+<!-- ═══════ FEATURED PROJECTS ═══════ -->
 <section id="projects" class="section">
   <div class="wrap">
     <span class="s-label r">Portfolio</span>
     <h2 class="s-title r">Featured <strong>Projects</strong></h2>
     <div class="pr-grid">
       <div class="pr-card wide r">
-        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/fpso.jpg" alt="FPSO" class="pr-img" onerror="this.style.display='none'">
-        <div class="pr-ov">
-          <div class="pr-tag">Oil &amp; Gas · Offshore</div>
-          <div class="pr-name">FPSO Piping Fabrication</div>
-          <div class="pr-sub">Floating Production Storage &amp; Offloading — complex piping systems for offshore energy production</div>
-        </div>
-      </div>
-      <div class="pr-card r d1">
-        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/tilenga.jpg" alt="Tilenga" class="pr-img" onerror="this.style.display='none'">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/tilenga.jpg" alt="Tilenga Project" class="pr-img" onerror="this.style.display='none'">
         <div class="pr-ov">
           <div class="pr-tag">East Africa · Upstream</div>
-          <div class="pr-name">Tilenga Oil Project</div>
-          <div class="pr-sub">Major upstream oil development — piping fabrication export to East Africa</div>
+          <div class="pr-name">Tilenga Project – Upstream Facilities</div>
+          <div class="pr-sub">Major upstream oil development — the largest program in scope to date.</div>
+          <div class="pr-meta">8,000 MT · Jul '23 – Ongoing</div>
         </div>
       </div>
       <div class="pr-card r d1">
-        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/pipeline.jpg" alt="Pipeline" class="pr-img" onerror="this.style.display='none'">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/fpso.jpg" alt="Bacalhau FPSO" class="pr-img" onerror="this.style.display='none'">
+        <div class="pr-ov">
+          <div class="pr-tag">Oil &amp; Gas · Offshore</div>
+          <div class="pr-name">Bacalhau FPSO Project</div>
+          <div class="pr-sub">Floating Production Storage &amp; Offloading — complex offshore piping systems.</div>
+          <div class="pr-meta">750 MT · May '22 – Dec '22</div>
+        </div>
+      </div>
+      <div class="pr-card r d1">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/pipeline.jpg" alt="Fifth Transmission Pipeline" class="pr-img" onerror="this.style.display='none'">
         <div class="pr-ov">
           <div class="pr-tag">Energy · Pipeline</div>
-          <div class="pr-name">Pipeline Infrastructure</div>
-          <div class="pr-sub">Large-diameter pipeline fabrication and export for energy transmission networks</div>
+          <div class="pr-name">Fifth Transmission Pipeline – Phase II</div>
+          <div class="pr-sub">Large-diameter pipeline fabrication and export for energy transmission networks.</div>
+          <div class="pr-meta">1,605 MT · Jan '20 – Sep '20</div>
         </div>
       </div>
       <div class="pr-card r d2">
-        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/powerplant.jpg" alt="Power Plant" class="pr-img" onerror="this.style.display='none'">
+        <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/powerplant.jpg" alt="Tanjung Jati" class="pr-img" onerror="this.style.display='none'">
         <div class="pr-ov">
           <div class="pr-tag">Power · Infrastructure</div>
-          <div class="pr-name">Power Plant Systems</div>
-          <div class="pr-sub">Mechanical piping fabrication for power generation facilities globally</div>
+          <div class="pr-name">Tanjung Jati (Unit 5 &amp; 6)</div>
+          <div class="pr-sub">Mechanical piping fabrication for power generation facilities.</div>
+          <div class="pr-meta">1,200 MT · Mar '19 – Dec '19</div>
+        </div>
+      </div>
+    </div>
+    <p class="more-projects r d3"><strong>Additional projects delivered:</strong> IRPC CHP III · Saha Cogen · Arroyo Seco · Dangote · Manzanillo · Bundled Phase 3 Wellhead Platforms · Fifth Transmission Pipeline Phase III</p>
+  </div>
+</section>
+
+<!-- ═══════ TECHNICAL PROJECTS ═══════ -->
+<section id="tech-projects" class="section">
+  <div class="wrap">
+    <span class="s-label r">Personal Builds</span>
+    <h2 class="s-title r">Technical <strong>Projects</strong></h2>
+    <p class="ab-text r" style="max-width:720px">Independent, self-built projects — conceptualized and developed end-to-end using AI-assisted development tools — applying programming and automation skills alongside project management expertise.</p>
+    <div class="tp-grid r d1" style="margin-top:40px">
+      <div class="tp-card">
+        <div class="tp-name">Live Spool Status &amp; Ageing System</div>
+        <div class="tp-desc">Flagship project: a production-intelligence system that automatically reads and validates fabrication/planning Excel data, applies business rules to build a master spool dataset, and calculates real-time stage-wise ageing and KPIs — auto-publishing to a live dashboard that replaces manual spreadsheet tracking.</div>
+        <div class="tp-tags"><span class="tp-tag">Python</span><span class="tp-tag">Pandas</span><span class="tp-tag">JavaScript</span><span class="tp-tag">Chart.js</span></div>
+        <div class="tp-links">
+          <a href="https://rohitkr99-dev.github.io/live-spool-status/" target="_blank" rel="noopener" class="tp-link">Live Demo</a>
+          <a href="https://github.com/rohitkr99-dev/live-spool-status" target="_blank" rel="noopener" class="tp-link ghost">GitHub</a>
+        </div>
+      </div>
+      <div class="tp-card">
+        <div class="tp-name">Spool Material-Matching Tool</div>
+        <div class="tp-desc">Web app automating BOM-to-stock matching across multi-project piping spools, with priority-, weight-, and diameter-based allocation logic and Excel-exportable fabrication-readiness reports.</div>
+        <div class="tp-tags"><span class="tp-tag">JavaScript</span></div>
+        <div class="tp-links">
+          <a href="https://rohitchoubey.dpdns.org/material-matching/" target="_blank" rel="noopener" class="tp-link">Live Demo</a>
+          <a href="https://github.com/rohitkr99-dev/material-matching" target="_blank" rel="noopener" class="tp-link ghost">GitHub</a>
+        </div>
+      </div>
+      <div class="tp-card">
+        <div class="tp-name">PDF-to-Text OCR App</div>
+        <div class="tp-desc">Browser-based OCR utility converting scanned PDF documents to editable text — runs entirely client-side with no server-side processing required.</div>
+        <div class="tp-tags"><span class="tp-tag">HTML</span><span class="tp-tag">CSS</span><span class="tp-tag">JavaScript</span></div>
+        <div class="tp-links">
+          <a href="https://rohitchoubey.dpdns.org/ocr-browser-app/" target="_blank" rel="noopener" class="tp-link">Live Demo</a>
+          <a href="https://github.com/rohitkr99-dev/ocr-browser-app" target="_blank" rel="noopener" class="tp-link ghost">GitHub</a>
+        </div>
+      </div>
+      <div class="tp-card">
+        <div class="tp-name">ThaiSource Pro</div>
+        <div class="tp-desc">Backend for a premium B2B industrial procurement marketplace for Thailand — vendor management, RFQ/quotation workflows, and admin moderation.</div>
+        <div class="tp-tags"><span class="tp-tag">TypeScript</span><span class="tp-tag">Next.js</span><span class="tp-tag">PostgreSQL</span><span class="tp-tag">Prisma</span></div>
+        <div class="tp-links">
+          <a href="https://github.com/rohitkr99-dev/thaisource-pro" target="_blank" rel="noopener" class="tp-link ghost">GitHub</a>
         </div>
       </div>
     </div>
@@ -595,32 +751,39 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
     <span class="s-label r">Get In Touch</span>
     <div class="ct-grid">
       <div>
-        <p class="ct-intro r">Open to senior PM roles in<br><strong>global EPC &amp; energy sectors</strong></p>
+        <p class="ct-intro r">Open to senior PM roles in<br><strong>global EPC &amp; business strategy</strong></p>
         <div class="ct-items r d1">
-          <a href="https://linkedin.com/in/rohit-choubey-4272a2a2" target="_blank" class="ct-row">
+          <a href="https://linkedin.com/in/rohit-choubey-4272a2a2" target="_blank" rel="noopener" class="ct-row">
             <div class="c-ico">in</div>
             <div><div class="ct-lbl">LinkedIn</div>rohit-choubey-4272a2a2</div>
           </a>
-          <a href="Resume_Rohit_Choubey_PM.pdf" class="ct-row">
+          <a href="mailto:rohitkr99@gmail.com" class="ct-row">
+            <div class="c-ico">@</div>
+            <div><div class="ct-lbl">Email</div>rohitkr99@gmail.com</div>
+          </a>
+          <a href="tel:+66845878078" class="ct-row">
+            <div class="c-ico">☎</div>
+            <div><div class="ct-lbl">Phone</div>+66 84-587-8078</div>
+          </a>
+          <a href="Resume_Rohit_Choubey.pdf" class="ct-row">
             <div class="c-ico">↓</div>
             <div><div class="ct-lbl">Resume</div>Download PDF</div>
           </a>
           <div class="ct-row">
             <div class="c-ico">📍</div>
-            <div><div class="ct-lbl">Location</div>Thailand · Open to relocation</div>
-          </div>
-          <div class="ct-row">
-            <div class="c-ico">⚡</div>
-            <div><div class="ct-lbl">Sectors</div>Oil &amp; Gas · Power · Infrastructure</div>
+            <div><div class="ct-lbl">Location</div>Chonburi, Thailand · Open to relocation</div>
           </div>
         </div>
       </div>
       <div class="form-card r d2">
-        <div class="fg"><label>Your Name</label><input type="text" placeholder="e.g. Sarah Johnson"></div>
-        <div class="fg"><label>Company</label><input type="text" placeholder="e.g. Acme Energy Ltd"></div>
-        <div class="fg"><label>Email</label><input type="email" placeholder="hello@company.com"></div>
-        <div class="fg"><label>Message</label><textarea placeholder="Tell me about the opportunity…"></textarea></div>
-        <button class="btn-a" style="width:100%;border:none;cursor:pointer;text-align:center">Send Message</button>
+        <form id="contact-form">
+          <div class="fg"><label>Your Name</label><input type="text" id="cf-name" placeholder="e.g. Sarah Johnson" required></div>
+          <div class="fg"><label>Company</label><input type="text" id="cf-company" placeholder="e.g. Acme Energy Ltd"></div>
+          <div class="fg"><label>Email</label><input type="email" id="cf-email" placeholder="hello@company.com" required></div>
+          <div class="fg"><label>Message</label><textarea id="cf-message" placeholder="Tell me about the opportunity…" required></textarea></div>
+          <button type="submit" class="btn-a" style="width:100%;border:none;cursor:pointer;text-align:center">Send Message</button>
+        </form>
+        <p class="form-note">Opens your email client with this message pre-filled, addressed to rohitkr99@gmail.com.</p>
       </div>
     </div>
   </div>
@@ -628,7 +791,7 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
 
 <footer>
   <div class="f-name">ROHIT KUMAR CHOUBEY</div>
-  <div class="f-note">Senior EPC Project Manager · Thailand · 2025</div>
+  <div class="f-note">Project Manager &amp; Business Strategy · Thailand · <span id="year"></span></div>
 </footer>
 
 <script>
@@ -644,7 +807,7 @@ const obs = new IntersectionObserver(
 document.querySelectorAll('.r').forEach(el => obs.observe(el));
 
 /* Typed text */
-const roles = ['EPC Project Manager', 'Piping Fabrication Expert', 'Global Energy Leader', 'Cost Control Specialist'];
+const roles = ['EPC Project Manager', 'Business Strategy Lead', 'Data & ERP Specialist', 'Piping Fabrication Expert'];
 let ri = 0, ci = 0, del = false;
 const typed = document.getElementById('typed');
 function type() {
@@ -668,6 +831,21 @@ document.addEventListener('mousemove', e => {
   const y = (e.clientY / window.innerHeight - 0.5) * 8;
   wrap.style.transform = `translate(${x}px, ${y}px)`;
 });
+
+/* Contact form -> mailto (static site, no backend) */
+document.getElementById('contact-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = document.getElementById('cf-name').value;
+  const company = document.getElementById('cf-company').value;
+  const email = document.getElementById('cf-email').value;
+  const message = document.getElementById('cf-message').value;
+  const subject = encodeURIComponent(`Portfolio inquiry from ${name}${company ? ' (' + company + ')' : ''}`);
+  const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}${company ? '\n' + company : ''}`);
+  window.location.href = `mailto:rohitkr99@gmail.com?subject=${subject}&body=${body}`;
+});
+
+/* Footer year */
+document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
