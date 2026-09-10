@@ -212,14 +212,14 @@ nav.scrolled{
 
 /* ─── ABOUT ─── */
 #about{background:linear-gradient(180deg,var(--dark) 0%,#08101a 100%)}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
-.about-cards{display:flex;flex-direction:column;gap:16px;padding-top:8px}
+.about-grid{display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:start}
+.why-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:64px}
 .ab-card{
   padding:26px 28px;border-radius:14px;
   background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
   backdrop-filter:blur(10px);transition:all 0.35s;
 }
-.ab-card:hover{background:rgba(201,168,76,0.06);border-color:rgba(201,168,76,0.22);transform:translateX(4px)}
+.ab-card:hover{background:rgba(201,168,76,0.06);border-color:rgba(201,168,76,0.22);transform:translateY(-4px)}
 .ab-card-icon{font-size:22px;margin-bottom:10px}
 .ab-card-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:8px;color:var(--text)}
 .ab-card-text{font-size:14px;line-height:1.75;color:var(--muted)}
@@ -228,6 +228,44 @@ nav.scrolled{
 .tag{padding:6px 16px;border-radius:24px;background:var(--gold-dim);
   border:1px solid rgba(201,168,76,0.18);font-size:10px;letter-spacing:1.5px;
   color:var(--gold);text-transform:uppercase}
+
+/* Craftivo-style profile card */
+.profile-card{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  border-radius:20px;padding:34px 28px;backdrop-filter:blur(10px);
+  position:sticky;top:110px;
+}
+.profile-avatar{position:relative;width:132px;height:132px;margin:0 auto 20px}
+.profile-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;
+  border:3px solid var(--gold-dim);display:block}
+.status-indicator{position:absolute;bottom:6px;right:6px;width:16px;height:16px;
+  border-radius:50%;background:#4ade80;border:3px solid #08101a}
+.profile-card h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;
+  text-align:center;margin-bottom:4px}
+.profile-card .role{display:block;text-align:center;font-size:12px;letter-spacing:1.5px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:24px}
+.profile-stats{display:flex;justify-content:space-between;padding:20px 0;
+  border-top:1px solid var(--glass-b);border-bottom:1px solid var(--glass-b);margin-bottom:24px}
+.profile-stats .stat-item{text-align:center;flex:1}
+.profile-stats h4{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.profile-stats p{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.profile-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.profile-actions .btn-a,.profile-actions .btn-b{width:100%;text-align:center;padding:13px}
+.social-connect{display:flex;justify-content:center;gap:10px}
+.social-connect .soc{width:38px;height:38px;font-size:11px}
+
+/* Skills showcase (percentage bars) */
+.skills-showcase{margin-top:48px}
+.skills-showcase h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px}
+.skills-note{font-size:12px;color:var(--muted);margin-bottom:24px}
+.skill-item{margin-bottom:18px}
+.skill-info{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px}
+.skill-name{color:var(--text)}
+.skill-percent{color:var(--gold);font-weight:500}
+.progress{height:6px;border-radius:6px;background:var(--glass-b);overflow:hidden}
+.progress-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--gold),var(--gold-light))}
 
 /* Quick-facts detail grid (About) */
 .detail-grid{
@@ -267,26 +305,71 @@ nav.scrolled{
 .tools-strip{margin-top:44px;padding-top:36px;border-top:1px solid var(--glass-b)}
 .tools-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:block}
 
-/* ─── TIMELINE ─── */
+/* ─── TIMELINE (Craftivo: experience cards | education track) ─── */
 #timeline{background:#08101a}
-.tl{position:relative;padding-left:44px;max-width:800px}
-.tl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;
-  background:linear-gradient(180deg,var(--gold) 0%,rgba(201,168,76,0.05) 100%)}
-.tl-i{position:relative;margin-bottom:52px}
-.tl-i:last-child{margin-bottom:0}
-.tl-dot{position:absolute;left:-50px;top:8px;width:12px;height:12px;border-radius:50%;
-  background:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.6)}
-.tl-per{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-.tl-role{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:4px}
-.tl-co{font-size:14px;color:var(--muted);margin-bottom:14px}
-.tl-desc{font-size:14px;line-height:1.88;color:var(--muted)}
-.tl-desc li{margin-left:18px;margin-bottom:6px}
-.tl-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tl-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.tl-head{margin-bottom:28px}
+.tl-badge{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:block}
+.tl-head h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600}
+
+.exp-cards{display:flex;flex-direction:column;gap:16px}
+.exp-card{
+  padding:26px 28px;border-radius:14px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  transition:all 0.35s;
+}
+.exp-card.featured{border-color:rgba(201,168,76,0.35);background:rgba(201,168,76,0.05)}
+.exp-card:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(0,0,0,0.35)}
+.exp-card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.period-badge{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dark);
+  background:var(--gold);padding:4px 12px;border-radius:20px;font-weight:600}
+.exp-card h4{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:4px}
+.exp-card .company{font-size:13px;color:var(--gold);margin-bottom:2px}
+.exp-card .duration{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:14px}
+.exp-card p{font-size:13.5px;line-height:1.75;color:var(--muted)}
+.exp-card .tl-tags{margin-top:14px}
+
+.edu-track{position:relative;padding-left:36px}
+.edu-track::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:1px;
+  background:linear-gradient(180deg,var(--gold) 0%,rgba(201,168,76,0.08) 100%)}
+.edu-item{position:relative;margin-bottom:40px}
+.edu-item:last-child{margin-bottom:0}
+.edu-marker{position:absolute;left:-36px;top:2px;width:15px;height:15px;border-radius:50%;
+  background:var(--dark);border:2px solid var(--gold);box-shadow:0 0 14px rgba(201,168,76,0.4)}
+.edu-meta{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.edu-year{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)}
+.edu-level{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+  padding:2px 10px;border:1px solid var(--glass-b);border-radius:12px}
+.edu-item h4{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;margin-bottom:4px}
+.edu-item .institution{font-size:13px;color:var(--muted);margin-bottom:10px}
+.edu-item p{font-size:13.5px;line-height:1.7;color:var(--muted)}
+.cert-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.cert-item{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);
+  padding:8px 0;border-bottom:1px solid var(--glass-b)}
+.cert-item:last-child{border-bottom:none}
+.tl-tags{display:flex;flex-wrap:wrap;gap:8px}
 .tl-tag{padding:4px 14px;border-radius:20px;background:var(--gold-dim);
   border:1px solid rgba(201,168,76,0.15);font-size:11px;letter-spacing:1px;color:var(--gold)}
 
+/* CTA band */
+.cta-box{
+  margin-top:56px;padding:44px 48px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.03));
+  border:1px solid rgba(201,168,76,0.25);
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.cta-box h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin-bottom:8px}
+.cta-box p{font-size:14px;color:var(--muted)}
+
 /* ─── PROJECTS ─── */
 #projects{background:var(--dark)}
+.pf-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px}
+.pf-tab{padding:9px 22px;border-radius:24px;border:1px solid var(--glass-b);
+  background:transparent;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.3s;font-family:'DM Sans',sans-serif}
+.pf-tab:hover{border-color:rgba(201,168,76,0.4);color:var(--gold)}
+.pf-tab.active{background:var(--gold);border-color:var(--gold);color:var(--dark);font-weight:500}
+.pr-card.hidden{display:none}
 .pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .pr-card{position:relative;overflow:hidden;border-radius:8px;aspect-ratio:4/3;
   background:#0d111e;transition:transform 0.4s,box-shadow 0.4s}
@@ -385,7 +468,9 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
   .hero-content{padding:0 24px;max-width:100%}
   .hero-photo-wrap{width:100%;opacity:0.4}
   .hero-stats{right:24px;bottom:88px;gap:24px}
-  .about-grid,.ct-grid{grid-template-columns:1fr}
+  .about-grid,.ct-grid,.tl-grid{grid-template-columns:1fr}
+  .profile-card{position:static}
+  .why-cards{grid-template-columns:1fr 1fr}
   .m-row{grid-template-columns:repeat(2,1fr);padding:0 24px}
   .m-item{border-right:none;border-bottom:1px solid var(--glass-b)}
   .detail-grid{grid-template-columns:1fr 1fr}
@@ -393,10 +478,11 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
   .tp-grid{grid-template-columns:1fr}
   .pr-grid{grid-template-columns:1fr}
   .pr-card.wide{grid-column:span 1;aspect-ratio:4/3}
+  .cta-box{flex-direction:column;text-align:center;padding:32px}
   footer{flex-direction:column;gap:10px;text-align:center;padding:24px}
 }
 @media(max-width:600px){
-  .detail-grid,.cc-grid{grid-template-columns:1fr}
+  .detail-grid,.cc-grid,.why-cards{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -468,7 +554,33 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
   <div class="wrap">
     <div class="about-grid">
 
-      <!-- LEFT — bio text + tags -->
+      <!-- LEFT — profile card -->
+      <div class="r">
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <img src="profile.jpg" alt="Rohit Kumar Choubey">
+            <div class="status-indicator"></div>
+          </div>
+          <h3>Rohit Kumar Choubey</h3>
+          <span class="role">Project Manager &amp; Business Strategy</span>
+          <div class="profile-stats">
+            <div class="stat-item"><h4>11+</h4><p>Projects</p></div>
+            <div class="stat-item"><h4>14+</h4><p>Years</p></div>
+            <div class="stat-item"><h4>1B+</h4><p>THB Value</p></div>
+          </div>
+          <div class="profile-actions">
+            <a href="Resume_Rohit_Choubey.pdf" class="btn-a">↓ Download CV</a>
+            <a href="#contact" class="btn-b">Contact Me</a>
+          </div>
+          <div class="social-connect">
+            <a href="https://linkedin.com/in/rohit-choubey-4272a2a2" target="_blank" rel="noopener" class="soc" title="LinkedIn">in</a>
+            <a href="https://github.com/rohitkr99-dev" target="_blank" rel="noopener" class="soc" title="GitHub">gh</a>
+            <a href="mailto:rohitkr99@gmail.com" class="soc" title="Email">@</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT — bio, tags, quick facts, skill bars -->
       <div>
         <span class="s-label r">About Me</span>
         <h2 class="s-title r">Engineering precision<br><strong>meets business strategy</strong></h2>
@@ -482,42 +594,68 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
           <span class="tag">Thailand</span><span class="tag">Cost Optimization</span>
           <span class="tag">Contract Management</span><span class="tag">Digital Transformation</span>
         </div>
-      </div>
 
-      <!-- RIGHT — value proposition cards -->
-      <div class="about-cards">
-        <div class="ab-card r d1">
-          <div class="ab-card-icon">⚙️</div>
-          <div class="ab-card-title">End-to-End EPC Delivery</div>
-          <div class="ab-card-text">From contract award through final export — leading 11+ international piping fabrication projects worth THB 1Bn+ for global energy clients.</div>
+        <!-- Quick facts -->
+        <div class="detail-grid r d2">
+          <div class="detail-item"><span>Experience</span><strong>14+ Years</strong></div>
+          <div class="detail-item"><span>Degree</span><strong>B.Tech, Mechanical Engineering</strong></div>
+          <div class="detail-item"><span>Based In</span><strong>Chonburi, Thailand</strong></div>
+          <div class="detail-item"><span>Email</span><strong>rohitkr99@gmail.com</strong></div>
+          <div class="detail-item"><span>Phone</span><strong>+66 84-587-8078</strong></div>
+          <div class="detail-item"><span>Availability</span><strong>Open to Opportunities</strong></div>
         </div>
-        <div class="ab-card r d2">
-          <div class="ab-card-icon">🌏</div>
-          <div class="ab-card-title">International Footprint</div>
-          <div class="ab-card-text">Delivering projects across Asia-Pacific, the Americas, and Africa — including the 8,000 MT Tilenga Upstream Facilities program, the largest in scope to date.</div>
-        </div>
-        <div class="ab-card r d3">
-          <div class="ab-card-icon">📊</div>
-          <div class="ab-card-title">Data-Driven Delivery</div>
-          <div class="ab-card-text">Applying ERP (MS Dynamics NAV), Power BI, Tableau, and SQL — plus AI-assisted tools like Claude and ChatGPT — to sharpen decision-making and reporting accuracy.</div>
-        </div>
-        <div class="ab-card r d4">
-          <div class="ab-card-icon">🤝</div>
-          <div class="ab-card-title">Stakeholder Leadership</div>
-          <div class="ab-card-text">Leading cross-functional teams across Engineering, Procurement, QA/QC, Logistics, and Finance while strengthening client and vendor relationships.</div>
+
+        <!-- Skills showcase -->
+        <div class="skills-showcase r d3">
+          <h3>Technical Proficiency</h3>
+          <p class="skills-note">Self-assessed, based on years of hands-on use</p>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">ERP · MS Dynamics NAV</span><span class="skill-percent">90%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">Advanced Excel</span><span class="skill-percent">90%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">Power BI</span><span class="skill-percent">85%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">SQL</span><span class="skill-percent">80%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:80%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">Tableau</span><span class="skill-percent">78%</span></div>
+            <div class="progress"><div class="progress-bar" style="width:78%"></div></div>
+          </div>
         </div>
       </div>
 
     </div>
 
-    <!-- Quick facts -->
-    <div class="detail-grid r d2">
-      <div class="detail-item"><span>Experience</span><strong>14+ Years</strong></div>
-      <div class="detail-item"><span>Degree</span><strong>B.Tech, Mechanical Engineering</strong></div>
-      <div class="detail-item"><span>Based In</span><strong>Chonburi, Thailand</strong></div>
-      <div class="detail-item"><span>Email</span><strong>rohitkr99@gmail.com</strong></div>
-      <div class="detail-item"><span>Phone</span><strong>+66 84-587-8078</strong></div>
-      <div class="detail-item"><span>Availability</span><strong>Open to Opportunities</strong></div>
+    <!-- Why work with me -->
+    <div class="why-cards">
+      <div class="ab-card r d1">
+        <div class="ab-card-icon">⚙️</div>
+        <div class="ab-card-title">End-to-End EPC Delivery</div>
+        <div class="ab-card-text">From contract award through final export — leading 11+ international piping fabrication projects worth THB 1Bn+ for global energy clients.</div>
+      </div>
+      <div class="ab-card r d2">
+        <div class="ab-card-icon">🌏</div>
+        <div class="ab-card-title">International Footprint</div>
+        <div class="ab-card-text">Delivering projects across Asia-Pacific, the Americas, and Africa — including the 8,000 MT Tilenga Upstream Facilities program, the largest in scope to date.</div>
+      </div>
+      <div class="ab-card r d3">
+        <div class="ab-card-icon">📊</div>
+        <div class="ab-card-title">Data-Driven Delivery</div>
+        <div class="ab-card-text">Applying ERP (MS Dynamics NAV), Power BI, Tableau, and SQL — plus AI-assisted tools like Claude and ChatGPT — to sharpen decision-making and reporting accuracy.</div>
+      </div>
+      <div class="ab-card r d4">
+        <div class="ab-card-icon">🤝</div>
+        <div class="ab-card-title">Stakeholder Leadership</div>
+        <div class="ab-card-text">Leading cross-functional teams across Engineering, Procurement, QA/QC, Logistics, and Finance while strengthening client and vendor relationships.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -594,6 +732,14 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
         <span class="tag">ChatGPT</span><span class="tag">GitHub</span>
       </div>
     </div>
+
+    <div class="cta-box r d3">
+      <div>
+        <h3>Open to your next EPC or PM engagement</h3>
+        <p>Let's talk about how 14+ years of project delivery and digital transformation can help your team.</p>
+      </div>
+      <a href="#contact" class="btn-a">Get In Touch</a>
+    </div>
   </div>
 </section>
 
@@ -602,52 +748,72 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
   <div class="wrap">
     <span class="s-label r">Professional Journey</span>
     <h2 class="s-title r">Career <strong>Timeline</strong></h2>
-    <div class="tl">
-      <div class="tl-i r">
-        <div class="tl-dot"></div>
-        <div class="tl-per">Sep 2018 – Present</div>
-        <div class="tl-role">Manager, Project Management &amp; Business Strategy</div>
-        <div class="tl-co">DEE Piping Systems (Thailand) Co., Ltd. — Chachoengsao, Thailand</div>
-        <div class="tl-desc">Leading end-to-end delivery of prefabricated piping export projects valued at ~THB 1Bn, owning scope, schedule, cost and quality across the full project lifecycle. Directed 11+ EPC/export projects across Asia-Pacific, the Americas and Africa, including the current 8,000 MT Tilenga Upstream Facilities program. Own L1/L2 scheduling, monthly progress reporting and earned value analysis; partner with Engineering, Procurement, QA/QC, Logistics and Finance; finalize BOM and drive material planning via MS Dynamics NAV ERP.</div>
-        <div class="tl-tags"><span class="tl-tag">EPC Projects</span><span class="tl-tag">ERP &amp; Digital Transformation</span><span class="tl-tag">Thailand</span><span class="tl-tag">Team Leadership</span></div>
-      </div>
-      <div class="tl-i r d1">
-        <div class="tl-dot"></div>
-        <div class="tl-per">May 2018 – Aug 2018</div>
-        <div class="tl-role">District Project Lead, National Nutrition Mission</div>
-        <div class="tl-co">Tata Trusts — Varanasi, India</div>
-        <div class="tl-desc">Served as point of contact between Government bodies, NGOs and consultants for large-scale nutrition and health outreach programs. Delivered 300+ man-hours of structured field-supervisor training under ISSNIP, and finalized the E-SHABRI beneficiary-identification project in 30 days versus a 5-month lag.</div>
-        <div class="tl-tags"><span class="tl-tag">Government Programs</span><span class="tl-tag">Training</span><span class="tl-tag">Process Digitization</span></div>
-      </div>
-      <div class="tl-i r d2">
-        <div class="tl-dot"></div>
-        <div class="tl-per">Aug 2012 – Apr 2018</div>
-        <div class="tl-role">Senior Engineer, Project Analyst</div>
-        <div class="tl-co">DEE Development Engineers Ltd. — Faridabad, India</div>
-        <div class="tl-desc">Managed techno-commercial coordination with clients and consultants, developed MIS dashboards for senior management, and played a key role in ERP (MS Dynamics) process design, barcode integration, and DMS implementation — eliminating THB 100 Mn of unusable inventory in 6 months.</div>
-        <div class="tl-tags"><span class="tl-tag">ERP Implementation</span><span class="tl-tag">MIS Reporting</span><span class="tl-tag">Barcode Systems</span></div>
-      </div>
-      <div class="tl-i r d3">
-        <div class="tl-dot"></div>
-        <div class="tl-per">Education · 2012</div>
-        <div class="tl-role">B.Tech, Mechanical Engineering</div>
-        <div class="tl-co">BSAITM, Faridabad</div>
-        <div class="tl-desc">Mechanical engineering foundation underpinning a career bridging on-ground fabrication realities with high-level project strategy.</div>
-        <div class="tl-tags"><span class="tl-tag">Mechanical Engineering</span></div>
-      </div>
-      <div class="tl-i r d4">
-        <div class="tl-dot"></div>
-        <div class="tl-per">Certifications</div>
-        <div class="tl-role">Professional Certifications</div>
-        <div class="tl-co">Continuous learning &amp; skills development</div>
-        <div class="tl-tags">
-          <span class="tl-tag">Lean Six Sigma Yellow Belt (ICYB)</span>
-          <span class="tl-tag">Certified Lean Practitioner</span>
-          <span class="tl-tag">Excel: Advanced Formulas &amp; Functions</span>
-          <span class="tl-tag">PowerPoint: Designing Better Slides</span>
-          <span class="tl-tag">Building Thought Leadership on LinkedIn</span>
+    <div class="tl-grid" style="margin-top:48px">
+
+      <!-- Experience cards -->
+      <div>
+        <div class="tl-head r">
+          <span class="tl-badge">Experience</span>
+          <h3>Professional Journey</h3>
+        </div>
+        <div class="exp-cards">
+          <div class="exp-card featured r">
+            <div class="exp-card-head">
+              <div><h4>Manager, Project Management &amp; Business Strategy</h4></div>
+              <div class="period-badge">Current</div>
+            </div>
+            <div class="company">DEE Piping Systems (Thailand) Co., Ltd.</div>
+            <span class="duration">Sep 2018 – Present · Chachoengsao, Thailand</span>
+            <p>Leading end-to-end delivery of prefabricated piping export projects valued at ~THB 1Bn, owning scope, schedule, cost and quality across the full project lifecycle. Directed 11+ EPC/export projects across Asia-Pacific, the Americas and Africa, including the current 8,000 MT Tilenga Upstream Facilities program. Own L1/L2 scheduling, monthly progress reporting and earned value analysis; partner with Engineering, Procurement, QA/QC, Logistics and Finance; finalize BOM and drive material planning via MS Dynamics NAV ERP.</p>
+            <div class="tl-tags"><span class="tl-tag">EPC Projects</span><span class="tl-tag">ERP &amp; Digital Transformation</span><span class="tl-tag">Team Leadership</span></div>
+          </div>
+          <div class="exp-card r d1">
+            <div class="exp-card-head"><div><h4>District Project Lead, National Nutrition Mission</h4></div></div>
+            <div class="company">Tata Trusts</div>
+            <span class="duration">May 2018 – Aug 2018 · Varanasi, India</span>
+            <p>Served as point of contact between Government bodies, NGOs and consultants for large-scale nutrition and health outreach programs. Delivered 300+ man-hours of structured field-supervisor training under ISSNIP, and finalized the E-SHABRI beneficiary-identification project in 30 days versus a 5-month lag.</p>
+            <div class="tl-tags"><span class="tl-tag">Government Programs</span><span class="tl-tag">Training</span></div>
+          </div>
+          <div class="exp-card r d2">
+            <div class="exp-card-head"><div><h4>Senior Engineer, Project Analyst</h4></div></div>
+            <div class="company">DEE Development Engineers Ltd.</div>
+            <span class="duration">Aug 2012 – Apr 2018 · Faridabad, India</span>
+            <p>Managed techno-commercial coordination with clients and consultants, developed MIS dashboards for senior management, and played a key role in ERP (MS Dynamics) process design, barcode integration, and DMS implementation — eliminating THB 100 Mn of unusable inventory in 6 months.</p>
+            <div class="tl-tags"><span class="tl-tag">ERP Implementation</span><span class="tl-tag">MIS Reporting</span></div>
+          </div>
         </div>
       </div>
+
+      <!-- Education & certifications track -->
+      <div>
+        <div class="tl-head r">
+          <span class="tl-badge">Education</span>
+          <h3>Academic &amp; Certifications</h3>
+        </div>
+        <div class="edu-track r d1">
+          <div class="edu-item">
+            <div class="edu-marker"></div>
+            <div class="edu-meta"><span class="edu-year">2012</span><span class="edu-level">Bachelor</span></div>
+            <h4>B.Tech, Mechanical Engineering</h4>
+            <p class="institution">BSAITM, Faridabad</p>
+            <p>Mechanical engineering foundation underpinning a career bridging on-ground fabrication realities with high-level project strategy.</p>
+          </div>
+          <div class="edu-item">
+            <div class="edu-marker"></div>
+            <div class="edu-meta"><span class="edu-year">Ongoing</span><span class="edu-level">Certificates</span></div>
+            <h4>Professional Certifications</h4>
+            <p class="institution">Continuous learning &amp; skills development</p>
+            <div class="cert-list">
+              <div class="cert-item"><span>Lean Six Sigma Yellow Belt (ICYB)</span></div>
+              <div class="cert-item"><span>Certified Lean Practitioner</span></div>
+              <div class="cert-item"><span>Excel: Advanced Formulas &amp; Functions</span></div>
+              <div class="cert-item"><span>PowerPoint: Designing Better Slides</span></div>
+              <div class="cert-item"><span>Building Thought Leadership on LinkedIn</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -657,8 +823,17 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
   <div class="wrap">
     <span class="s-label r">Portfolio</span>
     <h2 class="s-title r">Featured <strong>Projects</strong></h2>
+
+    <div class="pf-tabs r">
+      <button class="pf-tab active" data-filter="all">All Work</button>
+      <button class="pf-tab" data-filter="upstream">Upstream</button>
+      <button class="pf-tab" data-filter="offshore">Offshore</button>
+      <button class="pf-tab" data-filter="pipeline">Pipeline</button>
+      <button class="pf-tab" data-filter="power">Power</button>
+    </div>
+
     <div class="pr-grid">
-      <div class="pr-card wide r">
+      <div class="pr-card wide r" data-cat="upstream">
         <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/tilenga.jpg" alt="Tilenga Project" class="pr-img" onerror="this.style.display='none'">
         <div class="pr-ov">
           <div class="pr-tag">East Africa · Upstream</div>
@@ -667,7 +842,7 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
           <div class="pr-meta">8,000 MT · Jul '23 – Ongoing</div>
         </div>
       </div>
-      <div class="pr-card r d1">
+      <div class="pr-card r d1" data-cat="offshore">
         <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/fpso.jpg" alt="Bacalhau FPSO" class="pr-img" onerror="this.style.display='none'">
         <div class="pr-ov">
           <div class="pr-tag">Oil &amp; Gas · Offshore</div>
@@ -676,7 +851,7 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
           <div class="pr-meta">750 MT · May '22 – Dec '22</div>
         </div>
       </div>
-      <div class="pr-card r d1">
+      <div class="pr-card r d1" data-cat="pipeline">
         <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/pipeline.jpg" alt="Fifth Transmission Pipeline" class="pr-img" onerror="this.style.display='none'">
         <div class="pr-ov">
           <div class="pr-tag">Energy · Pipeline</div>
@@ -685,7 +860,7 @@ footer{padding:36px 64px;border-top:1px solid var(--glass-b);
           <div class="pr-meta">1,605 MT · Jan '20 – Sep '20</div>
         </div>
       </div>
-      <div class="pr-card r d2">
+      <div class="pr-card r d2" data-cat="power">
         <img src="https://raw.githubusercontent.com/rohitkr99-dev/rohitkr99-dev.github.io/main/powerplant.jpg" alt="Tanjung Jati" class="pr-img" onerror="this.style.display='none'">
         <div class="pr-ov">
           <div class="pr-tag">Power · Infrastructure</div>
@@ -846,6 +1021,18 @@ document.getElementById('contact-form').addEventListener('submit', function(e){
 
 /* Footer year */
 document.getElementById('year').textContent = new Date().getFullYear();
+
+/* Portfolio filter tabs */
+document.querySelectorAll('.pf-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pf-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const filter = tab.dataset.filter;
+    document.querySelectorAll('.pr-card').forEach(card => {
+      card.classList.toggle('hidden', filter !== 'all' && card.dataset.cat !== filter);
+    });
+  });
+});
 </script>
 </body>
 </html>
