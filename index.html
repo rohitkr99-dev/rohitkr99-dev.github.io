@@ -8,6 +8,17 @@
   <meta name="description" content="Rohit Kumar Choubey — Project Manager &amp; Business Strategy professional with 14+ years delivering EPC piping, industrial manufacturing and digital transformation projects across Asia-Pacific, the Americas and Africa.">
   <meta name="keywords" content="project manager, EPC, piping fabrication, business strategy, Thailand">
 
+  <!-- Social Share Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rohitchoubey.dpdns.org/">
+  <meta property="og:title" content="Rohit Kumar Choubey | Project Manager &amp; Business Strategy">
+  <meta property="og:description" content="Project Manager &amp; Business Strategy professional with 14+ years delivering EPC piping, industrial manufacturing and digital transformation projects across Asia-Pacific, the Americas and Africa.">
+  <meta property="og:image" content="https://rohitchoubey.dpdns.org/assets/img/og-share.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rohit Kumar Choubey | Project Manager &amp; Business Strategy">
+  <meta name="twitter:description" content="Project Manager &amp; Business Strategy professional with 14+ years delivering EPC piping, industrial manufacturing and digital transformation projects across Asia-Pacific, the Americas and Africa.">
+  <meta name="twitter:image" content="https://rohitchoubey.dpdns.org/assets/img/og-share.jpg">
+
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -739,6 +750,46 @@
 
     </section><!-- /Technical Projects Section -->
 
+    <!-- References Section -->
+    <section id="references" class="services section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <span class="subtitle">References</span>
+        <h2>Professional References</h2>
+        <p>Colleagues who have worked alongside me and can speak to my project delivery and leadership.</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4 justify-content-center">
+          <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="service-item">
+              <div class="icon-wrapper">
+                <i class="bi bi-person-badge"></i>
+              </div>
+              <h4>Watcharee Wiromjeam</h4>
+              <p>Manager – Accounting &amp; Finance<br>MLOPTIC (Thailand) Co., Ltd.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+            <div class="service-item">
+              <div class="icon-wrapper">
+                <i class="bi bi-person-badge"></i>
+              </div>
+              <h4>Vikas Gupta</h4>
+              <p>AVP – Marketing<br>Indorama Holdings Limited</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-center mt-4" style="opacity:0.7;font-size:0.9rem;">Contact details available on request.</p>
+
+      </div>
+
+    </section><!-- /References Section -->
+
     <!-- Contact Section -->
     <section id="contact" class="contact section">
 
@@ -787,7 +838,7 @@
           </div>
 
           <div class="col-lg-8">
-            <form id="contact-form">
+            <form id="contact-form" class="php-email-form">
               <div class="row gy-4">
 
                 <div class="col-md-6">
@@ -807,8 +858,10 @@
                 </div>
 
                 <div class="col-md-12 text-center">
+                  <div class="loading">Sending</div>
+                  <div class="error-message"></div>
+                  <div class="sent-message">Your message has been sent. Thank you — I'll get back to you soon!</div>
                   <button type="submit">Send Message</button>
-                  <p style="margin-top:14px;font-size:0.85rem;opacity:0.7;">Opens your email client with this message pre-filled.</p>
                 </div>
 
               </div>
@@ -847,6 +900,7 @@
             <li><a href="#resume">Resume</a></li>
             <li><a href="#competencies">Competencies</a></li>
             <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#references">References</a></li>
           </ul>
         </div>
 
@@ -901,18 +955,50 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
-  <!-- Contact form -> mailto (static site, no PHP backend) -->
+  <!-- Contact form -> Formspree (static site, no server backend) -->
   <script>
-    document.getElementById('contact-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const name = document.getElementById('cf-name').value;
-      const email = document.getElementById('cf-email').value;
-      const subject = document.getElementById('cf-subject').value;
-      const message = document.getElementById('cf-message').value;
-      const mailSubject = encodeURIComponent(subject || `Portfolio inquiry from ${name}`);
-      const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}`);
-      window.location.href = `mailto:rohitkr99@gmail.com?subject=${mailSubject}&body=${body}`;
-    });
+    (function () {
+      const FORM_ENDPOINT = 'https://formspree.io/f/mnpqllkw';
+      const form = document.getElementById('contact-form');
+      const loading = form.querySelector('.loading');
+      const errorMessage = form.querySelector('.error-message');
+      const sentMessage = form.querySelector('.sent-message');
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        loading.style.display = 'block';
+        errorMessage.style.display = 'none';
+        sentMessage.style.display = 'none';
+        submitBtn.disabled = true;
+
+        fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        })
+          .then(response => {
+            loading.style.display = 'none';
+            submitBtn.disabled = false;
+            if (response.ok) {
+              sentMessage.style.display = 'block';
+              form.reset();
+            } else {
+              return response.json().then(data => {
+                const msg = (data.errors || []).map(err => err.message).join(', ');
+                errorMessage.innerHTML = msg || 'Something went wrong. Please try again or email me directly.';
+                errorMessage.style.display = 'block';
+              });
+            }
+          })
+          .catch(() => {
+            loading.style.display = 'none';
+            submitBtn.disabled = false;
+            errorMessage.innerHTML = 'Something went wrong. Please try again or email me directly.';
+            errorMessage.style.display = 'block';
+          });
+      });
+    })();
   </script>
 
 </body>
