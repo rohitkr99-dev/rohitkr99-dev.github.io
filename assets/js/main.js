@@ -110,9 +110,10 @@
   const selectTyped = document.querySelector('.typed');
   if (selectTyped) {
     let typed_strings = selectTyped.getAttribute('data-typed-items');
-    typed_strings = typed_strings.split(',');
+    typed_strings = typed_strings.split(',').map(t => t.trim());
     new Typed('.typed', {
       strings: typed_strings,
+      contentType: 'text', // plain text: a literal '&' must not be parsed as an HTML entity
       loop: true,
       typeSpeed: 65,
       backSpeed: 35,

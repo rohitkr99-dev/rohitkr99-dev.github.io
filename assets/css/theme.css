@@ -10,26 +10,26 @@
   color-scheme: light;
 
   --background-color: #ffffff;
-  --default-color: #3b4a66;
-  --heading-color: #0a1530;
-  --accent-color: #1e3a8a;
-  --surface-color: #f1f5fd;
+  --default-color: #475569;
+  --heading-color: #172033;
+  --accent-color: #1e40af;
+  --surface-color: #f8fafc;
   --contrast-color: #ffffff;
 
-  --nav-color: #1f2d52;
-  --nav-hover-color: #1e3a8a;
-  --nav-mobile-background-color: #f1f5fd;
-  --nav-dropdown-background-color: #f1f5fd;
-  --nav-dropdown-color: #1f2d52;
-  --nav-dropdown-hover-color: #1e3a8a;
+  --nav-color: #334155;
+  --nav-hover-color: #1e40af;
+  --nav-mobile-background-color: #f8fafc;
+  --nav-dropdown-background-color: #f8fafc;
+  --nav-dropdown-color: #334155;
+  --nav-dropdown-hover-color: #1e40af;
 }
 
 /* Hero (light): white background, text on the left, the original photo as a framed portrait. */
 :root[data-theme="light"] .hero.dark-background {
   --background-color: #ffffff;
-  --default-color: #3b4a66;
-  --heading-color: #0a1530;
-  --surface-color: #f1f5fd;
+  --default-color: #475569;
+  --heading-color: #172033;
+  --surface-color: #f8fafc;
   --contrast-color: #ffffff;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
@@ -52,7 +52,7 @@
   object-fit: cover;
   object-position: center top;
   border-radius: 28px;
-  box-shadow: 0 24px 60px rgba(10, 21, 48, 0.22);
+  box-shadow: 0 24px 60px rgba(23, 32, 51, 0.18);
 }
 :root[data-theme="light"] .hero > .container {
   grid-column: 1;
@@ -63,8 +63,8 @@
 :root[data-theme="light"] .hero .row { justify-content: flex-start; }
 :root[data-theme="light"] .hero .col-lg-8 { width: 100%; text-align: left !important; }
 :root[data-theme="light"] .hero .social-links { justify-content: flex-start; }
-:root[data-theme="light"] .hero .social-links a { background: #e6edfb; color: #1e3a8a; }
-:root[data-theme="light"] .hero .social-links a:hover { background: #1e3a8a; color: #ffffff; }
+:root[data-theme="light"] .hero .social-links a { background: #eef2f7; color: #1e40af; }
+:root[data-theme="light"] .hero .social-links a:hover { background: #1e40af; color: #ffffff; }
 @media (max-width: 991px) {
   :root[data-theme="light"] .hero.dark-background {
     grid-template-columns: minmax(0, 1fr);
@@ -80,7 +80,7 @@
 }
 
 /* Header follows the theme everywhere in light mode. */
-:root[data-theme="light"] .header { --heading-color: #0a1530; }
+:root[data-theme="light"] .header { --heading-color: #172033; }
 :root[data-theme="light"] .scrolled .header,
 :root[data-theme="light"] .index-page.scrolled .header {
   --background-color: rgba(255, 255, 255, 0.92);
@@ -96,11 +96,11 @@
 :root[data-theme="light"] .detail-item,
 :root[data-theme="light"] .cta-box,
 :root[data-theme="light"] .tp-card {
-  border-color: rgba(30, 58, 138, 0.14);
+  border-color: rgba(23, 32, 51, 0.10);
 }
 
 :root[data-theme="light"] .footer {
-  background-color: #e6edfb;
+  background-color: #eef2f7;
 }
 
 :root[data-theme="light"] .scroll-top {
@@ -110,7 +110,7 @@
 :root[data-theme="light"] .form-control {
   background-color: #ffffff;
   color: var(--default-color);
-  border-color: rgba(30, 58, 138, 0.25);
+  border-color: rgba(23, 32, 51, 0.18);
 }
 
 :root[data-theme="light"] #preloader {
@@ -158,3 +158,6 @@
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle { transition: none; }
 }
+
+/* Keep the projects section as clean white; cards carry the soft tint. */
+:root[data-theme="light"] .tech-projects { background-color: #ffffff; }
