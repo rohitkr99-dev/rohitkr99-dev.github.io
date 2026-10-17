@@ -1,0 +1,103 @@
+/**
+ * painting.css
+ * ---------------------------------------------------------
+ * A handful of layout rules specific to painting.html that aren't
+ * covered by the shared css/styles.css. Kept in its own tiny file
+ * rather than edited into styles.css, so nothing here can affect any
+ * other dashboard - same pattern as css/packing.css.
+ */
+
+.charts-grid .chart-card--full {
+  grid-column: 1 / -1;
+}
+.charts-grid .chart-card--full .chart-card__body {
+  min-height: 360px;
+}
+
+/* Internal vs External Blasting butterfly chart (2026-09-04) - the
+   Process Output Over Time section uses .activity-charts-grid (3
+   columns), a different grid class from .charts-grid above, so it
+   needs its own --full rule. Taller body than a plain full-width
+   chart: the diverging layout needs headroom above AND below the
+   zero line for its own per-bar data labels, plus the combined-total
+   label drawn right at the zero line (painting-charts.js ->
+   sumLabelPlugin). */
+.activity-charts-grid .chart-card--full {
+  grid-column: 1 / -1;
+}
+.activity-charts-grid .chart-card--full .chart-card__body {
+  min-height: 380px;
+}
+
+/* Per-chart "Export to Excel" buttons (2026-09-05) - same rule as
+   css/production.css and css/quality.css, just not previously needed
+   on this page. Pinned to the chart-card__head's top-right corner
+   (that div is already position:relative - see styles.css), except
+   the Blasting chart's own copy, which overrides back to a normal
+   flow position inline so it sits next to the From/To range selects
+   instead of overlapping them (see painting.html). */
+.btn-export {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-export:hover { background: var(--ice-soft); }
+.btn-export:disabled { opacity: 0.5; cursor: default; }
+
+.tables-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--glass-border);
+  background: var(--tint-weak);
+}
+/* 8 tabs (longest: "DPR / Painting PDI Mismatch") only fit one flex
+   row above ~1400px - past the site's own 1440px --max-width, so on
+   effectively every real screen flex-wrap wraps them, and wrapping
+   flex items of uneven width packs however many happen to fit per
+   line, producing a ragged 2-then-1-then-2 pattern instead of a
+   scannable list. Labels also change length with the EN/TH toggle
+   (see js/i18n.js), which would keep shifting any pixel breakpoint
+   trying to catch the single-row case - not worth chasing. A strict,
+   unconditional 2-column grid keeps every tab the same width so rows
+   always align, while still surfacing all 8 without a horizontal-
+   scroll strip that would hide the later ones off-screen. */
+.tables-toolbar .tabs {
+  border-bottom: none;
+  background: transparent;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.tables-toolbar .tab { text-align: center; }
+.tables-toolbar__filter {
+  padding: 8px 16px;
+}
+
+/* Short explanatory line above a table pane, e.g. "these need
+   attention now" - plain, not another card, so it doesn't compete
+   visually with the KPI/chart cards above it. */
+.table-note {
+  margin: 14px 16px 0;
+  font-size: 12.5px;
+  color: var(--frost-dim);
+}
+
+/* Day-count cells in the tables - green when at/under the 4-day
+   ideal, amber-red when over it, and flagged red when negative (an
+   out-of-order date pair). */
+.days-ok { color: var(--status-complete); font-weight: 600; }
+.days-over { color: var(--status-critical); font-weight: 700; }
+.days-negative { color: var(--status-critical); font-weight: 700; text-decoration: underline wavy; }

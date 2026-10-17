@@ -1,0 +1,160 @@
+/*--------------------------------------------------------------
+# Light / dark theme
+# main.css holds the original dark palette (:root). This file adds
+# the light palette and the toggle button. Pick: [data-theme] on <html>,
+# set by assets/js/theme.js (saved choice, else the OS preference).
+--------------------------------------------------------------*/
+:root { color-scheme: dark; }
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --background-color: #ffffff;
+  --default-color: #3b4a66;
+  --heading-color: #0a1530;
+  --accent-color: #1e3a8a;
+  --surface-color: #f1f5fd;
+  --contrast-color: #ffffff;
+
+  --nav-color: #1f2d52;
+  --nav-hover-color: #1e3a8a;
+  --nav-mobile-background-color: #f1f5fd;
+  --nav-dropdown-background-color: #f1f5fd;
+  --nav-dropdown-color: #1f2d52;
+  --nav-dropdown-hover-color: #1e3a8a;
+}
+
+/* Hero (light): white background, text on the left, the original photo as a framed portrait. */
+:root[data-theme="light"] .hero.dark-background {
+  --background-color: #ffffff;
+  --default-color: #3b4a66;
+  --heading-color: #0a1530;
+  --surface-color: #f1f5fd;
+  --contrast-color: #ffffff;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  gap: 56px;
+  align-content: center;
+  align-items: center;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 130px 24px 80px;
+  background: transparent;
+}
+:root[data-theme="light"] .hero:before { display: none; }
+:root[data-theme="light"] .hero > img {
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(10, 21, 48, 0.22);
+}
+:root[data-theme="light"] .hero > .container {
+  grid-column: 1;
+  grid-row: 1;
+  max-width: none;
+  padding: 0;
+}
+:root[data-theme="light"] .hero .row { justify-content: flex-start; }
+:root[data-theme="light"] .hero .col-lg-8 { width: 100%; text-align: left !important; }
+:root[data-theme="light"] .hero .social-links { justify-content: flex-start; }
+:root[data-theme="light"] .hero .social-links a { background: #e6edfb; color: #1e3a8a; }
+:root[data-theme="light"] .hero .social-links a:hover { background: #1e3a8a; color: #ffffff; }
+@media (max-width: 991px) {
+  :root[data-theme="light"] .hero.dark-background {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding-top: 110px;
+    text-align: center;
+  }
+  :root[data-theme="light"] .hero > img { grid-column: 1; grid-row: 1; max-width: 320px; margin: 0 auto; }
+  :root[data-theme="light"] .hero > .container { grid-row: 2; }
+  :root[data-theme="light"] .hero .col-lg-8 { text-align: center !important; }
+  :root[data-theme="light"] .hero .row,
+  :root[data-theme="light"] .hero .social-links { justify-content: center; }
+}
+
+/* Header follows the theme everywhere in light mode. */
+:root[data-theme="light"] .header { --heading-color: #0a1530; }
+:root[data-theme="light"] .scrolled .header,
+:root[data-theme="light"] .index-page.scrolled .header {
+  --background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+}
+
+/* Cards and boxes that rely on soft shadows read better with a hairline in light mode. */
+:root[data-theme="light"] .service-item,
+:root[data-theme="light"] .profile-card,
+:root[data-theme="light"] .exp-card,
+:root[data-theme="light"] .portfolio-card,
+:root[data-theme="light"] .info-item,
+:root[data-theme="light"] .detail-item,
+:root[data-theme="light"] .cta-box,
+:root[data-theme="light"] .tp-card {
+  border-color: rgba(30, 58, 138, 0.14);
+}
+
+:root[data-theme="light"] .footer {
+  background-color: #e6edfb;
+}
+
+:root[data-theme="light"] .scroll-top {
+  color: #ffffff;
+}
+
+:root[data-theme="light"] .form-control {
+  background-color: #ffffff;
+  color: var(--default-color);
+  border-color: rgba(30, 58, 138, 0.25);
+}
+
+:root[data-theme="light"] #preloader {
+  background-color: var(--background-color);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  margin-left: 18px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--nav-color);
+  background: color-mix(in srgb, var(--nav-color), transparent 90%);
+  border: 1px solid color-mix(in srgb, var(--nav-color), transparent 78%);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.25s, background 0.25s, transform 0.25s;
+}
+.theme-toggle:hover {
+  color: var(--accent-color);
+  transform: rotate(18deg);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1200px) {
+  .theme-toggle {
+    order: 2;
+    margin: 0 12px 0 0;
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle { transition: none; }
+}

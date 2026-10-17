@@ -1,0 +1,463 @@
+/**
+ * production-table.js
+ * ---------------------------------------------------------
+ * The spool list table: one row per spool, with a multi-select
+ * filter on every column and a live subtotal row reflecting
+ * whatever combination of column filters is currently applied.
+ * Independent of the metric/Project filters above the charts - see
+ * the module docstring in production-filters.js.
+ *
+ * Every value shown is already computed in Python
+ * (src/production/summary.py); this file only renders, filters,
+ * paginates, and subtotals it.
+ */
+
+const ProductionTable = {
+
+  PAGE_SIZE: 50,
+  currentPage: 1,
+  store: null,
+  sortKey: null,
+  sortDirection: "asc", // "asc" | "desc"
+
+  // Remembers the column sort and filters across visits, same
+  // per-browser localStorage approach as js/theme.js - previously
+  // this reset on every reload, which was tedious to re-apply on a
+  // table with this many columns.
+  STORAGE_KEY: "productionTableState",
+
+  persistState() {
+    try {
+      const filters = {};
+      Object.entries(ProductionFilters.tableColumnFilters).forEach(([key, set]) => {
+        filters[key] = Array.from(set);
+      });
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+        sortKey: this.sortKey,
+        sortDirection: this.sortDirection,
+        filters,
+      }));
+    } catch (e) { /* storage blocked - state just won't persist this run */ }
+  },
+
+  restoreState() {
+    let saved;
+    try {
+      saved = JSON.parse(localStorage.getItem(this.STORAGE_KEY));
+    } catch (e) {
+      saved = null;
+    }
+    if (!saved) return;
+    this.sortKey = saved.sortKey || null;
+    this.sortDirection = saved.sortDirection || "asc";
+    Object.entries(saved.filters || {}).forEach(([key, values]) => {
+      ProductionFilters.setColumnFilter(key, values);
+    });
+  },
+
+  // Column definitions - `key` for the identifier/text/number
+  // columns comes straight off each spool row; `stageKey` columns
+  // instead read row.stage_days[stageKey].
+  COLUMNS: [
+    { key: "project_code", label: "Project", type: "text" },
+    { key: "drawing_no", label: "Drawing No", type: "text" },
+    { key: "spool_no", label: "Spool No", type: "text" },
+    { key: "category", label: "Category", type: "text" },
+    { key: "status", label: "Status", type: "text" },
+    { key: "delay_status", label: "On Time / Delayed", type: "text" },
+    { key: "material", label: "Material", type: "text" },
+    { key: "spool_size", label: "Spool Size", type: "number" },
+    { key: "inch_dia", label: "Inch Dia", type: "number" },
+    { key: "quantity", label: "Quantity", type: "number", subtotal: "sum" },
+    { key: "weight", label: "Weight", type: "number", subtotal: "sum" },
+    { key: "surface_area", label: "Surface Area", type: "number", subtotal: "sum" },
+    { key: "days_welding_finish", stageKey: "welding_finish", label: "Welding Finish (d)", type: "day" },
+    { key: "days_pdqc", stageKey: "pdqc", label: "PDQC (d)", type: "day" },
+    { key: "days_release_for_painting", stageKey: "release_for_painting", label: "Release for Painting (d)", type: "day" },
+    { key: "days_pdi_clearance", stageKey: "pdi_clearance", label: "PDI Clearance (d)", type: "day" },
+    { key: "days_packed", stageKey: "packed", label: "Packed (d)", type: "day" },
+  ],
+
+  init(store) {
+    this.store = store;
+    this.currentPage = 1;
+    this.restoreState();
+    // Project Code -> Project Name (2026-08-08 site-wide convention
+    // - see docs/ageing-and-project-naming-conventions.md). The
+    // FILTER VALUE for the project_code column stays the raw code
+    // (rawValue()/columnFilterValue() below are unchanged) - only
+    // the column cell and the filter popover's checkbox LABELS use
+    // this to show Name (Code) instead of the bare code.
+    this.projectNameByCode = {};
+    (store.spools || []).forEach((row) => {
+      if (row.project_code && !this.projectNameByCode[row.project_code]) {
+        this.projectNameByCode[row.project_code] = row.project_name || "";
+      }
+    });
+    this.buildHeader();
+    this.render();
+
+    document.getElementById("table-clear-filters-btn").addEventListener("click", () => {
+      ProductionFilters.clearTableFilters();
+      this.currentPage = 1;
+      this.persistState();
+      this.buildHeader();
+      this.render();
+    });
+
+    document.addEventListener("click", (event) => {
+      const popover = document.getElementById("table-filter-popover");
+      if (!popover.hidden && !popover.contains(event.target) && !event.target.closest(".table-filter-btn")) {
+        popover.hidden = true;
+      }
+    });
+
+    // Keyboard users had no way to dismiss the filter popover short of
+    // tabbing all the way past it - Escape closes it and returns focus
+    // to the filter button that opened it, same as a mouse click away.
+    document.addEventListener("keydown", (event) => {
+      const popover = document.getElementById("table-filter-popover");
+      if (event.key === "Escape" && !popover.hidden) {
+        popover.hidden = true;
+        if (this._popoverAnchor) this._popoverAnchor.focus();
+      }
+    });
+  },
+
+  rawValue(row, column) {
+    return column.stageKey ? (row.stage_days ? row.stage_days[column.stageKey] : null) : row[column.key];
+  },
+
+  columnFilterValue(row, column) {
+    const value = this.rawValue(row, column);
+    if (value === null || value === undefined || value === "") return "(blank)";
+    return String(value);
+  },
+
+  /**
+   * Distinct values for a column's filter dropdown - Excel-style
+   * cascading: only computed from spools that still pass every OTHER
+   * currently-active column filter (this column's own filter is
+   * deliberately excluded from that "context", and any value the user
+   * already has checked is always kept in the list too, so they can
+   * still see and uncheck it even if it would otherwise be filtered
+   * out by itself).
+   */
+  distinctValuesFor(column) {
+    const filters = ProductionFilters.tableColumnFilters;
+    const columnsByKey = {};
+    this.COLUMNS.forEach((c) => { columnsByKey[c.key] = c; });
+
+    const otherKeys = Object.keys(filters).filter((key) => key !== column.key);
+
+    const contextRows = otherKeys.length === 0
+      ? this.store.spools
+      : this.store.spools.filter((row) =>
+          otherKeys.every((key) => filters[key].has(this.columnFilterValue(row, columnsByKey[key])))
+        );
+
+    const values = new Set();
+    contextRows.forEach((row) => values.add(this.columnFilterValue(row, column)));
+
+    const selected = filters[column.key];
+    if (selected) selected.forEach((v) => values.add(v));
+
+    const list = Array.from(values);
+    return column.type === "number" || column.type === "day"
+      ? list.sort((a, b) => (a === "(blank)" ? -1 : b === "(blank)" ? 1 : Number(a) - Number(b)))
+      : list.sort();
+  },
+
+  filteredSpools() {
+    const filters = ProductionFilters.tableColumnFilters;
+    const keys = Object.keys(filters);
+    if (keys.length === 0) return this.store.spools;
+    const columnsByKey = {};
+    this.COLUMNS.forEach((c) => { columnsByKey[c.key] = c; });
+    return this.store.spools.filter((row) =>
+      keys.every((key) => filters[key].has(this.columnFilterValue(row, columnsByKey[key])))
+    );
+  },
+
+  formatValue(row, column) {
+    const value = this.rawValue(row, column);
+    if (value === null || value === undefined || value === "") return "\u2013";
+    if (column.type === "number") {
+      return Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+    if (column.type === "day") {
+      return `${value}`;
+    }
+    return String(value);
+  },
+
+  /**
+   * Name (Code) for the project_code column's filter-popover option
+   * labels - the checkbox's underlying VALUE stays the raw code
+   * (see openFilterPopover() below), this is display text only.
+   */
+  filterOptionLabel(column, value) {
+    if (column.key !== "project_code" || value === "(blank)") return value;
+    const name = this.projectNameByCode[value];
+    return name ? `${name} (${value})` : value;
+  },
+
+  buildHeader() {
+    const headRow = document.getElementById("spool-table-head-row");
+    headRow.innerHTML = "";
+    this.COLUMNS.forEach((column) => {
+      const th = document.createElement("th");
+      const active = ProductionFilters.tableColumnFilters[column.key] ? " is-filtered" : "";
+      const isSorted = this.sortKey === column.key;
+      const sortIcon = isSorted
+        ? (this.sortDirection === "asc"
+          ? '<svg viewBox="0 0 16 16" width="10" height="10" aria-hidden="true"><path d="M8 4l4 6H4z" fill="currentColor"/></svg>'
+          : '<svg viewBox="0 0 16 16" width="10" height="10" aria-hidden="true"><path d="M8 12L4 6h8z" fill="currentColor"/></svg>')
+        : '<svg viewBox="0 0 16 16" width="10" height="10" aria-hidden="true" class="table-sort-icon--idle"><path d="M8 4l3 4H5zM8 12l-3-4h6z" fill="currentColor"/></svg>';
+      th.innerHTML = `
+        <span class="table-th__sort${isSorted ? " is-sorted" : ""}" data-column="${column.key}" title="Sort by ${column.label}" role="button" tabindex="0" aria-label="Sort by ${column.label}">
+          <span class="table-th__label">${column.label}</span>
+          <span class="table-sort-icon">${sortIcon}</span>
+        </span>
+        <button type="button" class="table-filter-btn${active}" data-column="${column.key}" title="Filter ${column.label}">
+          <svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M2 3h12l-4.5 5.5v4L7 14v-5.5L2 3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </button>
+      `;
+      const sortEl = th.querySelector(".table-th__sort");
+      sortEl.addEventListener("click", () => this.toggleSort(column));
+      // Was a mouse-only click target (a <span>, not a real button) -
+      // keyboard users couldn't reach or activate column sorting at all.
+      sortEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          this.toggleSort(column);
+        }
+      });
+      th.querySelector(".table-filter-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.openFilterPopover(column, e.currentTarget);
+      });
+      headRow.appendChild(th);
+    });
+  },
+
+  /**
+   * Cycles a column through unsorted -> ascending -> descending ->
+   * unsorted (back to the spool list's natural/default order).
+   * Independent of the per-column filters above - a column can be
+   * sorted, filtered, both, or neither.
+   */
+  toggleSort(column) {
+    if (this.sortKey !== column.key) {
+      this.sortKey = column.key;
+      this.sortDirection = "asc";
+    } else if (this.sortDirection === "asc") {
+      this.sortDirection = "desc";
+    } else {
+      this.sortKey = null;
+      this.sortDirection = "asc";
+    }
+    this.persistState();
+    this.buildHeader();
+    this.currentPage = 1;
+    this.render();
+  },
+
+  /**
+   * Nulls/blanks always sort to the end regardless of direction -
+   * e.g. sorting "PDQC (d)" ascending should surface spools that
+   * HAVE reached PDQC first, not the ones that haven't gotten there
+   * yet (which would otherwise read as "0 days," misleadingly
+   * outranking every real number).
+   */
+  sortedSpools(rows) {
+    if (!this.sortKey) return rows;
+
+    const column = this.COLUMNS.find((c) => c.key === this.sortKey);
+    if (!column) return rows;
+
+    const dir = this.sortDirection === "desc" ? -1 : 1;
+    const isNumeric = column.type === "number" || column.type === "day";
+
+    return [...rows].sort((a, b) => {
+      let av = this.rawValue(a, column);
+      let bv = this.rawValue(b, column);
+
+      // "Project" sorts by NAME (what's actually shown, per the
+      // site-wide Project Name convention - see
+      // docs/ageing-and-project-naming-conventions.md), falling
+      // back to the code for any project missing a name. Filtering
+      // on this column still keys on the raw code - see
+      // filterOptionLabel()'s comment above - only sort order
+      // changed here.
+      if (column.key === "project_code") {
+        av = this.projectNameByCode[av] || av;
+        bv = this.projectNameByCode[bv] || bv;
+      }
+
+      const aBlank = av === null || av === undefined || av === "";
+      const bBlank = bv === null || bv === undefined || bv === "";
+      if (aBlank && bBlank) return 0;
+      if (aBlank) return 1;
+      if (bBlank) return -1;
+
+      if (isNumeric) return (Number(av) - Number(bv)) * dir;
+      return String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: "base" }) * dir;
+    });
+  },
+
+  openFilterPopover(column, anchorEl) {
+    const popover = document.getElementById("table-filter-popover");
+    const values = this.distinctValuesFor(column);
+    const selected = ProductionFilters.tableColumnFilters[column.key];
+
+    popover.innerHTML = `
+      <div class="table-filter-popover__search">
+        <input type="text" placeholder="Search values..." id="table-filter-search">
+      </div>
+      <div class="table-filter-popover__list" id="table-filter-list"></div>
+      <div class="table-filter-popover__actions">
+        <button type="button" class="btn btn--ghost btn--tiny" id="table-filter-clear">Clear</button>
+        <button type="button" class="btn btn--primary btn--tiny" id="table-filter-apply">Apply</button>
+      </div>
+    `;
+
+    const listEl = popover.querySelector("#table-filter-list");
+    const renderList = (filterText) => {
+      listEl.innerHTML = "";
+      values
+        .filter((v) => !filterText || v.toLowerCase().includes(filterText.toLowerCase()))
+        .forEach((value) => {
+          const id = `tf-${column.key}-${value}`.replace(/[^a-zA-Z0-9_-]/g, "_");
+          const checked = selected ? selected.has(value) : false;
+          const label = document.createElement("label");
+          label.className = "table-filter-popover__option";
+          label.innerHTML = `<input type="checkbox" value="${value}" ${checked ? "checked" : ""}> <span>${this.filterOptionLabel(column, value)}</span>`;
+          listEl.appendChild(label);
+        });
+    };
+    renderList("");
+
+    popover.querySelector("#table-filter-search").addEventListener("input", (e) => renderList(e.target.value));
+
+    popover.querySelector("#table-filter-clear").addEventListener("click", () => {
+      ProductionFilters.setColumnFilter(column.key, null);
+      popover.hidden = true;
+      this.persistState();
+      this.buildHeader();
+      this.currentPage = 1;
+      this.render();
+    });
+
+    popover.querySelector("#table-filter-apply").addEventListener("click", () => {
+      const checked = Array.from(listEl.querySelectorAll("input[type=checkbox]:checked")).map((i) => i.value);
+      ProductionFilters.setColumnFilter(column.key, checked);
+      popover.hidden = true;
+      this.persistState();
+      this.buildHeader();
+      this.currentPage = 1;
+      this.render();
+    });
+
+    const rect = anchorEl.getBoundingClientRect();
+    popover.style.top = `${rect.bottom + window.scrollY + 4}px`;
+    popover.style.left = `${Math.max(8, rect.left + window.scrollX - 180)}px`;
+    popover.hidden = false;
+    this._popoverAnchor = anchorEl;
+    popover.querySelector("#table-filter-search").focus();
+  },
+
+  render() {
+    const filtered = this.sortedSpools(this.filteredSpools());
+    this.renderRows(filtered);
+    this.renderSubtotal(filtered);
+    this.renderPagination(filtered.length);
+    document.getElementById("table-filtered-count").textContent =
+      `${filtered.length.toLocaleString()} of ${this.store.spools.length.toLocaleString()} spool(s)`;
+  },
+
+  renderRows(filtered) {
+    const start = (this.currentPage - 1) * this.PAGE_SIZE;
+    const pageRows = filtered.slice(start, start + this.PAGE_SIZE);
+    const tbody = document.getElementById("spool-table-body");
+    tbody.innerHTML = "";
+
+    if (pageRows.length === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="${this.COLUMNS.length}" class="table-empty">No spools match the current filters.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    pageRows.forEach((row) => {
+      const tr = document.createElement("tr");
+      if (row.is_delayed) tr.classList.add("is-delayed-row");
+      this.COLUMNS.forEach((column) => {
+        const td = document.createElement("td");
+        if (column.key === "project_code") {
+          const name = this.projectNameByCode[row.project_code];
+          td.innerHTML = name
+            ? `<span class="project-name-cell">${name}</span> <span class="project-code-suffix">(${row.project_code})</span>`
+            : (row.project_code || "\u2013");
+        } else {
+          td.textContent = this.formatValue(row, column);
+        }
+        if (column.key === "delay_status") {
+          if (row.delay_status === "Delayed") td.classList.add("cell-delayed");
+          else if (row.delay_status === "On Time") td.classList.add("cell-on-time");
+        }
+        tr.appendChild(td);
+      });
+      frag.appendChild(tr);
+    });
+    tbody.appendChild(frag);
+  },
+
+  renderSubtotal(filtered) {
+    const tr = document.getElementById("spool-table-subtotal");
+    tr.innerHTML = "";
+
+    this.COLUMNS.forEach((column, index) => {
+      const td = document.createElement("td");
+      if (index === 0) {
+        td.textContent = `Subtotal (${filtered.length.toLocaleString()} rows)`;
+      } else if (column.type === "number" || column.type === "day") {
+        const values = filtered
+          .map((r) => this.rawValue(r, column))
+          .filter((v) => v !== null && v !== undefined);
+        if (values.length === 0) {
+          td.textContent = "\u2013";
+        } else if (column.subtotal === "sum") {
+          const sum = values.reduce((a, b) => a + b, 0);
+          td.textContent = Math.round(sum * 100) / 100;
+        } else {
+          const avg = values.reduce((a, b) => a + b, 0) / values.length;
+          td.textContent = `avg ${Math.round(avg * 10) / 10}`;
+        }
+      } else {
+        td.textContent = "";
+      }
+      tr.appendChild(td);
+    });
+  },
+
+  renderPagination(totalRows) {
+    const totalPages = Math.max(1, Math.ceil(totalRows / this.PAGE_SIZE));
+    if (this.currentPage > totalPages) this.currentPage = totalPages;
+
+    document.getElementById("table-page-info").textContent = `Page ${this.currentPage} of ${totalPages}`;
+
+    const prevBtn = document.getElementById("table-prev-page");
+    const nextBtn = document.getElementById("table-next-page");
+    prevBtn.disabled = this.currentPage <= 1;
+    nextBtn.disabled = this.currentPage >= totalPages;
+
+    prevBtn.onclick = () => {
+      if (this.currentPage > 1) { this.currentPage -= 1; this.render(); }
+    };
+    nextBtn.onclick = () => {
+      if (this.currentPage < totalPages) { this.currentPage += 1; this.render(); }
+    };
+  },
+};

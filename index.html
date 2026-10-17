@@ -7,6 +7,19 @@
   <title>Rohit Kumar Choubey | Project Manager &amp; Business Strategy</title>
   <meta name="description" content="Rohit Kumar Choubey — Project Manager &amp; Business Strategy professional with 14+ years delivering EPC piping, industrial manufacturing and digital transformation projects across Asia-Pacific, the Americas and Africa.">
   <meta name="keywords" content="project manager, EPC, piping fabrication, business strategy, Thailand">
+  <meta name="theme-color" content="#0a0e17">
+
+  <!-- Apply the saved (or OS-preferred) theme before first paint so there is no flash -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('rc-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 
   <!-- Social Share Preview -->
   <meta property="og:type" content="website">
@@ -37,6 +50,8 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
+  <link href="assets/css/theme.css" rel="stylesheet">
+  <link href="assets/css/projects.css" rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: Craftivo
@@ -68,6 +83,8 @@
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
+
+      <button type="button" class="theme-toggle" aria-label="Switch to light theme" title="Light theme"><i class="bi bi-sun-fill" aria-hidden="true"></i></button>
 
       <a class="btn-getstarted" href="#contact">Get In Touch</a>
 
@@ -686,62 +703,188 @@
     </section><!-- /Portfolio Section -->
 
     <!-- Technical Projects Section -->
-    <section id="tech-projects" class="services section" style="background-color: color-mix(in srgb, var(--background-color), white 2%);">
+    <section id="tech-projects" class="tech-projects section">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <span class="subtitle">Personal Builds</span>
         <h2>Technical Projects</h2>
-        <p>Independent, self-built projects — conceptualized and developed end-to-end using AI-assisted development tools.</p>
+        <p>Independent tools and apps I conceptualized and built end-to-end with AI-assisted development &mdash; two flagships first, then everything else.</p>
       </div><!-- End Section Title -->
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="container">
+
+        <!-- Featured -->
+        <div class="row gy-4">
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <article class="tp-feature">
+              <div class="tp-feature-img">
+                <img src="assets/img/tech-projects/thai-learning.jpg" alt="Thai learning app home screen" loading="lazy">
+                <span class="tp-flag"><i class="bi bi-star-fill"></i> Featured</span>
+              </div>
+              <div class="tp-feature-body">
+                <div class="tp-status"><span class="tp-dot live"></span> Live &middot; early public test</div>
+                <h3>Thai Learning App</h3>
+                <p class="tp-brief">A free, browser-based platform for learning Thai &mdash; reading, listening, speaking and writing in one place, with an AI chat tutor. No sign-up, and it works on a phone or a computer.</p>
+                <ul class="tp-points">
+                  <li>Consonants, vowels and tones, then 300+ vocabulary words, 350+ sentences, dialogues and stories</li>
+                  <li>1,300+ Thai audio clips, speech practice and a built-in AI tutor</li>
+                  <li>Progress dashboard, feedback box and a Beta tag for early testers</li>
+                </ul>
+                <div class="tp-chips">
+                  <span class="tp-chip">TypeScript</span><span class="tp-chip">Vite</span><span class="tp-chip">Cloudflare Pages</span><span class="tp-chip">AI tutor</span>
+                </div>
+                <div class="tp-actions">
+                  <a href="https://thai-learning-br8.pages.dev" target="_blank" rel="noopener" class="tp-btn tp-btn-primary"><i class="bi bi-box-arrow-up-right"></i> Open the app</a>
+                  <span class="tp-note"><i class="bi bi-lock"></i> Source is in a private repository</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+            <article class="tp-feature">
+              <div class="tp-feature-img">
+                <img src="assets/img/tech-projects/live-spool-status.jpg" alt="Live Spool Tracker dashboard" loading="lazy">
+                <span class="tp-flag"><i class="bi bi-star-fill"></i> Featured</span>
+              </div>
+              <div class="tp-feature-body">
+                <div class="tp-status"><span class="tp-dot demo"></span> Production system &middot; demo on sample data</div>
+                <h3>Live Spool Tracker</h3>
+                <p class="tp-brief">A production-intelligence system for a pipe-spool fabrication shop. It reads fabrication and planning Excel files, validates and merges them into one master spool record, applies the shop's business rules, and publishes live dashboards for every department.</p>
+                <ul class="tp-points">
+                  <li>Stage-wise ageing, delay flags, S-curves and KPIs from a single master dataset</li>
+                  <li>Dashboards for Production, Quality, Painting, and Packing &amp; Dispatch, plus a Spool Traveler</li>
+                  <li>Searchable spool lists with Excel and PDF export; all logic runs in the Python backend</li>
+                </ul>
+                <div class="tp-chips">
+                  <span class="tp-chip">Python</span><span class="tp-chip">pandas</span><span class="tp-chip">JavaScript</span><span class="tp-chip">Chart.js</span><span class="tp-chip">DataTables</span>
+                </div>
+                <div class="tp-actions">
+                  <a href="live-spool-demo/" target="_blank" rel="noopener" class="tp-btn tp-btn-primary"><i class="bi bi-play-circle"></i> View the demo</a>
+                  <span class="tp-note"><i class="bi bi-info-circle"></i> The real system runs on company data, so it can't be shared. The demo is the same dashboards on generated sample data.</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div><!-- /Featured -->
+
+        <h3 class="tp-more-title" data-aos="fade-up">More projects</h3>
 
         <div class="row gy-4">
-          <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
-            <div class="service-item tp-item">
-              <div class="tp-thumb"><img src="assets/img/tech-projects/live-spool-status.jpg" alt="Live Spool Status dashboard" loading="lazy"></div>
-              <h4>Live Spool Status &amp; Ageing System</h4>
-              <p>Reads and validates fabrication/planning Excel data, calculates real-time stage-wise ageing and KPIs, and auto-publishes to a live dashboard.</p>
-              <div class="mb-2"><small>Python · Pandas · JavaScript · Chart.js</small></div>
-              <a href="https://rohitkr99-dev.github.io/live-spool-status/" target="_blank" rel="noopener" class="read-more"><span>Live Demo</span><i class="bi bi-arrow-right"></i></a>
-              &nbsp;
-              <a href="https://github.com/rohitkr99-dev/live-spool-status" target="_blank" rel="noopener" class="read-more"><span>GitHub</span><i class="bi bi-arrow-right"></i></a>
-            </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-clipboard2-check"></i><span class="tp-status"><span class="tp-dot live"></span> Live</span></div>
+              <h4>Change Order Tracker</h4>
+              <p>Offline-first web app (PWA) for logging change orders and RAID items on site, then generating a one-page project status report. Data stays on the device, with CSV and JSON backup.</p>
+              <div class="tp-chips"><span class="tp-chip">JavaScript</span><span class="tp-chip">PWA</span><span class="tp-chip">IndexedDB</span></div>
+              <div class="tp-actions">
+                <a href="https://rohitchoubey.dpdns.org/change-order-tracker/" target="_blank" rel="noopener" class="tp-link">Live demo <i class="bi bi-arrow-right"></i></a>
+                <a href="https://github.com/rohitkr99-dev/change-order-tracker" target="_blank" rel="noopener" class="tp-link">GitHub <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
           </div>
 
-          <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
-            <div class="service-item tp-item">
-              <div class="tp-thumb"><img src="assets/img/tech-projects/material-matching.jpg" alt="Stacked steel piping material" loading="lazy"></div>
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-file-earmark-bar-graph"></i><span class="tp-status"><span class="tp-dot live"></span> Live</span></div>
+              <h4>TenderIQ</h4>
+              <p>AI tender and BOQ analysis platform: upload a PDF tender or an Excel BOQ and get a structured analysis. Includes team invites, vendors, procurement and reports.</p>
+              <div class="tp-chips"><span class="tp-chip">TypeScript</span><span class="tp-chip">Next.js</span><span class="tp-chip">Express</span><span class="tp-chip">OpenAI</span></div>
+              <div class="tp-actions">
+                <a href="https://tender-iq-seven.vercel.app" target="_blank" rel="noopener" class="tp-link">Live demo <i class="bi bi-arrow-right"></i></a>
+                <a href="https://github.com/rohitkr99-dev/TenderIQ" target="_blank" rel="noopener" class="tp-link">GitHub <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-diagram-3"></i><span class="tp-status"><span class="tp-dot live"></span> Live</span></div>
               <h4>Spool Material-Matching Tool</h4>
-              <p>Automates BOM-to-stock matching across multi-project piping spools, with priority-, weight-, and diameter-based allocation logic.</p>
-              <div class="mb-2"><small>JavaScript</small></div>
-              <a href="https://rohitchoubey.dpdns.org/material-matching/" target="_blank" rel="noopener" class="read-more"><span>Live Demo</span><i class="bi bi-arrow-right"></i></a>
-              &nbsp;
-              <a href="https://github.com/rohitkr99-dev/material-matching" target="_blank" rel="noopener" class="read-more"><span>GitHub</span><i class="bi bi-arrow-right"></i></a>
-            </div>
+              <p>Automates BOM-to-stock matching across multi-project piping spools, with priority-, weight- and diameter-based allocation logic.</p>
+              <div class="tp-chips"><span class="tp-chip">JavaScript</span></div>
+              <div class="tp-actions">
+                <a href="https://rohitchoubey.dpdns.org/material-matching/" target="_blank" rel="noopener" class="tp-link">Live demo <i class="bi bi-arrow-right"></i></a>
+                <a href="https://github.com/rohitkr99-dev/material-matching" target="_blank" rel="noopener" class="tp-link">GitHub <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
           </div>
 
-          <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
-            <div class="service-item tp-item">
-              <div class="tp-thumb"><img src="assets/img/tech-projects/ocr-app.jpg" alt="Document and phone representing OCR scanning" loading="lazy"></div>
-              <h4>PDF-to-Text OCR App</h4>
-              <p>Browser-based OCR utility converting scanned PDF documents to editable text, entirely client-side with no server-side processing.</p>
-              <div class="mb-2"><small>HTML · CSS · JavaScript</small></div>
-              <a href="https://rohitchoubey.dpdns.org/ocr-browser-app/" target="_blank" rel="noopener" class="read-more"><span>Live Demo</span><i class="bi bi-arrow-right"></i></a>
-              &nbsp;
-              <a href="https://github.com/rohitkr99-dev/ocr-browser-app" target="_blank" rel="noopener" class="read-more"><span>GitHub</span><i class="bi bi-arrow-right"></i></a>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
-            <div class="service-item tp-item">
-              <div class="tp-thumb"><img src="assets/img/tech-projects/thaisource-pro.jpg" alt="Shipping containers representing B2B industrial procurement" loading="lazy"></div>
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-shop-window"></i><span class="tp-status"><span class="tp-dot code"></span> Backend</span></div>
               <h4>ThaiSource Pro</h4>
-              <p>Backend for a premium B2B industrial procurement marketplace for Thailand — vendor management, RFQ/quotation workflows, admin moderation.</p>
-              <div class="mb-2"><small>TypeScript · Next.js · PostgreSQL · Prisma</small></div>
-              <a href="https://github.com/rohitkr99-dev/thaisource-pro" target="_blank" rel="noopener" class="read-more"><span>GitHub</span><i class="bi bi-arrow-right"></i></a>
-            </div>
+              <p>Backend for a premium B2B industrial procurement marketplace for Thailand: vendor management, RFQ and quotation workflows, and admin moderation.</p>
+              <div class="tp-chips"><span class="tp-chip">TypeScript</span><span class="tp-chip">Next.js</span><span class="tp-chip">PostgreSQL</span><span class="tp-chip">Prisma</span></div>
+              <div class="tp-actions">
+                <a href="https://github.com/rohitkr99-dev/thaisource-pro" target="_blank" rel="noopener" class="tp-link">GitHub <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-file-earmark-text"></i><span class="tp-status"><span class="tp-dot live"></span> Live</span></div>
+              <h4>PDF-to-Text OCR App</h4>
+              <p>Browser-based OCR utility that converts scanned PDF documents to editable text, entirely client-side with no server-side processing.</p>
+              <div class="tp-chips"><span class="tp-chip">HTML</span><span class="tp-chip">CSS</span><span class="tp-chip">JavaScript</span></div>
+              <div class="tp-actions">
+                <a href="https://rohitchoubey.dpdns.org/ocr-browser-app/" target="_blank" rel="noopener" class="tp-link">Live demo <i class="bi bi-arrow-right"></i></a>
+                <a href="https://github.com/rohitkr99-dev/ocr-browser-app" target="_blank" rel="noopener" class="tp-link">GitHub <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-bar-chart-line"></i><span class="tp-status"><span class="tp-dot private"></span> Private</span></div>
+              <h4>Customer Project Progress Portal</h4>
+              <p>Multi-customer portal that shows each customer only their own project progress. Role-based access, and Excel progress reports are staged, validated and then published to the database in one transaction.</p>
+              <div class="tp-chips"><span class="tp-chip">TypeScript</span><span class="tp-chip">Next.js</span><span class="tp-chip">Postgres</span><span class="tp-chip">Cloudflare</span></div>
+              <div class="tp-actions">
+                <span class="tp-note"><i class="bi bi-lock"></i> Client work &mdash; not public</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-wrench-adjustable"></i><span class="tp-status"><span class="tp-dot private"></span> Private data</span></div>
+              <h4>Welding DB Processor</h4>
+              <p>Processes welding-database exports against a pipe ID and base-weight master: finds the inch-dia column, resolves the nearest higher diameter and calculates weights.</p>
+              <div class="tp-chips"><span class="tp-chip">Python</span><span class="tp-chip">pandas</span><span class="tp-chip">Streamlit</span></div>
+              <div class="tp-actions">
+                <span class="tp-note"><i class="bi bi-lock"></i> Built on company data &mdash; not public</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-cash-coin"></i><span class="tp-status"><span class="tp-dot code"></span> Tool</span></div>
+              <h4>Payroll Automation</h4>
+              <p>Streamlit app that takes a raw attendance workbook, works out each employee's hours and produces a formatted payroll Excel report.</p>
+              <div class="tp-chips"><span class="tp-chip">Python</span><span class="tp-chip">Streamlit</span><span class="tp-chip">pandas</span><span class="tp-chip">openpyxl</span></div>
+              <div class="tp-actions">
+                <a href="https://github.com/rohitkr99-dev/payroll-automation" target="_blank" rel="noopener" class="tp-link">GitHub <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <article class="tp-card">
+              <div class="tp-card-top"><i class="bi bi-camera-video"></i><span class="tp-status"><span class="tp-dot private"></span> Private</span></div>
+              <h4>Engineering Video Factory</h4>
+              <p>A repeatable workflow for producing engineering explainer videos for YouTube: topic research, scripts and narration audio, starting with &ldquo;How does an LNG terminal work?&rdquo;.</p>
+              <div class="tp-chips"><span class="tp-chip">AI scripting</span><span class="tp-chip">Narration</span><span class="tp-chip">Content ops</span></div>
+              <div class="tp-actions">
+                <span class="tp-note"><i class="bi bi-lock"></i> Private repository</span>
+              </div>
+            </article>
           </div>
 
         </div>
@@ -913,6 +1056,7 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/theme.js"></script>
 
   <!-- Contact form -> Formspree (static site, no server backend) -->
   <script>
