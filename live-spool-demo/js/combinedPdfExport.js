@@ -279,7 +279,7 @@ const CombinedPdfExport = {
     }
 
     const stamp = new Date().toISOString().slice(0, 10);
-    doc.save(`dee-piping-all-departments-charts-${stamp}.pdf`);
+    doc.save(`demo-all-departments-charts-${stamp}.pdf`);
   },
 
   /** Updates the button's own label while the export runs - NOT the

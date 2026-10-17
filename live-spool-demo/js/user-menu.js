@@ -2,8 +2,8 @@
  * Shared "logged in as / logout" widget.
  *
  * Usage: drop `<div class="user-menu" id="user-menu"></div>` into a
- * page's header, then include this script after firebase-config.js
- * and auth-guard.js. It builds the avatar trigger, and portals the
+ * page's header, then include this script after the page scripts
+ * It builds the avatar trigger, and portals the
  * dropdown panel to <body> so it always renders on top - it can
  * never be clipped by an ancestor's `overflow: hidden` (e.g. the
  * .topbar corner flourish) or trapped inside another element's
@@ -138,13 +138,8 @@
       performSignOut(logoutBtn);
     });
 
-    if (window.firebase && firebase.auth) {
-      firebase.auth().onAuthStateChanged(function (user) {
-        var email = user && user.email ? user.email : "";
-        emailEl.textContent = email || (window.I18N ? window.I18N.t("usermenu.unknownUser") : "Unknown user");
-        initialEl.textContent = initials(email);
-      });
-    }
+    emailEl.textContent = "demo.viewer@example.com";
+    initialEl.textContent = initials("demo.viewer@example.com");
   }
 
   function performSignOut() {

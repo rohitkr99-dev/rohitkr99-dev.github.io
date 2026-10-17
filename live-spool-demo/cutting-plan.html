@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F3F4F9">
+<meta name="robots" content="noindex, nofollow">
+<title>Demo Fabrication Co. — Cutting Station &amp; Material Handover</title>
+<script src="js/theme.js?v=20260920"></script>
+<style>html.auth-pending body{visibility:hidden}</style>
+<link rel="icon" href="assets/demo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=20260921">
+<link rel="stylesheet" href="css/cutting-plan.css?v=20261030">
+</head>
+<body class="is-ready">
+<div class="ambient" aria-hidden="true">
+  <span class="ambient__orb ambient__orb--ember"></span>
+  <span class="ambient__orb ambient__orb--ice"></span>
+  <span class="ambient__orb ambient__orb--deep"></span>
+  <div class="ambient__grid"></div>
+</div>
+
+<div class="app-shell">
+
+  <!-- ============ TOP BAR (same as the other department pages) ============ -->
+  <header class="topbar">
+    <a class="topbar__brand" href="index.html" aria-label="Demo Fabrication Co. — back to site home">
+      <img class="topbar__logo" src="assets/demo-mark.svg" alt="Demo Fabrication Co. logo">
+      <div class="topbar__divider" aria-hidden="true"></div>
+      <div class="topbar__title">
+        <span class="topbar__eyebrow">Demo Fabrication Co. — Cutting Station</span>
+        <h1>Cutting Station &amp; Material Handover</h1>
+      </div>
+    </a>
+    <div class="topbar__meta">
+      <span class="cp-badge" title="This tool is being trialled with the cutting team">Testing</span>
+      <a class="btn btn--ghost" href="index.html">
+        <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M4 10 10 4l6 6M6 8.5V16h8V8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>All Departments</span>
+      </a>
+      <div class="theme-toggle" id="theme-toggle"></div>
+      <div class="user-menu" id="user-menu"></div>
+    </div>
+  </header>
+
+  <main id="cp-tool">
+
+    <div class="cp-tabs cp-sections" role="tablist" aria-label="Sections">
+      <button class="btn btn--primary" id="secBtnPlan" type="button">Cutting Plan</button>
+      <button class="btn btn--ghost" id="secBtnStatus" type="button">Cutting &amp; Beveling Status</button>
+      <button class="btn btn--ghost" id="secBtnHandover" type="button">Material Handover</button>
+    </div>
+
+    <div id="secPlan">
+
+    <p class="cp-intro">Pipes and structural profiles. Upload or paste the cut list and the available lengths, review the plan, then accept it. The calculation runs in your browser. <strong>Testing:</strong> keep using your master workbook as usual and check each plan before cutting.</p>
+
+    <div class="cp-tabs" role="tablist">
+      <button class="btn btn--primary" id="tabPlan" role="tab" aria-selected="true" type="button">New plan</button>
+      <button class="btn btn--ghost" id="tabRec" role="tab" aria-selected="false" type="button">Accepted plans</button>
+    </div>
+
+    <!-- ============ ACCEPTED PLANS ============ -->
+    <section id="paneRec" hidden>
+      <div class="cp-card">
+        <div class="cp-card__head"><h3>Accepted plans</h3><span class="cp-hint">Newest first. A plan can be undone only if no later plan used the same pipe.</span></div>
+        <div id="recFilters" hidden>
+          <div class="cp-grid">
+            <label>Search Plan No.<input type="text" id="recQ" placeholder="Type part of the plan number"></label>
+            <label>Project Code<select id="recProj"><option value="">All projects</option></select></label>
+            <label>Drive<select id="recDrv"><option value="">All</option><option value="saved">Saved to Drive</option><option value="not">Not saved</option></select></label>
+            <label>Plan date from<input type="text" id="recFrom" placeholder="DD-MM-YYYY" inputmode="numeric" maxlength="10"></label>
+            <label>Plan date to<input type="text" id="recTo" placeholder="DD-MM-YYYY" inputmode="numeric" maxlength="10"></label>
+          </div>
+          <div class="cp-row"><button class="btn btn--primary" id="recXl" type="button">Download list (Excel)</button><button class="btn btn--ghost" id="recClear" type="button">Clear filters</button><span id="recCount" class="cp-note" style="margin:0"></span></div>
+        </div>
+        <div class="cp-tw"><table id="recTbl"></table></div>
+        <p id="recEmpty" class="cp-note">No accepted plans yet.</p>
+        <div class="cp-row"><button class="btn btn--ghost" id="exp" type="button">Export records (.json)</button><label class="cp-inline">Import records <input type="file" id="imp" accept=".json"></label></div>
+        <p class="cp-note">Records are kept in this browser. Export a backup now and then; accepted plans can also be saved to Google Drive.</p>
+      </div>
+    </section>
+
+    <!-- ============ NEW PLAN ============ -->
+    <section id="panePlan">
+      <div class="cp-card">
+        <div class="cp-card__head"><h3>1. Inputs</h3><span class="cp-hint">Upload a file or paste rows copied from Excel</span></div>
+        <div class="cp-grid">
+          <div>
+            <label>Cut list: upload a file (.xlsx / .csv)<input type="file" id="cutFile" accept=".xlsx,.xls,.csv"></label>
+            <label class="cp-or">or paste the rows copied from Excel<textarea id="cutPaste" rows="6" spellcheck="false" placeholder="Paste here, including the heading row (any column order, e.g. Project, Drawing No., Spool No., Item Code, Length, Group, Bevel)"></textarea></label>
+            <div class="cp-map" id="cutMap"></div>
+            <button class="btn btn--ghost cp-clear" type="button" data-clear="cutPaste">Clear pasted data</button>
+          </div>
+          <div>
+            <label>Available pipes: upload a file (.xlsx / .csv)<input type="file" id="barFile" accept=".xlsx,.xls,.csv"></label>
+            <label class="cp-or">or paste the rows copied from Excel<textarea id="barPaste" rows="6" spellcheck="false" placeholder="Paste here, including the heading row (any column order, e.g. Barcode, Item Code, Length, Control No., Heat No.)"></textarea></label>
+            <div class="cp-map" id="barMap"></div>
+            <button class="btn btn--ghost cp-clear" type="button" data-clear="barPaste">Clear pasted data</button>
+          </div>
+        </div>
+        <p class="cp-note">Pasting: copy the cells in Excel <strong>with the heading row</strong>. The columns can be in any order, and extra columns are ignored. After you paste, a preview shows how each column was read; if a heading is not recognised, choose the right field in the dropdown above that column. Fields marked * are required. If you both upload and paste, the pasted rows are used.</p>
+        <p class="cp-note">Cut list columns: Project, Drawing No., Spool No., Item Code, Length, Group, Bevel (optional: Qty).<br>Available pipes columns: Barcode, Item Code, Length, Control No., Heat No. Length is the current remaining length.</p>
+        <div class="cp-row"><button class="btn btn--ghost" id="tplCut" type="button">Cut-list template</button><button class="btn btn--ghost" id="tplBar" type="button">Available-pipes template</button></div>
+      </div>
+
+      <div class="cp-card">
+        <div class="cp-card__head"><h3>2. Settings</h3><span class="cp-hint">All lengths in mm</span></div>
+        <div class="cp-grid">
+          <label>Cutting Plan No.<input type="text" id="planNo" placeholder="ARR 101-005"></label>
+          <label>Date<input type="text" id="date" placeholder="DD-MM-YYYY" inputmode="numeric" maxlength="10"></label>
+          <label>Cutting allowance per piece (mm)<input type="number" id="kerf" value="8" min="0" step="0.5"></label>
+          <label>Trim at pipe start (mm)<input type="number" id="trim" value="0" min="0"></label>
+        </div>
+        <div class="cp-row"><button class="btn btn--primary" id="run" type="button">Create plan</button><span id="msg" role="status"></span></div>
+      </div>
+      <div id="warns" class="cp-card" hidden></div>
+    </section>
+
+    <!-- ============ PLAN RESULT ============ -->
+    <section id="sheet" hidden>
+      <div class="cp-card" id="actions"></div>
+      <section class="kpi-strip cp-kpis" id="kpis" aria-label="Plan summary"></section>
+      <div id="mnaBox"></div>
+      <div id="bars"></div>
+    </section>
+
+    </div><!-- /secPlan -->
+
+    <!-- ============ CUTTING & BEVELING STATUS ============ -->
+    <section id="secStatus" hidden>
+      <div class="cp-card" id="stPickBox">
+        <div class="cp-card__head"><h3>Select a cutting plan</h3><span class="cp-hint">Plans saved to Drive from the Cutting Plan section</span></div>
+        <div class="cp-row" style="margin-top:0">
+          <input type="search" id="stSearch" class="cp-search" placeholder="Search plan no. or project" aria-label="Search plans">
+          <button class="btn btn--ghost" id="stRefresh" type="button">Refresh list</button>
+        </div>
+        <div class="cp-tw"><table id="stPlans"></table></div>
+        <p id="stListNote" class="cp-note"></p>
+      </div>
+
+      <div class="cp-card" id="stRelBox">
+        <div class="cp-card__head"><h3>Released pieces</h3><span class="cp-hint">Pieces that could not be cut. Download the list to re-plan them and to correct your master workbook.</span></div>
+        <div class="cp-row" style="margin-top:0">
+          <input type="search" id="stRelQ" class="cp-search" placeholder="Search plan, drawing or spool" aria-label="Search released pieces">
+          <button class="btn btn--primary" id="stRelXl" type="button">Download released pieces (Excel)</button>
+        </div>
+        <div class="cp-tw"><table id="stRelTbl"></table></div>
+        <p id="stRelNote" class="cp-note"></p>
+      </div>
+
+      <dialog id="relDlg" class="cp-dlg" aria-labelledby="relTitle">
+        <h3 id="relTitle">Release this piece</h3>
+        <p id="relWhat" class="cp-note"></p>
+        <label>Reason<select id="relReason"><option value="">- choose -</option><option>Pipe end damaged</option><option>Rusted</option><option>Pipe too short</option><option>Wrong pipe found</option><option>Other</option></select></label>
+        <label>Remark (optional)<input type="text" id="relRemark" maxlength="300"></label>
+        <fieldset class="cp-fs"><legend>What happens to the pipe length?</legend>
+          <label class="cp-inline"><input type="radio" name="relDisp" id="relBack" checked> Goes back to the pipe (can be used for another spool)</label>
+          <label class="cp-inline"><input type="radio" name="relDisp" id="relScrap"> Scrap (written off)</label>
+          <label>Length returned to the pipe (mm)<input type="number" id="relRet" min="0" step="1"></label>
+          <p id="relRemain" class="cp-note"></p>
+        </fieldset>
+        <div class="cp-row"><button class="btn btn--primary" id="relOk" type="button">Release piece</button><button class="btn btn--ghost" id="relCancel" type="button">Cancel</button></div>
+      </dialog>
+
+      <div id="stView" hidden>
+        <div class="cp-card" id="stHead"></div>
+        <div id="stBars"></div>
+        <div class="cp-savebar" id="stSaveBar" hidden>
+          <span id="stDirty"></span>
+          <button class="btn btn--ghost" id="stDiscard" type="button">Discard</button>
+          <button class="btn btn--primary" id="stSave" type="button">Save changes</button>
+        </div>
+        <button id="stBack" type="button" hidden></button>
+      </div>
+
+      <div class="cp-card" id="stReport">
+        <div class="cp-card__head"><h3>Download status report</h3><span class="cp-hint">Excel file made from the master sheet in Drive</span></div>
+        <div class="cp-grid">
+          <label>Project<select id="rpProject"><option value="">All projects</option></select></label>
+          <label>Week (as in the tracker, e.g. Week 27)<input type="text" id="rpWeek" placeholder="All weeks"></label>
+          <label>Date from<input type="text" id="rpFrom" placeholder="DD-MM-YYYY" inputmode="numeric" maxlength="10"></label>
+          <label>Date to<input type="text" id="rpTo" placeholder="DD-MM-YYYY" inputmode="numeric" maxlength="10"></label>
+        </div>
+        <div class="cp-row"><label class="cp-inline"><input type="checkbox" id="rpHist" checked> Include the history sheet (every tick and untick)</label></div>
+        <div class="cp-row"><button class="btn btn--primary" id="rpDownload" type="button">Download report (Excel)</button><span id="rpMsg" role="status"></span></div>
+        <p class="cp-note">The date range matches pieces whose Cutting Date or Beveling Date falls inside it. Leave the dates empty to get everything.</p>
+      </div>
+    </section>
+
+    <!-- ============ MATERIAL HANDOVER ============ -->
+    <section id="secHandover" hidden>
+      <div class="cp-card">
+        <div class="cp-card__head"><h3>Choose what to load</h3><span class="cp-hint" id="hBomInfo"></span></div>
+        <div class="cp-grid">
+          <label>Project (required)<select id="hProject"><option value="">- choose a project -</option></select></label>
+          <div class="cp-field"><span class="cp-lbl">Week</span>
+            <details class="cp-dd" id="hWeekDD"><summary id="hWeekSum">All weeks</summary>
+              <div class="cp-ddpanel">
+                <textarea id="hWeek" class="cp-multi" rows="2" spellcheck="false" placeholder="Or type / paste weeks (one per line or comma separated)"></textarea>
+                <div class="cp-opts" id="hWeekOpts"><span class="cp-note">Choose a project first.</span></div>
+                <button class="btn btn--ghost" type="button" data-ddclear="week">Clear</button>
+              </div>
+            </details></div>
+          <div class="cp-field"><span class="cp-lbl">Group</span>
+            <details class="cp-dd" id="hGroupDD"><summary id="hGroupSum">All groups</summary>
+              <div class="cp-ddpanel">
+                <textarea id="hGroup" class="cp-multi" rows="2" spellcheck="false" placeholder="Or type / paste groups (one per line or comma separated)"></textarea>
+                <div class="cp-opts" id="hGroupOpts"><span class="cp-note">Choose a project first.</span></div>
+                <button class="btn btn--ghost" type="button" data-ddclear="group">Clear</button>
+              </div>
+            </details></div>
+          <label>Drawing contains<input type="search" id="hDrawing" placeholder="optional"></label>
+          <label>Spool contains<input type="search" id="hSpool" placeholder="optional"></label>
+          <label>Date for my ticks<input type="text" id="hDate" placeholder="DD-MM-YYYY" inputmode="numeric" maxlength="10"></label>
+        </div>
+        <div class="cp-row"><button class="btn btn--primary" id="hLoad" type="button">Load data</button><span id="hNote" class="cp-note" style="margin:0" role="status"></span></div>
+        <p class="cp-note">Pick the project (and, if you like, week, group or drawing), then press <b>Load data</b>. Only that project is loaded, so the page stays fast. Pipes are filled in automatically from the Cutting &amp; Beveling Status; you only tick the fittings and other items you receive.</p>
+      </div>
+
+      <div id="hBody" hidden>
+        <div class="cp-card">
+          <div class="cp-card__head"><h3>Filter and tick</h3><span class="cp-hint" id="hCount"></span></div>
+          <div class="cp-grid">
+            <label>Spool status<select id="hStatus"><option value="">All</option><option value="complete">Complete material available</option><option value="partial">Partial MNA</option><option value="balance">Material balance</option></select></label>
+            <label>Show items<select id="hLines"><option value="">All items</option><option value="norecv">Not received yet</option><option value="recvonly">Received, not handed over</option><option value="handed">Handed over</option></select></label>
+            <label>Item contains<input type="search" id="hItem" placeholder="e.g. elbow, flange, EC0103160"></label>
+          </div>
+          <div class="cp-row">
+            <label class="cp-allbox"><input type="checkbox" id="hAllRecv"> <span id="hAllRecvLbl">Received: all shown items</span></label>
+            <label class="cp-allbox"><input type="checkbox" id="hAllHand"> <span id="hAllHandLbl">Handed over: all shown items</span></label>
+          </div>
+          <p class="cp-note">The two boxes above tick every item that is currently shown (all spools matching the filters, not only this page). Pipes cannot be ticked as received; they follow the Cutting &amp; Beveling Status.</p>
+        </div>
+
+        <div class="cp-card">
+          <div class="cp-card__head"><h3>Spools</h3><span class="cp-hint" id="hSummary"></span></div>
+          <div class="cp-tw"><table class="cp-sttbl" id="hTable"></table></div>
+          <div class="cp-row"><button class="btn btn--ghost" id="hMore" type="button" hidden>Show more</button><button class="btn btn--ghost" id="hReport" type="button">Download shown items (Excel)</button></div>
+          <p class="cp-note">Open a spool with the arrow to see its items. Ticking <b>Received</b> or <b>Handed over</b> on a spool row ticks all its shown items. Dates start as the date above and can be changed. <b>Handed over to</b> starts as the spool's Group. Nothing is saved until you press <b>Save changes</b>; a warning appears if you hand over items that were not received, and you can still save.</p>
+          <div class="cp-savebar" id="hSaveBar" hidden>
+            <span id="hDirty"></span>
+            <button class="btn btn--ghost" id="hDiscard" type="button">Discard</button>
+            <button class="btn btn--primary" id="hSave" type="button">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="js/user-menu.js?v=20260920b"></script>
+<script src="vendor/xlsx.core.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="js/demo-drive.js"></script>
+<script src="js/cutplan-engine.js?v=20261021"></script>
+<script src="js/config.js?v=20261021"></script>
+<script src="js/cutting-plan.js?v=20261025"></script>
+<script src="js/cutting-status.js?v=20261025"></script>
+<script src="js/material-handover.js?v=20261029"></script>
+<link rel="stylesheet" href="css/demo.css">
+<script src="js/demo.js"></script>
+</body>
+</html>
