@@ -19,11 +19,9 @@
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", theme === "light" ? "#ffffff" : "#0a0e17");
     if (!btn) return;
-    var toLight = theme === "dark";
-    btn.setAttribute("aria-label", toLight ? "Switch to light theme" : "Switch to dark theme");
-    btn.setAttribute("title", toLight ? "Light theme" : "Dark theme");
-    var icon = btn.querySelector("i");
-    if (icon) icon.className = "bi " + (toLight ? "bi-sun-fill" : "bi-moon-stars-fill");
+    var dark = theme === "dark";
+    btn.setAttribute("aria-checked", dark ? "true" : "false");
+    btn.setAttribute("title", dark ? "Dark mode: on" : "Dark mode: off");
   }
 
   apply(root.getAttribute("data-theme") === "light" ? "light" : "dark");
@@ -33,12 +31,6 @@
       var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
       apply(next);
       try { localStorage.setItem(KEY, next); } catch (e) { /* private mode: still works for this visit */ }
-    });
-  }
-
-  if (window.matchMedia) {
-    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function (e) {
-      if (!saved()) apply(e.matches ? "light" : "dark");
     });
   }
 })();

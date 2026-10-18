@@ -2,7 +2,7 @@
 # Light / dark theme
 # main.css holds the original dark palette (:root). This file adds
 # the light palette and the toggle button. Pick: [data-theme] on <html>,
-# set by assets/js/theme.js (saved choice, else the OS preference).
+# set by assets/js/theme.js (saved choice, else dark).
 --------------------------------------------------------------*/
 :root { color-scheme: dark; }
 
@@ -118,46 +118,61 @@
   background-color: var(--background-color);
 }
 
-/* Theme toggle */
+/* Theme switch: a sliding on/off switch (knob right = dark mode ON) */
 .theme-toggle {
-  width: 38px;
-  height: 38px;
+  position: relative;
+  width: 62px;
+  height: 32px;
   margin-left: 18px;
   padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  font-size: 17px;
-  line-height: 1;
-  color: var(--nav-color);
+  display: inline-block;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--nav-color), transparent 75%);
   background: color-mix(in srgb, var(--nav-color), transparent 90%);
-  border: 1px solid color-mix(in srgb, var(--nav-color), transparent 78%);
-  border-radius: 50%;
   cursor: pointer;
-  transition: color 0.25s, background 0.25s, transform 0.25s;
+  transition: background 0.3s, border-color 0.3s;
 }
-.theme-toggle:hover {
-  color: var(--accent-color);
-  transform: rotate(18deg);
+.theme-toggle .ti-sun,
+.theme-toggle .ti-moon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  line-height: 1;
+  transition: opacity 0.3s;
 }
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
+.theme-toggle .ti-sun { left: 9px; color: #f59e0b; }
+.theme-toggle .ti-moon { right: 9px; color: #94a3b8; }
+.theme-toggle .ti-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.35);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.theme-toggle[aria-checked="true"] { background: #1e293b; border-color: #334155; }
+.theme-toggle[aria-checked="true"] .ti-knob { transform: translateX(30px); }
+.theme-toggle[aria-checked="true"] .ti-sun { opacity: 0.35; }
+.theme-toggle[aria-checked="true"] .ti-moon { color: #e2e8f0; }
+.theme-toggle[aria-checked="false"] .ti-moon { opacity: 0.55; }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 3px; }
 
 @media (max-width: 1200px) {
-  .theme-toggle {
-    order: 2;
-    margin: 0 12px 0 0;
-    width: 34px;
-    height: 34px;
-    font-size: 15px;
-  }
+  .theme-toggle { order: 2; margin: 0 12px 0 0; width: 54px; height: 28px; }
+  .theme-toggle .ti-knob { width: 20px; height: 20px; }
+  .theme-toggle[aria-checked="true"] .ti-knob { transform: translateX(26px); }
+  .theme-toggle .ti-sun { left: 7px; font-size: 12px; }
+  .theme-toggle .ti-moon { right: 7px; font-size: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .theme-toggle { transition: none; }
+  .theme-toggle, .theme-toggle .ti-knob, .theme-toggle i { transition: none; }
+}
 }
 
 /* Keep the projects section as clean white; cards carry the soft tint. */

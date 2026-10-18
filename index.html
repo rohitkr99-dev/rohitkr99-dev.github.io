@@ -14,9 +14,7 @@
     (function () {
       var t = null;
       try { t = localStorage.getItem('rc-theme'); } catch (e) {}
-      if (t !== 'light' && t !== 'dark') {
-        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-      }
+      if (t !== 'light' && t !== 'dark') t = 'dark';   // dark by default; light only when the visitor switches it
       document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
@@ -50,7 +48,7 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
-  <link href="assets/css/theme.css?v=5" rel="stylesheet">
+  <link href="assets/css/theme.css?v=7" rel="stylesheet">
   <link href="assets/css/projects.css?v=2" rel="stylesheet">
 
   <!-- =======================================================
@@ -84,7 +82,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <button type="button" class="theme-toggle" aria-label="Switch to light theme" title="Light theme"><i class="bi bi-sun-fill" aria-hidden="true"></i></button>
+      <button type="button" class="theme-toggle" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode"><i class="bi bi-sun-fill ti-sun" aria-hidden="true"></i><i class="bi bi-moon-stars-fill ti-moon" aria-hidden="true"></i><span class="ti-knob" aria-hidden="true"></span></button>
 
       <a class="btn-getstarted" href="#contact">Get In Touch</a>
 
@@ -1080,7 +1078,7 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js?v=2"></script>
-  <script src="assets/js/theme.js?v=2"></script>
+  <script src="assets/js/theme.js?v=4"></script>
 
   <!-- Contact form -> Formspree (static site, no server backend) -->
   <script>
