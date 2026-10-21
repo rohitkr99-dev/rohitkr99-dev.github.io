@@ -131,6 +131,10 @@
   transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .tp-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent-color), transparent 40%); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12); }
+.tp-card { overflow: hidden; }
+.tp-card-img { margin: -24px -24px 18px; aspect-ratio: 16 / 9; overflow: hidden; background: color-mix(in srgb, var(--surface-color), var(--default-color) 8%); }
+.tp-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
+.tp-card:hover .tp-card-img img { transform: scale(1.05); }
 .tp-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .tp-card-top > i {
   width: 46px;
