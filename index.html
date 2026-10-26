@@ -1061,6 +1061,7 @@
     </div>
 
     <div class="container copyright text-center mt-4">
+      <p class="visitor-counter"><i class="bi bi-eye"></i> Visitors: <strong id="visitor-count">&ndash;</strong></p>
       <p>© <span>Copyright</span> <strong class="px-1 sitename">Rohit Kumar Choubey</strong> <span>All Rights Reserved</span></p>
       <div class="credits">
         <!-- All the links in the footer should remain intact. -->
@@ -1135,6 +1136,29 @@
             errorMessage.style.display = 'block';
           });
       });
+    })();
+  </script>
+
+  <script>
+    // Visitor counter (abacus.jasoncameron.dev): counts each browser once, then just reads the total.
+    (function () {
+      var el = document.getElementById('visitor-count');
+      var base = 'https://abacus.jasoncameron.dev/';
+      var key = 'rohitchoubey.dpdns.org/visits';
+      var seen = false;
+      // Visit the site once with ?owner=1 (or ?owner=0 to undo) to exclude that browser from the count.
+      try {
+        var m = location.search.match(/[?&]owner=([01])/);
+        if (m) localStorage.setItem('visit-owner', m[1]);
+        seen = localStorage.getItem('visit-counted') === '1' || localStorage.getItem('visit-owner') === '1';
+      } catch (e) {}
+      fetch(base + (seen ? 'get/' : 'hit/') + key)
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (typeof d.value === 'number') el.textContent = d.value.toLocaleString();
+          try { localStorage.setItem('visit-counted', '1'); } catch (e) {}
+        })
+        .catch(function () { el.closest('.visitor-counter').style.display = 'none'; });
     })();
   </script>
 
