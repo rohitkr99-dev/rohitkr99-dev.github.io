@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page not found | Rohit Kumar Choubey</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a101c; color: #cbd5e6; font: 16px/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #60a5fa; }
+  </style>
+  <script>
+    // links from the previous version of the site live under /classic/ now
+    (function () {
+      var p = location.pathname;
+      if (p.indexOf('/live-spool-demo/') === 0 || p.indexOf('/assets/') === 0 || p === '/live-spool-demo') {
+        location.replace('/classic' + (p === '/live-spool-demo' ? '/live-spool-demo/' : p) + location.search + location.hash);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <main>
+    <h1>Page not found</h1>
+    <p><a href="/">Go to the home page</a></p>
+  </main>
+</body>
+</html>
