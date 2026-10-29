@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.PORTAL_TARGET='site'</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5f4bb6">
+<title>Sort It Out</title>
+<style>
+:root{--lh:42px;--w:56px;--bg1:#5f4bb6;--bg2:#c05fb0;--ink:#3b2a66}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;gap:12px;padding:max(14px,env(safe-area-inset-top)) 16px max(14px,env(safe-area-inset-bottom));
+  font:800 16px "Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Nunito","Trebuchet MS",system-ui,sans-serif;color:#fff;touch-action:manipulation;
+  background:radial-gradient(circle at 20% 15%,#ffffff33,transparent 40%),radial-gradient(circle at 85% 80%,#ffffff22,transparent 45%),linear-gradient(160deg,var(--bg1),var(--bg2))}
+
+/* HUD */
+.hud{display:flex;align-items:center;gap:10px;max-width:460px;width:100%;margin:0 auto}
+.pill{background:#0003;border-radius:999px;padding:8px 16px;box-shadow:inset 0 -3px 0 #0002}
+.pill b{font-size:20px;margin-left:4px}
+.hud .gap{flex:1}
+.progress{max-width:460px;width:100%;margin:0 auto;height:14px;background:#0003;border-radius:99px;overflow:hidden;box-shadow:inset 0 2px 4px #0004}
+.progress i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(#fff2a8,#ffc83d);box-shadow:inset 0 -3px 0 #0002;transition:width .4s cubic-bezier(.2,1.2,.4,1)}
+
+/* Chunky buttons */
+.btn{font:inherit;color:#4a2f00;background:linear-gradient(#ffe066,#ffb300);border:0;border-bottom:5px solid #c78500;border-radius:16px;padding:10px 16px;cursor:pointer;
+  box-shadow:0 6px 12px #0003;position:relative;transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active:not(:disabled){transform:translateY(3px);border-bottom-width:2px}
+.btn:focus-visible,.tube:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.btn:disabled{filter:grayscale(.8) brightness(.9);opacity:.55;cursor:default}
+.btn.blue{color:#fff;background:linear-gradient(#5ec2ff,#2a7de1);border-bottom-color:#1a55a0}
+.btn.green{color:#fff;background:linear-gradient(#6be585,#1fa94b);border-bottom-color:#127a32}
+.btn.icon{width:44px;height:44px;padding:0;font-size:20px}
+.btn.big{font-size:22px;padding:14px 36px;margin-top:14px}
+.actions{display:flex;gap:12px;justify-content:center}
+.act{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:92px;font-size:14px}
+.act span{font-size:22px;line-height:1}
+.act i{position:absolute;top:-8px;right:-6px;font-style:normal;font-size:11px;color:#fff;background:#e0364e;border-radius:99px;padding:2px 7px;box-shadow:0 2px 4px #0004}
+
+/* Board */
+main{flex:1;display:flex;overflow:auto;padding:28px 0 12px}
+#board{margin:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:40px 16px;max-width:calc((var(--w) + 16px) * 6)}
+
+/* Glass tube */
+.tube{position:relative;width:var(--w);height:calc(var(--lh)*4 + 3px);padding:0;border:0;background:none;cursor:pointer;transition:transform .15s cubic-bezier(.3,1.4,.5,1);font:inherit}
+.tube::after{content:"";position:absolute;left:4px;right:4px;bottom:-12px;height:10px;border-radius:50%;background:#0005;filter:blur(4px);z-index:-1}
+.tube.sel{transform:translateY(-20px)}
+.glass{position:absolute;inset:0;border:3px solid #ffffffc0;border-top:0;border-radius:0 0 30px 30px;background:#ffffff2e;box-shadow:inset 0 0 14px #ffffff59}
+.tube.sel .glass{border-color:#fff;box-shadow:inset 0 0 14px #fff8,0 0 20px #fffc}
+.liq{position:absolute;left:3px;right:3px;bottom:3px;top:0;display:flex;flex-direction:column-reverse;overflow:hidden;border-radius:0 0 27px 27px}
+.layer{flex:0 0 var(--lh);display:grid;place-items:center;font-size:15px;color:#0000003d;transform-origin:bottom;
+  background:linear-gradient(90deg,#0000002e,#0000 28%,#ffffff2e 55%,#0000 80%,#0000001f),var(--c);box-shadow:inset 0 2px 0 #ffffff47}
+.layer.in{animation:grow .35s ease-out}
+.rim{position:absolute;top:-5px;left:-5px;right:-5px;height:10px;border:3px solid #ffffffd9;border-radius:8px;background:#ffffff33}
+.shine{position:absolute;left:9px;top:14px;bottom:26px;width:7px;border-radius:6px;background:linear-gradient(#ffffffb3,#ffffff1a);pointer-events:none}
+.tube.done .glass{border-color:#ffe066;box-shadow:inset 0 0 14px #ffe06699,0 0 18px 2px #ffe066b3}
+.tube.done .rim{border-color:#ffe066;background:#ffe066aa}
+.tube.done{animation:wiggle .5s}
+.stream{position:fixed;width:8px;border-radius:4px;transform-origin:top;pointer-events:none;z-index:40;box-shadow:inset -2px 0 0 #fff5}
+.fx{position:fixed;width:9px;height:9px;border-radius:50%;pointer-events:none;z-index:50}
+
+/* Overlay / cards */
+#overlay{position:fixed;inset:0;background:#1a1040b3;display:grid;place-items:center;padding:16px;z-index:60;backdrop-filter:blur(3px)}
+#overlay[hidden]{display:none}
+#card{background:#fff;color:var(--ink);border-radius:28px;padding:28px 36px 32px;text-align:center;max-width:340px;box-shadow:0 20px 50px #0006;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+#card h1{font-size:56px;line-height:.95;margin:0 0 10px;color:var(--bg1)}
+#card h2{margin:6px 0;font-size:30px}
+#card p{margin:6px 0;font-size:18px;opacity:.75}
+#card .big-emoji{font-size:64px}
+.adbar{height:10px;border-radius:9px;background:#0001;overflow:hidden;margin-top:14px}
+.adbar i{display:block;height:100%;background:#2a7de1;animation:fill 1.5s linear forwards}
+
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@keyframes fill{from{width:0}to{width:100%}}
+@keyframes wiggle{30%{transform:scale(1.08,.94)}60%{transform:scale(.97,1.04)}}
+@media (max-width:380px){:root{--lh:38px;--w:50px}.act{min-width:80px}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header class="hud">
+  <div class="pill">Level<b id="lv"></b></div>
+  <div class="pill">Moves<b id="mv">0</b></div>
+  <div class="gap"></div>
+  <button class="btn blue icon" id="snd" aria-label="Toggle sound">🔊</button>
+</header>
+<div class="progress" aria-label="Progress"><i id="bar"></i></div>
+<main><div id="board" aria-label="Game board"></div></main>
+<div class="actions">
+  <button class="btn blue act" id="undo"><span>↶</span>Undo<i>AD</i></button>
+  <button class="btn green act" id="restart"><span>⟲</span>Restart</button>
+  <button class="btn blue act" id="add"><span>＋</span>Tube<i>AD</i></button>
+</div>
+<div id="overlay" hidden><div id="card" role="dialog" aria-live="polite"></div></div>
+
+<script>
+const CAP = 4;
+const COLORS = ['#ff4d5e','#3aa0ff','#2fd36b','#ffd23f','#a45cf0','#ff8a2b','#18d1c0','#ff7eb6','#8e9aaf','#2d3a5e'];
+const GLYPH  = ['●','▲','■','★','♦','✚','♥','⬟','☾','✿']; // shapes help colour-blind players
+const BGS = [['#5f4bb6','#c05fb0'],['#0e8f9e','#3a6fd8'],['#d64f6b','#f08a4b'],['#2b6cb0','#4fd1c5'],['#7b3fa0','#e0567a']];
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lh'));
+
+// ---- Sound (tiny WebAudio synth, no files) ----
+let ac, muted = false;
+try { muted = localStorage.getItem('sio-mute') === '1'; } catch {}
+function tone(f, t = 0, d = .12, type = 'sine', v = .12){
+  if (muted) return;
+  try {
+    ac ??= new AudioContext();
+    const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + t;
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(v, s); g.gain.exponentialRampToValueAtTime(.001, s + d);
+    o.connect(g).connect(ac.destination); o.start(s); o.stop(s + d);
+  } catch {}
+}
+const sfx = {
+  tap:  () => tone(520, 0, .06, 'triangle'),
+  no:   () => tone(140, 0, .12, 'square', .04),
+  pour: () => { tone(300, 0, .25, 'sine', .1); tone(420, .1, .25, 'sine', .08); },
+  done: () => [660, 830, 990].forEach((f, i) => tone(f, i * .08, .2, 'triangle')),
+  win:  () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .12, .3, 'triangle', .15)),
+};
+
+// ---- Particles ----
+function burst(x, y, n, colors){
+  for (let i = 0; i < n; i++) {
+    const d = document.createElement('i'); d.className = 'fx';
+    d.style.cssText = `left:${x}px;top:${y}px;background:${colors[i % colors.length]}`;
+    document.body.append(d);
+    const a = Math.random() * 6.28, r = 40 + Math.random() * 110;
+    d.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 },
+               { transform: `translate(${Math.cos(a) * r}px,${Math.sin(a) * r + 50}px) scale(.3)`, opacity: 0 }],
+              { duration: 700 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = () => d.remove();
+  }
+}
+
+// ---- Overlay + Ads: replace the two Ads bodies with the portal SDK (e.g. Poki commercialBreak / rewardedBreak) ----
+function overlay(html, label, fn){
+  $('card').innerHTML = html + (label ? `<br><button class="btn big" id="ok">${label}</button>` : '');
+  $('overlay').hidden = false;
+  if (label) { $('ok').onclick = () => { $('overlay').hidden = true; fn(); }; $('ok').focus(); }
+}
+function adBreak(title, done){
+  overlay(`<p>${title}</p><h2>Placeholder ad</h2><div class="adbar"><i></i></div>`);
+  setTimeout(() => { $('overlay').hidden = true; done(); }, 1500);
+}
+let adCalls = 0;   // placeholder ads: show one break in three
+const Ads = { interstitial: done => ++adCalls % 3 ? done() : adBreak('Advertisement', done), rewarded: done => adBreak('Watch to claim your reward', done) };
+
+// ---- State ----
+let level = 1, completed = 0, nColors = 3, tubes, initial, sel = null, hist = [], moves = 0, addedTube = false, busy = false, els = [];
+try { level = +localStorage.getItem('sio-level') || 1; } catch {}
+
+const isDone = t => t.length === CAP && t.every(v => v === t[0]);
+const won = () => tubes.every(t => !t.length || isDone(t));
+
+function gen(n){
+  const pool = [];
+  for (let c = 0; c < n; c++) for (let i = 0; i < CAP; i++) pool.push(c);
+  let t;
+  do {
+    for (let i = pool.length; i > 1;) { const j = Math.random() * i-- | 0; [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    t = Array.from({ length: n }, (_, i) => pool.slice(i * CAP, i * CAP + CAP));
+  } while (t.some(x => x.every(v => v === x[0])));   // no pre-solved tubes
+  return [...t, [], []];
+}
+
+function startLevel(){
+  nColors = Math.min(3 + (level - 1) / 2 | 0, COLORS.length);
+  tubes = gen(nColors);
+  initial = JSON.stringify(tubes); sel = null; hist = []; moves = 0; addedTube = false;
+  const [c1, c2] = BGS[((level - 1) / 5 | 0) % BGS.length];
+  document.documentElement.style.setProperty('--bg1', c1);
+  document.documentElement.style.setProperty('--bg2', c2);
+  build();
+}
+
+function build(){
+  $('board').innerHTML = tubes.map((_, i) =>
+    `<button class="tube" data-i="${i}" aria-label="Tube ${i + 1}"><div class="glass"></div><div class="liq"></div><div class="rim"></div><div class="shine"></div></button>`).join('');
+  els = [...$('board').children];
+  tubes.forEach((_, i) => paint(i));
+  hud(); setSel();
+}
+
+function paint(i, fresh = 0){
+  const t = tubes[i];
+  els[i].querySelector('.liq').innerHTML = t.map((c, k) =>
+    `<div class="layer${k >= t.length - fresh ? ' in' : ''}" style="--c:${COLORS[c]}">${GLYPH[c]}</div>`).join('');
+  els[i].classList.toggle('done', isDone(t));
+}
+
+function hud(){
+  $('lv').textContent = level; $('mv').textContent = moves;
+  $('bar').style.width = tubes.filter(isDone).length / nColors * 100 + '%';
+  $('undo').disabled = !hist.length; $('add').disabled = addedTube;
+}
+const setSel = () => els.forEach((e, k) => e.classList.toggle('sel', k === sel));
+
+// ---- Gameplay ----
+const canPour = (a, b) => { const A = tubes[a], B = tubes[b], c = A.at(-1);
+  return c !== undefined && B.length < CAP && (!B.length || B.at(-1) === c); };
+
+function move(a, b){
+  hist.push(JSON.stringify(tubes)); moves++;
+  const A = tubes[a], B = tubes[b], c = A.at(-1); let k = 0;
+  while (A.length && A.at(-1) === c && B.length < CAP) { B.push(A.pop()); k++; }
+  return k;
+}
+
+async function doPour(a, b){
+  busy = true;
+  const A = els[a], B = els[b], c = tubes[a].at(-1), before = tubes[b].length;
+  if (reduce) { paint(b, move(a, b)); paint(a); }
+  else {
+    A.style.transition = 'none'; A.style.zIndex = 10;
+    const ra = A.getBoundingClientRect(), rb = B.getBoundingClientRect();
+    const sgn = ra.left < rb.left ? 1 : -1, h = ra.height, th = 65 * Math.PI / 180;
+    const mx = rb.left + rb.width / 2 - sgn * 10, my = rb.top - 6;            // mouth of the pouring tube
+    const dx = mx - sgn * h / 2 * Math.sin(th) - (ra.left + ra.width / 2);
+    const dy = my + h / 2 * Math.cos(th) - (ra.top + ra.height / 2);
+    const pose = `translate(${dx}px,${dy}px) rotate(${sgn * 65}deg)`;
+    const anim = A.animate([{ transform: 'translateY(-20px)' }, { transform: pose, offset: .3 }, { transform: pose, offset: .72 }, { transform: 'none' }],
+                           { duration: 1000, easing: 'ease-in-out' });
+    await sleep(300);
+    const s = document.createElement('i'); s.className = 'stream';
+    s.style.cssText = `left:${mx - 4}px;top:${my}px;height:${Math.max(0, rb.bottom - 3 - before * LH - my)}px;background:${COLORS[c]}`;
+    document.body.append(s);
+    s.animate([{ transform: 'scaleY(0)' }, { transform: 'scaleY(1)' }], { duration: 120, fill: 'forwards' });
+    sfx.pour();
+    const k = move(a, b); paint(a); paint(b, k);
+    await sleep(380);
+    s.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 100, fill: 'forwards' }).onfinish = () => s.remove();
+    await anim.finished;
+    A.style.zIndex = A.style.transition = '';
+  }
+  hud();
+  if (isDone(tubes[b])) { const r = B.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + 20, 16, [COLORS[c], '#fff', '#ffe066']); sfx.done(); }
+  busy = false;
+  if (won()) win();
+}
+
+$('board').onclick = e => {
+  const b = e.target.closest('.tube'); if (!b || busy) return;
+  const i = +b.dataset.i;
+  if (sel === null) { if (tubes[i].length) { sel = i; sfx.tap(); } }
+  else if (sel === i) sel = null;
+  else {
+    const a = sel;
+    if (canPour(a, i)) { sel = null; setSel(); return doPour(a, i); }
+    sfx.no(); sel = tubes[i].length ? i : null;
+  }
+  setSel();
+};
+
+function win(){
+  level++; completed++;
+  try { localStorage.setItem('sio-level', level); } catch {}
+  sfx.win(); burst(innerWidth / 2, innerHeight / 3, 70, COLORS);
+  overlay(`<div class="big-emoji">🏆</div><h2>Level complete!</h2><p>${moves} moves</p>`, 'Next level',
+          () => Ads.interstitial(startLevel));
+}
+
+$('undo').onclick = () => !busy && hist.length && Ads.rewarded(() => { tubes = JSON.parse(hist.pop()); moves = Math.max(0, moves - 1); sel = null; build(); });
+$('restart').onclick = () => { if (busy) return; tubes = JSON.parse(initial); sel = null; hist = []; moves = 0; addedTube = false; build(); };
+$('add').onclick = () => !busy && !addedTube && Ads.rewarded(() => { tubes.push([]); addedTube = true; build(); });
+$('snd').onclick = () => {
+  muted = !muted; $('snd').textContent = muted ? '🔇' : '🔊';
+  try { localStorage.setItem('sio-mute', muted ? '1' : '0'); } catch {}
+  sfx.tap();
+};
+$('snd').textContent = muted ? '🔇' : '🔊';
+
+startLevel();
+overlay(`<h1>Sort<br>It Out</h1><p>${level > 1 ? 'Welcome back! Level ' + level : 'Sort the colors into tubes'}</p>`,
+        level > 1 ? 'Continue' : 'Play', () => ac?.resume?.());
+</script>
+<script>
+/* Portal adapter. Injected by build.py after each game's own script.
+ * It replaces the game's placeholder `Ads` with the portal SDK and reports gameplay start/stop.
+ * window.PORTAL_TARGET is set by the build: 'poki' | 'crazygames'. Without it (dev builds) nothing happens. */
+(() => {
+  const target = window.PORTAL_TARGET;
+  if (target === 'site') {                    // my own website: no ads, so hints, undo and revive are simply free
+    if (typeof Ads !== 'undefined') { Ads.interstitial = done => done(); Ads.rewarded = done => done(); }
+    document.head.insertAdjacentHTML('beforeend', '<style>.btn>i{display:none!important}</style>');   // hides the "AD" badges
+    return;
+  }
+  if (!['poki', 'crazygames'].includes(target) || typeof Ads === 'undefined') return;
+
+  // ---- Audio: head.js tracked every AudioContext the game created, so they can be silenced during ads ----
+  const ctxs = window.__portalCtxs || [];
+  const audio = on => ctxs.forEach(c => { try { on ? c.resume() : c.suspend(); } catch {} });
+
+  // ---- Shield: blocks input while an ad is loading or playing ----
+  const shield = document.createElement('div');
+  shield.style.cssText = 'position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;color:#fff;font:700 20px system-ui,sans-serif';
+  document.body.append(shield);
+  const shieldOn = dark => { shield.style.display = 'flex'; shield.style.background = dark ? '#000b' : 'transparent'; shield.textContent = dark ? 'Ad playing…' : ''; };
+  const shieldOff = () => { shield.style.display = 'none'; };
+  function toast(text){
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000d;color:#fff;border-radius:99px;padding:10px 18px;z-index:100000;font:700 15px system-ui,sans-serif';
+    t.textContent = text; document.body.append(t); setTimeout(() => t.remove(), 2200);
+  }
+
+  // ---- Gameplay start/stop follows the game's #overlay: menus, game over and pause cards are "not playing" ----
+  let playing = false, adActive = false, sdk;
+  const overlayEl = document.getElementById('overlay');
+  function sync(){
+    const should = !adActive && !!overlayEl && overlayEl.hidden;
+    if (should && !playing) { playing = true; sdk.start(); }
+    else if (!should && playing) { playing = false; sdk.stop(); }
+  }
+  if (overlayEl) new MutationObserver(sync).observe(overlayEl, { attributes: true, attributeFilter: ['hidden'] });
+
+  // ---- One ad flow for both portals: `request(kind, hooks)` is portal specific ----
+  function runAd(kind, onReward, onDone){
+    adActive = true; sync(); shieldOn(false);
+    let finished = false;
+    const end = rewarded => {
+      if (finished) return; finished = true;
+      audio(true); shieldOff(); adActive = false;
+      if (kind === 'rewarded') rewarded ? onReward() : toast('Reward not earned: the ad was unavailable or skipped');
+      else onDone();
+      sync();
+    };
+    const start = () => { audio(false); shieldOn(true); };
+    try { sdk.request(kind, start, end); } catch { end(false); }
+  }
+  Ads.interstitial = done => runAd('midgame', null, done);
+  Ads.rewarded = done => runAd('rewarded', done, null);
+
+  // ---- Portal SDKs ----
+  if (target === 'poki') {
+    const P = () => window.PokiSDK;
+    sdk = {
+      start: () => P()?.gameplayStart?.(),
+      stop: () => P()?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!P()) return end(kind !== 'rewarded');              // SDK blocked: interstitials just continue, rewards are not given
+        if (kind === 'midgame') Promise.resolve(P().commercialBreak(onStart)).then(() => end(true), () => end(true));
+        else {                                                  // accept both the callback and the options form of rewardedBreak
+          const opts = Object.assign(() => onStart(), { onStart, size: 'small' });
+          Promise.resolve(P().rewardedBreak(opts)).then(ok => end(!!ok), () => end(false));
+        }
+      },
+    };
+    if (location.hostname === 'localhost') P()?.setDebug?.(true);
+    Promise.resolve(P()?.init?.()).then(() => P()?.gameLoadingFinished?.(), () => P()?.gameLoadingFinished?.());
+  } else if (target === 'crazygames') {
+    const C = () => window.CrazyGames?.SDK;
+    sdk = {
+      start: () => C()?.game?.gameplayStart?.(),
+      stop: () => C()?.game?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!C()) return end(kind !== 'rewarded');
+        C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+      },
+    };
+    Promise.resolve(C()?.init?.()).then(() => { C()?.game?.loadingStart?.(); C()?.game?.loadingStop?.(); }, () => {});
+  } else return;
+
+  // Keyboard is disabled while an ad runs (Poki asks for this); the capture phase runs before the game's own handlers
+  for (const type of ['keydown', 'keyup']) addEventListener(type, e => { if (adActive) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  // The page sits in an iframe: stop arrow keys and space from scrolling the host page. The wheel is only blocked for
+  // canvas games, because the two puzzle games with long pages need to scroll on small screens.
+  addEventListener('keydown', e => { if ([' ', 'ArrowUp', 'ArrowDown'].includes(e.key) && e.target === document.body) e.preventDefault(); });
+  if (document.querySelector('canvas')) addEventListener('wheel', e => e.preventDefault(), { passive: false });
+  sync();
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.PORTAL_TARGET='site'</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0f5132">
+<title>Counter Attack FC</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#082a1c}
+body{display:grid;place-items:center;touch-action:none;
+  font:800 16px "Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Nunito","Trebuchet MS",system-ui,sans-serif;color:#fff}
+canvas{display:block;border-radius:14px;box-shadow:0 10px 40px #000a;touch-action:none}
+.btn{font:inherit;color:#4a2f00;background:linear-gradient(#ffe066,#ffb300);border:0;border-bottom:5px solid #c78500;border-radius:14px;padding:10px 16px;cursor:pointer;position:relative;
+  box-shadow:0 6px 12px #0003;transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(3px);border-bottom-width:2px}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.btn.green{color:#fff;background:linear-gradient(#6be585,#1fa94b);border-bottom-color:#127a32}
+.btn.blue{color:#fff;background:linear-gradient(#5ec2ff,#2a7de1);border-bottom-color:#1a55a0}
+.btn.big{font-size:22px;padding:14px 36px;display:block;width:100%;margin-top:12px}
+.btn i{position:absolute;top:-8px;right:-6px;font-style:normal;font-size:11px;color:#fff;background:#e0364e;border-radius:99px;padding:2px 7px}
+#sound{position:fixed;top:10px;right:10px;width:42px;height:42px;padding:0;font-size:18px;z-index:5}
+#overlay{position:fixed;inset:0;background:#031a10b8;display:grid;place-items:center;padding:16px;z-index:60;backdrop-filter:blur(3px)}
+#overlay[hidden]{display:none}
+#card{background:#fff;color:#0f3d26;border-radius:28px;padding:26px 32px 30px;text-align:center;max-width:340px;box-shadow:0 20px 50px #0006;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+#card h1{font-size:46px;line-height:.95;margin:0 0 8px;color:#1fa94b}
+#card h2{margin:6px 0;font-size:28px}
+#card p{margin:6px 0;font-size:16px;opacity:.78}
+#card .big-emoji{font-size:56px}
+.adbar{height:10px;border-radius:9px;background:#0001;overflow:hidden;margin-top:14px}
+.adbar i{display:block;height:100%;background:#2a7de1;animation:fill 1.5s linear forwards}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@keyframes fill{from{width:0}to{width:100%}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="Counter Attack FC game"></canvas>
+<button class="btn blue" id="sound" aria-label="Toggle sound">🔊</button>
+<div id="overlay" hidden><div id="card" role="dialog" aria-live="polite"></div></div>
+
+<script>
+const W = 480, H = 720, PL = 44, PR = 436, LEN = 2000, GOALY = -LEN, CAMOFF = 540;
+const BR = 8, PRAD = 15, KRAD = 22;
+const $ = id => document.getElementById(id);
+const cv = $('c'), ctx = cv.getContext('2d');
+const rand = (a, b) => a + Math.random() * (b - a);
+const FONT = '"Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Trebuchet MS",system-ui,sans-serif';
+
+function fit(){
+  const s = Math.min(innerWidth / W, innerHeight / H), d = devicePixelRatio || 1;
+  cv.style.width = W * s + 'px'; cv.style.height = H * s + 'px';
+  cv.width = Math.round(W * s * d); cv.height = Math.round(H * s * d);
+}
+addEventListener('resize', fit); fit();
+
+// ---- Overlay + Ads: replace the two Ads bodies with the portal SDK (e.g. Poki commercialBreak / rewardedBreak) ----
+function overlay(html){ $('card').innerHTML = html; $('overlay').hidden = false; }
+const hide = () => { $('overlay').hidden = true; };
+function adBreak(title, done){
+  overlay(`<p>${title}</p><h2>Placeholder ad</h2><div class="adbar"><i></i></div>`);
+  setTimeout(() => { hide(); done(); }, 1500);
+}
+let adCalls = 0;   // placeholder ads: show one break in three
+const Ads = { interstitial: done => ++adCalls % 3 ? done() : adBreak('Advertisement', done), rewarded: done => adBreak('Watch to earn an extra life', done) };
+
+// ---- Sound ----
+let ac, muted = false;
+try { muted = localStorage.getItem('ca-mute') === '1'; } catch {}
+function tone(f, t = 0, d = .1, type = 'sine', v = .08, slide = 0){
+  if (muted) return;
+  try {
+    ac ??= new AudioContext();
+    const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + t;
+    o.type = type; o.frequency.setValueAtTime(f, s); if (slide) o.frequency.exponentialRampToValueAtTime(f + slide, s + d);
+    g.gain.setValueAtTime(v, s); g.gain.exponentialRampToValueAtTime(.001, s + d);
+    o.connect(g).connect(ac.destination); o.start(s); o.stop(s + d);
+  } catch {}
+}
+const sfx = {
+  whistle: () => { if (over) return; tone(2100, 0, .12, 'sine', .05); tone(2300, .14, .2, 'sine', .05); },
+  kick: () => tone(180, 0, .14, 'triangle', .14, -90), tackle: () => tone(110, 0, .25, 'sawtooth', .08, -50),
+  save: () => tone(260, 0, .18, 'square', .06, -80), post: () => tone(900, 0, .3, 'sine', .1, -300),
+  goal: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .08, .28, 'triangle', .11)),
+  lung: () => tone(300, 0, .12, 'square', .04, 200),
+};
+$('sound').textContent = muted ? '🔇' : '🔊';
+$('sound').onclick = () => { muted = !muted; $('sound').textContent = muted ? '🔇' : '🔊'; try { localStorage.setItem('ca-mute', muted ? '1' : '0'); } catch {} sfx.kick(); $('sound').blur(); };
+
+// ---- State ----
+let phase = 'run', level = 1, score = 0, best = 0, lives = 3, usedRevive = false, games = 0, over = true;
+let P = { x: 240, y: 0, run: 0 }, ball = null, defs = [], keeper, gw = 150, steer = 240, timeScale = 1, aimT = 0, resT = 0, resText = '', resNext = '';
+let swipe = null, armed = false, parts = [], T = 0, shake = 0, shotT = 0, banner = 0;
+try { best = +localStorage.getItem('ca-best') || 0; } catch {}
+
+// ---- Attack generator: more and smarter defenders each level; a goalmouth wall defender from level 3 forces a curled finish ----
+function genAttack(n){
+  defs = [];
+  const count = Math.min(12, 4 + n);
+  for (let i = 0; i < count; i++) {
+    const roll = Math.random(), type = n >= 5 && roll < .25 ? 'slide' : roll < Math.min(.7, .2 + n * .07) ? 'press' : 'stand';
+    const x = rand(PL + 34, PR - 34);
+    defs.push({ x, y: -280 - i * ((LEN - 780) / count) - rand(0, 50), type, state: 'idle', t: 0, vx: 0, r: 17, tx: x });
+  }
+  if (n >= 3) defs.push({ x: rand(205, 275), y: GOALY + 190, type: 'wall', r: 15 });
+  gw = 150 - Math.min(20, n * 3);
+  keeper = { x: 240, y: GOALY + 16, tx: 240, delay: 0, r: KRAD };
+  P = { x: 240, y: 0, run: 0 }; ball = { x: 240, y: -14, vx: 0, vy: 0 }; steer = 240; phase = 'run'; timeScale = 1; swipe = null; armed = false; banner = 1.5;
+  sfx.whistle();
+}
+function newGame(){ score = 0; level = 1; lives = 3; usedRevive = false; over = false; hide(); genAttack(1); }
+
+function finish(text, next){ phase = 'result'; resT = 1.5; resText = text; resNext = next; timeScale = 1; }
+function confetti(x, y, n){ for (let i = 0; i < n; i++) { const a = rand(-3.3, -.1), v = rand(120, 420); parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(.6, 1.2), c: ['#ffd23f', '#ff5d73', '#38bdf8', '#fff', '#3ddc97'][i % 5] }); } }
+function tackled(){ sfx.tackle(); shake = .3; finish('TACKLED!', 'lose'); }
+
+// ---- Shooting ----
+const speedOf = () => Math.min(130, level * 9) + 250;
+function shootFromSwipe(pts){
+  if (phase !== 'aim' || pts.length < 4) return false;
+  const p0 = pts[0], pN = pts.at(-1), pm = pts[pts.length >> 1];
+  const vx = pN.x - p0.x, vy = pN.y - p0.y, len = Math.hypot(vx, vy);
+  if (len < 40 || vy > -10) return false;                          // must swipe towards goal
+  const ax = pm.x - p0.x, ay = pm.y - p0.y, bx = pN.x - pm.x, by = pN.y - pm.y, al = Math.hypot(ax, ay) || 1, bl = Math.hypot(bx, by) || 1;
+  let turn = Math.max(-1, Math.min(1, (ax * by - ay * bx) / (al * bl)));            // >0: swipe bent clockwise
+  if (Math.abs(turn) < .12) turn = 0;                                               // hand jitter shouldn't bend the ball
+  fire(vx / len, vy / len, Math.min(1000, Math.max(560, len * 5)), turn * 2);
+  return true;
+}
+function fire(dx, dy, spd, omega){
+  ball = { x: P.x, y: P.y - 14, vx: dx * spd, vy: dy * spd, omega };
+  phase = 'shot'; timeScale = 1; shotT = 0; sfx.kick();
+  // keeper reads the shot, with an error that shrinks as the levels rise
+  const arr = arrival(ball);
+  const kl = Math.min(level, 6);                                   // keeper stops improving at level 6; later levels get harder through the dribble
+  keeper.delay = .3 + Math.max(0, .35 - kl * .03);
+  keeper.tx = arr ? arr.x + (Math.random() + Math.random() - 1) * Math.max(28, 90 - kl * 5) : 240;
+}
+function arrival(b){                                               // where would this shot cross the goal line, ignoring defenders?
+  let x = b.x, y = b.y, vx = b.vx, vy = b.vy;
+  for (let i = 0; i < 400; i++) {
+    const c = Math.cos(b.omega * .01), s = Math.sin(b.omega * .01);
+    [vx, vy] = [vx * c - vy * s, vx * s + vy * c]; vx *= .9965; vy *= .9965; x += vx * .01; y += vy * .01;
+    if (y < GOALY) return { x };
+    if (x < PL || x > PR) return null;
+  }
+  return null;
+}
+function stepShot(dt){
+  shotT += dt;
+  const c = Math.cos(ball.omega * dt), s = Math.sin(ball.omega * dt);
+  [ball.vx, ball.vy] = [ball.vx * c - ball.vy * s, ball.vx * s + ball.vy * c];
+  const drag = 1 - .35 * dt; ball.vx *= drag; ball.vy *= drag; ball.x += ball.vx * dt; ball.y += ball.vy * dt;
+  // keeper dives towards his target once his reaction time has passed
+  if (shotT > keeper.delay) { const sp = (240 + Math.min(level, 6) * 12) * dt, d = keeper.tx - keeper.x; keeper.x += Math.abs(d) < sp ? d : Math.sign(d) * sp; }
+  const hitC = (o, r) => Math.hypot(ball.x - o.x, ball.y - o.y) < BR + r;
+  for (const d of defs) if (d.type === 'wall' && hitC(d, d.r)) { sfx.save(); return finish('BLOCKED!', 'lose'); }
+  if (hitC(keeper, keeper.r)) { sfx.save(); shake = .2; return finish('SAVED!', 'lose'); }
+  for (const x of [240 - gw / 2, 240 + gw / 2]) if (hitC({ x, y: GOALY }, 6)) { sfx.post(); return finish('OFF THE POST!', 'lose'); }
+  if (ball.y < GOALY - 6) {
+    if (ball.x > 240 - gw / 2 && ball.x < 240 + gw / 2) {
+      const curl = Math.abs(ball.omega) > .6, pts = 10 + level * 2 + (curl ? 5 : 0);
+      score += pts; if (score > best) { best = score; try { localStorage.setItem('ca-best', best); } catch {} }
+      sfx.goal(); confetti(ball.x, GOALY - 10, 60); shake = .25; return finish(curl ? `CURLER! +${pts}` : `GOAL! +${pts}`, 'goal');
+    }
+    return finish('WIDE!', 'lose');
+  }
+  if (ball.x < PL - 20 || ball.x > PR + 20 || shotT > 3 || Math.hypot(ball.vx, ball.vy) < 40) return finish('MISS!', 'lose');
+}
+
+// ---- Update ----
+function update(rdt){
+  T += rdt; shake = Math.max(0, shake - rdt); banner = Math.max(0, banner - rdt);
+  for (let i = parts.length; i--;) { const p = parts[i]; p.life -= rdt; p.vy += 800 * rdt; p.x += p.vx * rdt; p.y += p.vy * rdt; if (p.life <= 0) parts.splice(i, 1); }
+  if (over) return;
+  const dt = rdt * timeScale;
+
+  if (phase === 'run' || phase === 'aim') {
+    P.x += Math.max(-420 * dt, Math.min(420 * dt, steer - P.x)); P.x = Math.max(PL + PRAD, Math.min(PR - PRAD, P.x));
+    P.y -= speedOf() * dt; P.run += speedOf() * dt * .035;
+    ball.x = P.x + Math.sin(P.run) * 4; ball.y = P.y - 14 - Math.abs(Math.sin(P.run * .5)) * 3;
+    for (const d of defs) {
+      if (d.type === 'press' && d.y > P.y - 460 && d.y < P.y + 40) { d.x += Math.max(-(50 + level * 7) * dt, Math.min((50 + level * 7) * dt, P.x - d.x)); d.y += 60 * dt; }
+      if (d.type === 'slide') {
+        const ahead = P.y - d.y;
+        if (d.state === 'idle' && ahead > 0 && ahead < 190 && Math.abs(P.x - d.x) < 100) { d.state = 'warn'; d.t = .45; d.tx = P.x; sfx.lung(); }
+        else if (d.state === 'warn') { d.t -= dt; if (d.t <= 0) { d.state = 'lunge'; d.t = .36; d.vx = (d.tx - d.x) / .36; } }
+        else if (d.state === 'lunge') { d.t -= dt; d.x += d.vx * dt; d.y += 140 * dt; if (d.t <= 0) d.state = 'done'; }
+      }
+      const reach = PRAD + d.r * (d.state === 'lunge' ? 1.25 : 1);
+      if (d.type !== 'wall' && d.state !== 'done' && Math.hypot(P.x - d.x, P.y - d.y) < reach) return tackled();
+    }
+    if (phase === 'run' && P.y <= GOALY + 470) { phase = 'aim'; timeScale = .1; aimT = 3.6; armed = false; swipe = null; }
+    if (phase === 'aim') {
+      aimT -= rdt;
+      if (aimT <= 0) { swipe = null; fire(.05, -1, 520, 0); }       // ran out of time: weak straight shot
+    }
+  } else if (phase === 'shot') {
+    for (let i = 0; i < 3; i++) { if (phase === 'shot') stepShot(dt / 3); }
+  } else if (phase === 'result') {
+    resT -= rdt;
+    if (resT <= 0) {
+      if (resNext === 'goal') { level++; genAttack(level); }
+      else { lives--; if (lives <= 0) gameOver(); else genAttack(level); }
+    }
+  }
+}
+function gameOver(){
+  over = true; games++;
+  overlay(`<div class="big-emoji">🏟️</div><h2>Full time</h2><p>Score ${score} · Reached level ${level}</p><p>Best ${best}</p>` +
+    (usedRevive ? '' : '<button class="btn green big" id="rev">▶ Extra life <i>AD</i></button>') +
+    '<button class="btn blue big" id="again">Play again</button>');
+  const r = $('rev'); if (r) r.onclick = () => Ads.rewarded(() => { hide(); usedRevive = true; over = false; lives = 1; genAttack(level); });
+  $('again').onclick = () => Ads.interstitial(newGame);
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden && !over && $('overlay').hidden) { overlay('<h2>Paused</h2><button class="btn big" id="res">Resume</button>'); $('res').onclick = hide; } });
+
+// ---- Input: move left/right to dribble; in the shooting moment, swipe up and curve your swipe to bend the ball ----
+const pt = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; };
+cv.addEventListener('pointerdown', e => {
+  if (over || !$('overlay').hidden) return; ac?.resume?.(); const p = pt(e); cv.setPointerCapture(e.pointerId);
+  if (phase === 'aim') { armed = true; swipe = [p]; } else steer = p.x;
+});
+cv.addEventListener('pointermove', e => {
+  const p = pt(e);
+  if (phase === 'aim') { if (swipe) swipe.push(p); } else if (phase === 'run' && (e.pointerType === 'mouse' || e.buttons)) steer = p.x;
+});
+const up = () => { if (phase === 'aim' && swipe) { const ok = shootFromSwipe(swipe); swipe = ok ? null : []; if (!ok) swipe = null; } };
+cv.addEventListener('pointerup', up);
+
+// ---- Drawing ----
+function text(s, x, y, size, align = 'left', col = '#fff'){
+  ctx.font = `800 ${size}px ${FONT}`; ctx.textAlign = align; ctx.fillStyle = col;
+  ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 2; ctx.fillText(s, x, y); ctx.shadowColor = 'transparent';
+}
+function person(x, y, r, kit, dark, num, run, facing = -1){
+  ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(x + 3, y + 5, r, r * .85, 0, 0, 6.28); ctx.fill();
+  const sw = Math.sin(run) * 5;
+  ctx.fillStyle = '#222'; ctx.beginPath(); ctx.ellipse(x - 6, y - sw * facing - 2, 4, 6, 0, 0, 6.28); ctx.ellipse(x + 6, y + sw * facing - 2, 4, 6, 0, 0, 6.28); ctx.fill();
+  ctx.fillStyle = kit; ctx.strokeStyle = dark; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.28); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#f1c27d'; ctx.beginPath(); ctx.arc(x, y + 1, r * .5, 0, 6.28); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#3b2314'; ctx.beginPath(); ctx.arc(x, y - 1, r * .46, Math.PI, 6.28); ctx.fill();
+  if (num) { ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = `800 ${r * .62}px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText(num, x, y + r * .95); }
+}
+function drawBallAt(b, rot){
+  ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(b.x + 2, b.y + 4, BR, BR * .8, 0, 0, 6.28); ctx.fill();
+  ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(rot);
+  ctx.fillStyle = '#fff'; ctx.strokeStyle = '#2b2b3a'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(0, 0, BR, 0, 6.28); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#2b2b3a'; ctx.beginPath(); for (let i = 0; i < 5; i++) { const a = i * 1.2566 - 1.57; ctx.lineTo(Math.cos(a) * 3.4, Math.sin(a) * 3.4); } ctx.fill();
+  ctx.restore();
+}
+function drawPitch(camY){
+  ctx.fillStyle = '#0a2a1c'; ctx.fillRect(0, camY - 40, W, H + 80);
+  for (let i = -2; i < 12; i++) {                                    // mowing stripes anchored to the world
+    const y = Math.floor((camY + i * 90) / 90) * 90; ctx.fillStyle = (y / 90) % 2 ? '#1c8f4c' : '#1fa458'; ctx.fillRect(PL, y, PR - PL, 91);
+  }
+  for (let side = 0; side < 2; side++) {                              // boards and crowd along the touchlines
+    const x = side ? PR : PL - 24;
+    for (let y = Math.floor(camY / 60) * 60 - 60; y < camY + H + 60; y += 60) {
+      ctx.fillStyle = ['#e63946', '#2a7de1', '#ffd23f', '#1fa94b'][(y / 60 & 3 + 4) % 4 < 0 ? 0 : Math.abs(y / 60) % 4]; ctx.fillRect(x, y, 24, 56);
+    }
+    ctx.fillStyle = '#16122e'; ctx.fillRect(side ? PR + 24 : 0, camY - 40, side ? W - PR - 24 : PL - 24, H + 80);
+    for (let y = Math.floor(camY / 24) * 24 - 24; y < camY + H + 24; y += 24) for (let k = 0; k < 2; k++) {
+      const cx = side ? PR + 34 + k * 14 : 8 + k * 14, h = Math.abs(Math.sin(y * 3.1 + k * 7 + side)); const bounce = phase === 'result' && resNext === 'goal' ? Math.abs(Math.sin(T * 12 + y)) * 5 : 0;
+      ctx.fillStyle = ['#e63946', '#ffd23f', '#38bdf8', '#fff', '#ff9d3d'][Math.floor(h * 5)]; ctx.beginPath(); ctx.arc(cx, y - bounce, 6, 0, 6.28); ctx.fill();
+    }
+  }
+  ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 3;
+  ctx.strokeRect(PL, GOALY - 6, PR - PL, 2000 + 120);
+  ctx.beginPath(); ctx.moveTo(PL, 60); ctx.lineTo(PR, 60); ctx.stroke(); ctx.beginPath(); ctx.arc(240, 60, 55, Math.PI, 6.28); ctx.stroke();
+  ctx.strokeRect(130, GOALY, 220, 190); ctx.strokeRect(190, GOALY, 100, 70);
+  ctx.beginPath(); ctx.arc(240, GOALY + 135, 3, 0, 6.28); ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(240, GOALY + 135, 50, .22 * Math.PI, .78 * Math.PI); ctx.stroke();
+  const gl = 240 - gw / 2, gr = 240 + gw / 2;                         // goal and net
+  ctx.fillStyle = 'rgba(10,30,20,.6)'; ctx.fillRect(gl, GOALY - 46, gr - gl, 46);
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5; ctx.beginPath();
+  for (let x = gl; x <= gr; x += 12) { ctx.moveTo(x, GOALY - 46); ctx.lineTo(x, GOALY); } for (let y = GOALY - 46; y <= GOALY; y += 11) { ctx.moveTo(gl, y); ctx.lineTo(gr, y); }
+  ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(gl, GOALY); ctx.lineTo(gl, GOALY - 46); ctx.lineTo(gr, GOALY - 46); ctx.lineTo(gr, GOALY); ctx.stroke();
+  ctx.fillStyle = '#fff'; for (const x of [gl, gr]) { ctx.beginPath(); ctx.arc(x, GOALY, 6, 0, 6.28); ctx.fill(); }
+}
+function draw(){
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  const camY = (phase === 'shot' || phase === 'result') ? Math.max(GOALY - 120, Math.min(P.y - CAMOFF, (ball?.y ?? P.y) - 340)) : P.y - CAMOFF;
+  ctx.save(); if (shake > 0) ctx.translate(rand(-1, 1) * shake * 14, rand(-1, 1) * shake * 14);
+  ctx.translate(0, -camY); drawPitch(camY);
+  for (const d of defs) {
+    if (d.type === 'slide' && d.state === 'warn') { ctx.fillStyle = 'rgba(255,60,60,.28)'; ctx.fillRect(Math.min(d.x, d.tx) - 20, d.y - 20, Math.abs(d.tx - d.x) + 40, 40); text('!', d.x, d.y - 26, 26, 'center', '#ff5d73'); }
+    if (d.type === 'wall') person(d.x, d.y, d.r, '#e63946', '#7a1020', 5, 0);
+    else person(d.x, d.y, d.r, d.type === 'slide' ? '#ff7a1a' : '#e63946', '#7a1020', d.type === 'press' ? 7 : d.type === 'slide' ? 3 : 4, d.type === 'press' ? T * 9 : 0, 1);
+  }
+  const kd = phase === 'shot' ? Math.sin(Math.min(1, shotT * 4) * 3.14) * 4 : 0;
+  person(keeper.x, keeper.y + kd, keeper.r, '#ffd23f', '#a37d00', 1, 0);
+  if (phase !== 'shot' && phase !== 'result') { person(P.x, P.y, PRAD, '#2a7de1', '#123d80', 9, P.run); drawBallAt(ball, P.run); }
+  else { person(P.x, P.y, PRAD, '#2a7de1', '#123d80', 9, 0); drawBallAt(ball, T * 10); }
+  if (phase === 'shot') { ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(ball.x - ball.vx * .04, ball.y - ball.vy * .04); ctx.lineTo(ball.x, ball.y); ctx.stroke(); }
+  for (const p of parts) { ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, 6.28); ctx.fill(); }
+  ctx.globalAlpha = 1; ctx.restore();
+
+  if (phase === 'aim') {
+    ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.fillRect(0, 0, W, H);
+    text('SWIPE TO SHOOT', W / 2, 180, 38, 'center', '#ffd23f'); text('Curve your swipe to bend the ball around the wall', W / 2, 212, 16, 'center');
+    ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(W / 2, 270, 22, 0, 6.28); ctx.stroke();
+    ctx.strokeStyle = '#ffd23f'; ctx.beginPath(); ctx.arc(W / 2, 270, 22, -1.57, -1.57 + 6.28 * Math.max(0, aimT / 3.6)); ctx.stroke();
+    if (swipe && swipe.length > 1) { ctx.strokeStyle = '#7af0ff'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); swipe.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke(); ctx.lineCap = 'butt'; }
+  }
+  text(String(score), W / 2, 56, 46, 'center'); text('LEVEL ' + level, 20, 38, 20); text('BEST ' + best, 20, 62, 14, 'left', 'rgba(255,255,255,.7)');
+  for (let i = 0; i < 3; i++) { ctx.globalAlpha = i < lives ? 1 : .25; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#2b2b3a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(W - 90 + i * 26, 86, 9, 0, 6.28); ctx.fill(); ctx.stroke(); }
+  ctx.globalAlpha = 1;
+  const prog = Math.max(0, Math.min(1, (0 - P.y) / (LEN - 470)));
+  ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.roundRect(20, 78, 150, 8, 4); ctx.fill(); ctx.fillStyle = '#3ddc97'; ctx.beginPath(); ctx.roundRect(20, 78, 150 * prog, 8, 4); ctx.fill();
+  if (phase === 'result') { ctx.globalAlpha = Math.min(1, resT * 2); text(resText, W / 2, 330, 52, 'center', resNext === 'goal' ? '#ffd23f' : '#ff7a7a'); ctx.globalAlpha = 1; }
+  if (banner > 0 && phase === 'run') { ctx.globalAlpha = Math.min(1, banner); text(`ATTACK ${level}`, W / 2, 300, 44, 'center', '#ffd23f'); text('Move left/right to dribble past the defenders', W / 2, 336, 17, 'center'); ctx.globalAlpha = 1; }
+}
+
+let last = performance.now();
+function frame(now){ const dt = Math.min(.033, (now - last) / 1000); last = now; update(dt); draw(); requestAnimationFrame(frame); }
+genAttack(1); over = true; requestAnimationFrame(frame);
+overlay('<h1>Counter<br>Attack FC</h1><p>Dribble past defenders, then swipe in slow motion to curl a finish past the wall and the keeper.</p><button class="btn big green" id="go">Kick off</button>');
+$('go').onclick = () => { ac?.resume?.(); newGame(); };
+</script>
+<script>
+/* Portal adapter. Injected by build.py after each game's own script.
+ * It replaces the game's placeholder `Ads` with the portal SDK and reports gameplay start/stop.
+ * window.PORTAL_TARGET is set by the build: 'poki' | 'crazygames'. Without it (dev builds) nothing happens. */
+(() => {
+  const target = window.PORTAL_TARGET;
+  if (target === 'site') {                    // my own website: no ads, so hints, undo and revive are simply free
+    if (typeof Ads !== 'undefined') { Ads.interstitial = done => done(); Ads.rewarded = done => done(); }
+    document.head.insertAdjacentHTML('beforeend', '<style>.btn>i{display:none!important}</style>');   // hides the "AD" badges
+    return;
+  }
+  if (!['poki', 'crazygames'].includes(target) || typeof Ads === 'undefined') return;
+
+  // ---- Audio: head.js tracked every AudioContext the game created, so they can be silenced during ads ----
+  const ctxs = window.__portalCtxs || [];
+  const audio = on => ctxs.forEach(c => { try { on ? c.resume() : c.suspend(); } catch {} });
+
+  // ---- Shield: blocks input while an ad is loading or playing ----
+  const shield = document.createElement('div');
+  shield.style.cssText = 'position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;color:#fff;font:700 20px system-ui,sans-serif';
+  document.body.append(shield);
+  const shieldOn = dark => { shield.style.display = 'flex'; shield.style.background = dark ? '#000b' : 'transparent'; shield.textContent = dark ? 'Ad playing…' : ''; };
+  const shieldOff = () => { shield.style.display = 'none'; };
+  function toast(text){
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000d;color:#fff;border-radius:99px;padding:10px 18px;z-index:100000;font:700 15px system-ui,sans-serif';
+    t.textContent = text; document.body.append(t); setTimeout(() => t.remove(), 2200);
+  }
+
+  // ---- Gameplay start/stop follows the game's #overlay: menus, game over and pause cards are "not playing" ----
+  let playing = false, adActive = false, sdk;
+  const overlayEl = document.getElementById('overlay');
+  function sync(){
+    const should = !adActive && !!overlayEl && overlayEl.hidden;
+    if (should && !playing) { playing = true; sdk.start(); }
+    else if (!should && playing) { playing = false; sdk.stop(); }
+  }
+  if (overlayEl) new MutationObserver(sync).observe(overlayEl, { attributes: true, attributeFilter: ['hidden'] });
+
+  // ---- One ad flow for both portals: `request(kind, hooks)` is portal specific ----
+  function runAd(kind, onReward, onDone){
+    adActive = true; sync(); shieldOn(false);
+    let finished = false;
+    const end = rewarded => {
+      if (finished) return; finished = true;
+      audio(true); shieldOff(); adActive = false;
+      if (kind === 'rewarded') rewarded ? onReward() : toast('Reward not earned: the ad was unavailable or skipped');
+      else onDone();
+      sync();
+    };
+    const start = () => { audio(false); shieldOn(true); };
+    try { sdk.request(kind, start, end); } catch { end(false); }
+  }
+  Ads.interstitial = done => runAd('midgame', null, done);
+  Ads.rewarded = done => runAd('rewarded', done, null);
+
+  // ---- Portal SDKs ----
+  if (target === 'poki') {
+    const P = () => window.PokiSDK;
+    sdk = {
+      start: () => P()?.gameplayStart?.(),
+      stop: () => P()?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!P()) return end(kind !== 'rewarded');              // SDK blocked: interstitials just continue, rewards are not given
+        if (kind === 'midgame') Promise.resolve(P().commercialBreak(onStart)).then(() => end(true), () => end(true));
+        else {                                                  // accept both the callback and the options form of rewardedBreak
+          const opts = Object.assign(() => onStart(), { onStart, size: 'small' });
+          Promise.resolve(P().rewardedBreak(opts)).then(ok => end(!!ok), () => end(false));
+        }
+      },
+    };
+    if (location.hostname === 'localhost') P()?.setDebug?.(true);
+    Promise.resolve(P()?.init?.()).then(() => P()?.gameLoadingFinished?.(), () => P()?.gameLoadingFinished?.());
+  } else if (target === 'crazygames') {
+    const C = () => window.CrazyGames?.SDK;
+    sdk = {
+      start: () => C()?.game?.gameplayStart?.(),
+      stop: () => C()?.game?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!C()) return end(kind !== 'rewarded');
+        C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+      },
+    };
+    Promise.resolve(C()?.init?.()).then(() => { C()?.game?.loadingStart?.(); C()?.game?.loadingStop?.(); }, () => {});
+  } else return;
+
+  // Keyboard is disabled while an ad runs (Poki asks for this); the capture phase runs before the game's own handlers
+  for (const type of ['keydown', 'keyup']) addEventListener(type, e => { if (adActive) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  // The page sits in an iframe: stop arrow keys and space from scrolling the host page. The wheel is only blocked for
+  // canvas games, because the two puzzle games with long pages need to scroll on small screens.
+  addEventListener('keydown', e => { if ([' ', 'ArrowUp', 'ArrowDown'].includes(e.key) && e.target === document.body) e.preventDefault(); });
+  if (document.querySelector('canvas')) addEventListener('wheel', e => e.preventDefault(), { passive: false });
+  sync();
+})();
+
+</script>
+</body>
+</html>

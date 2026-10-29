@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.PORTAL_TARGET='site'</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b3d4a">
+<title>Lasso Logic</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#07252d}
+body{display:grid;place-items:center;touch-action:none;
+  font:800 16px "Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Nunito","Trebuchet MS",system-ui,sans-serif;color:#fff}
+canvas{display:block;border-radius:14px;box-shadow:0 10px 40px #000a}
+.btn{font:inherit;color:#4a2f00;background:linear-gradient(#ffe066,#ffb300);border:0;border-bottom:5px solid #c78500;border-radius:14px;padding:10px 16px;cursor:pointer;position:relative;
+  box-shadow:0 6px 12px #0003;transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(3px);border-bottom-width:2px}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.btn.green{color:#fff;background:linear-gradient(#6be585,#1fa94b);border-bottom-color:#127a32}
+.btn.blue{color:#fff;background:linear-gradient(#5ec2ff,#2a7de1);border-bottom-color:#1a55a0}
+.btn.big{font-size:22px;padding:14px 36px;display:block;width:100%;margin-top:12px}
+.btn i{position:absolute;top:-8px;right:-6px;font-style:normal;font-size:11px;color:#fff;background:#e0364e;border-radius:99px;padding:2px 7px}
+#bar{position:fixed;left:0;right:0;bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:10px;justify-content:center;z-index:5}
+#bar .btn{min-width:96px;padding:10px 12px;font-size:15px}
+#overlay{position:fixed;inset:0;background:#04181db8;display:grid;place-items:center;padding:16px;z-index:60;backdrop-filter:blur(3px)}
+#overlay[hidden]{display:none}
+#card{background:#fff;color:#0b3d4a;border-radius:28px;padding:26px 32px 30px;text-align:center;max-width:340px;box-shadow:0 20px 50px #0006;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+#card h1{font-size:50px;line-height:.95;margin:0 0 8px;color:#14a38b}
+#card h2{margin:6px 0;font-size:28px}
+#card p{margin:6px 0;font-size:17px;opacity:.75}
+#card .stars{font-size:46px;letter-spacing:4px}
+.adbar{height:10px;border-radius:9px;background:#0001;overflow:hidden;margin-top:14px}
+.adbar i{display:block;height:100%;background:#2a7de1;animation:fill 1.5s linear forwards}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@keyframes fill{from{width:0}to{width:100%}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="Lasso Logic puzzle"></canvas>
+<div id="bar">
+  <button class="btn blue" id="undo">↶ Undo</button>
+  <button class="btn blue" id="reset">⟲ Reset</button>
+  <button class="btn green" id="hint">💡 Hint <i>AD</i></button>
+  <button class="btn" id="skip">⏭ Skip <i>AD</i></button>
+</div>
+<div id="overlay" hidden><div id="card" role="dialog" aria-live="polite"></div></div>
+
+<script>
+const W = 480, H = 720, BX = 20, BY = 150, BW = 440, BH = 440;
+const $ = id => document.getElementById(id);
+const cv = $('c'), ctx = cv.getContext('2d');
+const rand = (a, b) => a + Math.random() * (b - a);
+const shuffle = a => { for (let i = a.length; i > 1;) { const j = Math.random() * i-- | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const FONT = '"Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Trebuchet MS",system-ui,sans-serif';
+
+function fit(){
+  const s = Math.min(innerWidth / W, (innerHeight - 70) / H), d = devicePixelRatio || 1;
+  cv.style.width = W * s + 'px'; cv.style.height = H * s + 'px';
+  cv.width = Math.round(W * s * d); cv.height = Math.round(H * s * d);
+}
+addEventListener('resize', fit); fit();
+
+// ---- Overlay + Ads: replace the two Ads bodies with the portal SDK (e.g. Poki commercialBreak / rewardedBreak) ----
+function overlay(html){ $('card').innerHTML = html; $('overlay').hidden = false; }
+const hide = () => { $('overlay').hidden = true; };
+function adBreak(title, done){
+  overlay(`<p>${title}</p><h2>Placeholder ad</h2><div class="adbar"><i></i></div>`);
+  setTimeout(() => { hide(); done(); }, 1500);
+}
+let adCalls = 0;   // placeholder ads: show one break in three
+const Ads = { interstitial: done => ++adCalls % 3 ? done() : adBreak('Advertisement', done), rewarded: done => adBreak('Watch to claim your reward', done) };
+
+// ---- Sound ----
+let ac;
+function tone(f, t = 0, d = .1, type = 'sine', v = .08){
+  try {
+    ac ??= new AudioContext();
+    const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + t;
+    o.type = type; o.frequency.value = f; g.gain.setValueAtTime(v, s); g.gain.exponentialRampToValueAtTime(.001, s + d);
+    o.connect(g).connect(ac.destination); o.start(s); o.stop(s + d);
+  } catch {}
+}
+const sfx = {
+  peg: n => tone(400 + n * 70, 0, .1, 'triangle'), no: () => tone(150, 0, .2, 'square', .05),
+  win: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .1, .3, 'triangle', .12)),
+  boom: () => tone(120, 0, .5, 'sawtooth', .1),
+};
+
+// ---- Geometry ----
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const perim = (pts, closed) => pts.reduce((s, p, i) => s + (i || closed ? dist(p, pts[(i + pts.length - 1) % pts.length]) : 0), 0);
+function inside(pt, poly){
+  let c = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i], b = poly[j];
+    if ((a.y > pt.y) !== (b.y > pt.y) && pt.x < (b.x - a.x) * (pt.y - a.y) / (b.y - a.y) + a.x) c = !c;
+  }
+  return c;
+}
+const ccw = (a, b, c) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+const cross = (a, b, c, d) => ccw(a, c, d) !== ccw(b, c, d) && ccw(a, b, c) !== ccw(a, b, d);
+function segDist(p, a, b){
+  const dx = b.x - a.x, dy = b.y - a.y, t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy);
+}
+const edgeDist = (p, poly) => Math.min(...poly.map((a, i) => segDist(p, a, poly[(i + 1) % poly.length])));
+function simple(poly){                                         // no two non-adjacent edges cross
+  const n = poly.length;
+  for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) {
+    if (i === 0 && j === n - 1) continue;
+    if (cross(poly[i], poly[(i + 1) % n], poly[j], poly[(j + 1) % n])) return false;
+  }
+  return true;
+}
+const area = poly => Math.abs(poly.reduce((s, p, i) => { const q = poly[(i + 1) % poly.length]; return s + p.x * q.y - q.x * p.y; }, 0)) / 2;
+
+// ---- Level generator: build a hidden solution first, then budget and decoys, so every level is solvable ----
+function genLevel(n){
+  for (let attempt = 0; attempt < 500; attempt++) {
+    const count = Math.min(16, 8 + (n / 2 | 0)), pegs = [];
+    for (let t = 0; t < 400 && pegs.length < count; t++) {
+      const p = { x: rand(BX + 34, BX + BW - 34), y: rand(BY + 34, BY + BH - 34) };
+      if (pegs.every(q => dist(p, q) > 58)) pegs.push(p);
+    }
+    if (pegs.length < count) continue;
+    const k = Math.min(6, 3 + (n >= 3) + (n >= 6) + (n >= 10));
+    const pick = shuffle(pegs.map((_, i) => i)).slice(0, k).map(i => pegs[i]);
+    const cx = pick.reduce((s, p) => s + p.x, 0) / k, cy = pick.reduce((s, p) => s + p.y, 0) / k;
+    const sol = pick.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
+    if (!simple(sol) || area(sol) < 9000) continue;
+
+    const gems = [], bombs = [], gemCount = Math.min(7, 3 + (n / 3 | 0)), bombCount = Math.min(8, 2 + (n / 2 | 0));
+    const free = (p, list, d) => list.every(q => dist(p, q) > d) && pegs.every(q => dist(p, q) > 24);
+    for (let t = 0; t < 600 && gems.length < gemCount; t++) {
+      const p = { x: rand(BX + 20, BX + BW - 20), y: rand(BY + 20, BY + BH - 20) };
+      if (inside(p, sol) && edgeDist(p, sol) > 18 && free(p, gems, 34)) gems.push(p);
+    }
+    for (let t = 0; t < 1200 && bombs.length < bombCount; t++) {
+      const p = { x: rand(BX + 20, BX + BW - 20), y: rand(BY + 20, BY + BH - 20) }, ed = edgeDist(p, sol);
+      if (!inside(p, sol) && ed > 18 && ed < 85 && free(p, [...gems, ...bombs], 34)) bombs.push(p);
+    }
+    if (gems.length < gemCount || bombs.length < bombCount) continue;
+    const best = perim(sol, true);
+    return { pegs, gems, bombs, sol, best, budget: best * (1.2 - Math.min(.16, n * .012)) };
+  }
+  return genLevel(1);
+}
+
+// ---- State ----
+let level = 1, L, path = [], sel = null, flash = [], msg = '', msgT = 0, T = 0, hintPeg = null, shake = 0, solved = false, wins = 0, parts = [];
+try { level = +localStorage.getItem('ll-level') || 1; } catch {}
+const used = () => path.length ? perim(path, false) : 0;
+const closedLen = () => path.length > 2 ? perim(path, true) : used();
+
+function newLevel(){ L = genLevel(level); path = []; hintPeg = null; flash = []; solved = false; msg = ''; }
+function say(text, t = 2.4){ msg = text; msgT = t; }
+function undo(){ path.pop(); hintPeg = null; flash = []; }
+
+function tryPeg(i){
+  const p = L.pegs[i];
+  if (path.length >= 3 && p === path[0]) return close();
+  if (path.includes(p)) { sfx.no(); return say('Each peg can be used once'); }
+  const trial = [...path, p];
+  for (let a = 0; a + 1 < path.length - 0; a++) {                // new edge (last -> p) must not cross older edges
+    if (a + 1 === path.length - 1) continue;
+    if (path.length >= 2 && cross(path[path.length - 1], p, path[a], path[a + 1])) { sfx.no(); shake = .25; return say("Bands can't cross"); }
+  }
+  path = trial; flash = []; hintPeg = null; sfx.peg(path.length);
+  if (used() > L.budget) say('Too long! Try fewer or closer pegs', 1.8);
+}
+function close(){
+  if (!simple(path)) { sfx.no(); return say("Bands can't cross"); }
+  const out = L.gems.filter(g => !inside(g, path)), hit = L.bombs.filter(b => inside(b, path)), len = perim(path, true);
+  if (out.length || hit.length || len > L.budget + .5) {
+    flash = [...out, ...hit]; shake = .35; sfx.boom();
+    return say(hit.length ? `${hit.length} bomb${hit.length > 1 ? 's' : ''} inside!` : out.length ? `${out.length} gem${out.length > 1 ? 's' : ''} left outside` : `Band is ${Math.ceil(len - L.budget)} too long`, 3);
+  }
+  const ratio = len / L.best, stars = ratio <= 1.03 ? 3 : ratio <= 1.12 ? 2 : 1;
+  solved = true; sfx.win(); wins++;
+  for (let i = 0; i < 40; i++) { const a = rand(0, 6.28), v = rand(80, 360); parts.push({ x: W / 2, y: 330, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 120, life: rand(.7, 1.3), c: ['#ffd23f', '#38bdf8', '#ff7eb6', '#3ddc97'][i % 4] }); }
+  level++; try { localStorage.setItem('ll-level', level); } catch {}
+  setTimeout(() => {
+    overlay(`<div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div><h2>Solved!</h2><p>${stars === 3 ? 'Perfect tightness!' : 'Try a tighter loop for 3 stars'}</p><button class="btn green big" id="next">Next level</button>`);
+    $('next').onclick = () => { hide(); Ads.interstitial(newLevel); };
+  }, 900);
+}
+
+// ---- Input ----
+const pt = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; };
+cv.addEventListener('pointerdown', e => {
+  if (solved || !$('overlay').hidden) return; ac?.resume?.();
+  const p = pt(e); let best = -1, bd = 30;
+  L.pegs.forEach((q, i) => { const d = dist(p, q); if (d < bd) { bd = d; best = i; } });
+  if (best >= 0) tryPeg(best);
+});
+$('undo').onclick = () => { if (!solved) undo(); };
+$('reset').onclick = () => { if (!solved) { path = []; flash = []; hintPeg = null; } };
+$('hint').onclick = () => {
+  if (solved) return;
+  Ads.rewarded(() => {
+    const next = L.sol.find(p => !path.includes(p));
+    if (next) { hintPeg = next; say('Glowing peg belongs to the best loop', 3); }
+  });
+};
+$('skip').onclick = () => { if (!solved) Ads.rewarded(() => { level++; try { localStorage.setItem('ll-level', level); } catch {} newLevel(); }); };
+document.addEventListener('visibilitychange', () => { if (document.hidden && $('overlay').hidden && !solved) { overlay('<h2>Paused</h2><button class="btn big" id="res">Resume</button>'); $('res').onclick = hide; } });
+
+// ---- Drawing ----
+function text(s, x, y, size, align = 'left', col = '#fff'){
+  ctx.font = `800 ${size}px ${FONT}`; ctx.textAlign = align; ctx.fillStyle = col;
+  ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 2; ctx.fillText(s, x, y); ctx.shadowColor = 'transparent';
+}
+function diamond(x, y, r, c1, c2){
+  const g = ctx.createLinearGradient(x - r, y - r, x + r, y + r); g.addColorStop(0, c1); g.addColorStop(1, c2);
+  ctx.fillStyle = g; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x + r * .85, y - r * .1); ctx.lineTo(x, y + r); ctx.lineTo(x - r * .85, y - r * .1); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.moveTo(x - r * .35, y - r * .1); ctx.lineTo(x, y - r * .75); ctx.lineTo(x + r * .1, y - r * .1); ctx.closePath(); ctx.fill();
+}
+function bomb(x, y, r, danger){
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.beginPath(); ctx.ellipse(x + 2, y + r + 1, r, 4, 0, 0, 6.28); ctx.fill();
+  const g = ctx.createRadialGradient(x - 5, y - 5, 2, x, y, r); g.addColorStop(0, '#6b6b86'); g.addColorStop(1, '#1d1d33');
+  ctx.fillStyle = g; ctx.strokeStyle = danger ? '#ff3b5c' : '#0a0a18'; ctx.lineWidth = danger ? 3.5 : 2.5;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, 6.28); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = '#c9a36b'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + r * .5, y - r * .8); ctx.quadraticCurveTo(x + r, y - r * 1.5, x + r * 1.3, y - r * 1.1); ctx.stroke();
+  ctx.fillStyle = `rgba(255,${120 + Math.sin(T * 10) * 80 | 0},40,1)`; ctx.beginPath(); ctx.arc(x + r * 1.3, y - r * 1.1, 3.2, 0, 6.28); ctx.fill();
+}
+function draw(){
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  let g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0b3d4a'); g.addColorStop(1, '#1f1a4d');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.save(); if (shake > 0) ctx.translate(rand(-1, 1) * shake * 14, rand(-1, 1) * shake * 14);
+
+  text('LEVEL ' + level, 24, 52, 30);
+  text(`${L.gems.length} gems · ${L.bombs.length} bombs · ${L.pegs.length} pegs`, 24, 80, 16, 'left', 'rgba(255,255,255,.7)');
+  // band length meter
+  const len = closedLen(), frac = Math.min(1.15, len / L.budget);
+  ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.roundRect(24, 100, W - 48, 18, 9); ctx.fill();
+  const bg = ctx.createLinearGradient(24, 0, W - 24, 0); bg.addColorStop(0, '#3ddc97'); bg.addColorStop(1, frac > 1 ? '#ff3b5c' : '#ffd23f');
+  ctx.fillStyle = frac > 1 ? '#ff3b5c' : bg; ctx.beginPath(); ctx.roundRect(24, 100, Math.max(0, (W - 48) * Math.min(1, frac)), 18, 9); ctx.fill();
+  text(`band ${Math.round(len)} / ${Math.round(L.budget)}`, W - 24, 138, 15, 'right', frac > 1 ? '#ff8a99' : 'rgba(255,255,255,.8)');
+
+  ctx.fillStyle = '#0a2e3a'; ctx.beginPath(); ctx.roundRect(BX, BY, BW, BH, 18); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1; ctx.beginPath();
+  for (let x = BX + 40; x < BX + BW; x += 40) { ctx.moveTo(x, BY); ctx.lineTo(x, BY + BH); }
+  for (let y = BY + 40; y < BY + BH; y += 40) { ctx.moveTo(BX, y); ctx.lineTo(BX + BW, y); }
+  ctx.stroke();
+
+  if (path.length >= 2) {                                         // the band
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    if (path.length >= 3) { ctx.fillStyle = frac > 1 ? 'rgba(255,59,92,.16)' : 'rgba(61,220,151,.2)'; ctx.beginPath(); path.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); ctx.fill(); }
+    ctx.strokeStyle = frac > 1 ? '#ff3b5c' : '#ffd23f'; ctx.lineWidth = 7; ctx.beginPath(); path.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2; ctx.stroke();
+    if (path.length >= 3) { ctx.setLineDash([6, 8]); ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(path.at(-1).x, path.at(-1).y); ctx.lineTo(path[0].x, path[0].y); ctx.stroke(); ctx.setLineDash([]); }
+  }
+  for (const b of L.bombs) bomb(b.x, b.y, 14, flash.includes(b) && Math.sin(T * 25) > 0);
+  for (const gm of L.gems) { const f = flash.includes(gm) && Math.sin(T * 25) > 0; diamond(gm.x, gm.y, 13 + (f ? 3 : 0), '#7af0ff', '#7b6bff'); }
+  L.pegs.forEach(p => {                                           // pegs
+    const on = path.includes(p), first = p === path[0], hint = p === hintPeg;
+    if (hint) { ctx.strokeStyle = `rgba(255,255,255,${.5 + .5 * Math.sin(T * 8)})`; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 20 + Math.sin(T * 8) * 3, 0, 6.28); ctx.stroke(); }
+    if (first && path.length >= 3) { ctx.strokeStyle = 'rgba(255,210,63,.8)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 17 + Math.sin(T * 6) * 2, 0, 6.28); ctx.stroke(); }
+    const pg = ctx.createRadialGradient(p.x - 3, p.y - 3, 1, p.x, p.y, 10); pg.addColorStop(0, on ? '#fff3a0' : '#ffffff'); pg.addColorStop(1, on ? '#ffb300' : '#9fb4c9');
+    ctx.fillStyle = pg; ctx.strokeStyle = '#1c2540'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(p.x, p.y, 10, 0, 6.28); ctx.fill(); ctx.stroke();
+  });
+  ctx.restore();
+  for (const p of parts) { ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, 6.28); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  if (msgT > 0) { ctx.globalAlpha = Math.min(1, msgT * 2); text(msg, W / 2, 628, 20, 'center', '#ffd23f'); ctx.globalAlpha = 1; }
+  else text(path.length < 3 ? 'Tap pegs to stretch the band · tap the first peg to close it' : 'Tap the glowing first peg to close the loop', W / 2, 628, 15, 'center', 'rgba(255,255,255,.7)');
+}
+
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt; shake = Math.max(0, shake - dt); msgT = Math.max(0, msgT - dt);
+  for (let i = parts.length; i--;) { const p = parts[i]; p.life -= dt; p.vy += 700 * dt; p.x += p.vx * dt; p.y += p.vy * dt; if (p.life <= 0) parts.splice(i, 1); }
+  draw(); requestAnimationFrame(frame);
+}
+newLevel(); requestAnimationFrame(frame);
+overlay('<h1>Lasso<br>Logic</h1><p>Stretch a rubber band around the pegs. Catch every gem, avoid every bomb, and stay within the length limit.</p><button class="btn big green" id="go">Play</button>');
+$('go').onclick = () => { ac?.resume?.(); hide(); };
+</script>
+<script>
+/* Portal adapter. Injected by build.py after each game's own script.
+ * It replaces the game's placeholder `Ads` with the portal SDK and reports gameplay start/stop.
+ * window.PORTAL_TARGET is set by the build: 'poki' | 'crazygames'. Without it (dev builds) nothing happens. */
+(() => {
+  const target = window.PORTAL_TARGET;
+  if (target === 'site') {                    // my own website: no ads, so hints, undo and revive are simply free
+    if (typeof Ads !== 'undefined') { Ads.interstitial = done => done(); Ads.rewarded = done => done(); }
+    document.head.insertAdjacentHTML('beforeend', '<style>.btn>i{display:none!important}</style>');   // hides the "AD" badges
+    return;
+  }
+  if (!['poki', 'crazygames'].includes(target) || typeof Ads === 'undefined') return;
+
+  // ---- Audio: head.js tracked every AudioContext the game created, so they can be silenced during ads ----
+  const ctxs = window.__portalCtxs || [];
+  const audio = on => ctxs.forEach(c => { try { on ? c.resume() : c.suspend(); } catch {} });
+
+  // ---- Shield: blocks input while an ad is loading or playing ----
+  const shield = document.createElement('div');
+  shield.style.cssText = 'position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;color:#fff;font:700 20px system-ui,sans-serif';
+  document.body.append(shield);
+  const shieldOn = dark => { shield.style.display = 'flex'; shield.style.background = dark ? '#000b' : 'transparent'; shield.textContent = dark ? 'Ad playing…' : ''; };
+  const shieldOff = () => { shield.style.display = 'none'; };
+  function toast(text){
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000d;color:#fff;border-radius:99px;padding:10px 18px;z-index:100000;font:700 15px system-ui,sans-serif';
+    t.textContent = text; document.body.append(t); setTimeout(() => t.remove(), 2200);
+  }
+
+  // ---- Gameplay start/stop follows the game's #overlay: menus, game over and pause cards are "not playing" ----
+  let playing = false, adActive = false, sdk;
+  const overlayEl = document.getElementById('overlay');
+  function sync(){
+    const should = !adActive && !!overlayEl && overlayEl.hidden;
+    if (should && !playing) { playing = true; sdk.start(); }
+    else if (!should && playing) { playing = false; sdk.stop(); }
+  }
+  if (overlayEl) new MutationObserver(sync).observe(overlayEl, { attributes: true, attributeFilter: ['hidden'] });
+
+  // ---- One ad flow for both portals: `request(kind, hooks)` is portal specific ----
+  function runAd(kind, onReward, onDone){
+    adActive = true; sync(); shieldOn(false);
+    let finished = false;
+    const end = rewarded => {
+      if (finished) return; finished = true;
+      audio(true); shieldOff(); adActive = false;
+      if (kind === 'rewarded') rewarded ? onReward() : toast('Reward not earned: the ad was unavailable or skipped');
+      else onDone();
+      sync();
+    };
+    const start = () => { audio(false); shieldOn(true); };
+    try { sdk.request(kind, start, end); } catch { end(false); }
+  }
+  Ads.interstitial = done => runAd('midgame', null, done);
+  Ads.rewarded = done => runAd('rewarded', done, null);
+
+  // ---- Portal SDKs ----
+  if (target === 'poki') {
+    const P = () => window.PokiSDK;
+    sdk = {
+      start: () => P()?.gameplayStart?.(),
+      stop: () => P()?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!P()) return end(kind !== 'rewarded');              // SDK blocked: interstitials just continue, rewards are not given
+        if (kind === 'midgame') Promise.resolve(P().commercialBreak(onStart)).then(() => end(true), () => end(true));
+        else {                                                  // accept both the callback and the options form of rewardedBreak
+          const opts = Object.assign(() => onStart(), { onStart, size: 'small' });
+          Promise.resolve(P().rewardedBreak(opts)).then(ok => end(!!ok), () => end(false));
+        }
+      },
+    };
+    if (location.hostname === 'localhost') P()?.setDebug?.(true);
+    Promise.resolve(P()?.init?.()).then(() => P()?.gameLoadingFinished?.(), () => P()?.gameLoadingFinished?.());
+  } else if (target === 'crazygames') {
+    const C = () => window.CrazyGames?.SDK;
+    sdk = {
+      start: () => C()?.game?.gameplayStart?.(),
+      stop: () => C()?.game?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!C()) return end(kind !== 'rewarded');
+        C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+      },
+    };
+    Promise.resolve(C()?.init?.()).then(() => { C()?.game?.loadingStart?.(); C()?.game?.loadingStop?.(); }, () => {});
+  } else return;
+
+  // Keyboard is disabled while an ad runs (Poki asks for this); the capture phase runs before the game's own handlers
+  for (const type of ['keydown', 'keyup']) addEventListener(type, e => { if (adActive) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  // The page sits in an iframe: stop arrow keys and space from scrolling the host page. The wheel is only blocked for
+  // canvas games, because the two puzzle games with long pages need to scroll on small screens.
+  addEventListener('keydown', e => { if ([' ', 'ArrowUp', 'ArrowDown'].includes(e.key) && e.target === document.body) e.preventDefault(); });
+  if (document.querySelector('canvas')) addEventListener('wheel', e => e.preventDefault(), { passive: false });
+  sync();
+})();
+
+</script>
+</body>
+</html>

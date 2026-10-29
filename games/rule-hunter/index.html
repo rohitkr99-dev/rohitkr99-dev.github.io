@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.PORTAL_TARGET='site'</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b2a49">
+<title>Rule Hunter</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;min-height:100%}
+body{display:flex;flex-direction:column;align-items:center;gap:10px;padding:max(12px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom));
+  font:800 16px "Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Nunito","Trebuchet MS",system-ui,sans-serif;color:#fff;touch-action:manipulation;
+  background:radial-gradient(circle at 12% 8%,#ffffff22,transparent 40%),radial-gradient(circle at 92% 90%,#ffffff14,transparent 45%),linear-gradient(160deg,#1b2a49,#3d2a6b)}
+main{width:100%;max-width:460px;display:flex;flex-direction:column;gap:10px}
+.hud{display:flex;align-items:center;gap:8px}
+.pill{background:#0003;border-radius:999px;padding:7px 14px;box-shadow:inset 0 -3px 0 #0002;white-space:nowrap}
+.pill b{margin-left:5px;font-size:18px}
+.gap{flex:1}
+.btn{font:inherit;color:#4a2f00;background:linear-gradient(#ffe066,#ffb300);border:0;border-bottom:5px solid #c78500;border-radius:14px;padding:10px 14px;cursor:pointer;position:relative;
+  box-shadow:0 6px 12px #0003;transition:transform .08s,filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.06)}
+.btn:active:not(:disabled){transform:translateY(3px);border-bottom-width:2px}
+.btn:focus-visible,.item:focus-visible,.slot:focus-visible,.pal:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.btn:disabled{filter:grayscale(.8);opacity:.45;cursor:default}
+.btn.blue{color:#fff;background:linear-gradient(#5ec2ff,#2a7de1);border-bottom-color:#1a55a0}
+.btn.green{color:#fff;background:linear-gradient(#6be585,#1fa94b);border-bottom-color:#127a32}
+.btn.red{color:#fff;background:linear-gradient(#ff7a8a,#e0364e);border-bottom-color:#9c1f33}
+.btn.icon{width:42px;height:42px;padding:0;font-size:18px}
+.btn.big{font-size:21px;padding:13px 24px}
+.btn i{position:absolute;top:-8px;right:-6px;font-style:normal;font-size:11px;color:#fff;background:#e0364e;border-radius:99px;padding:2px 7px}
+
+.boards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.panel{border-radius:16px;padding:8px;background:#0003;box-shadow:inset 0 3px 8px #0003}
+.panel h3{margin:0 0 6px;font-size:15px;text-align:center;letter-spacing:.5px}
+.panel.keep h3{color:#6be585}.panel.disc h3{color:#ff8a99}
+.list{display:flex;flex-direction:column;gap:6px;max-height:min(24vh,190px);min-height:62px;overflow:auto;padding:2px}
+.list:empty::after{content:"nothing yet";font-size:13px;opacity:.45;text-align:center;padding:14px 0}
+.item{display:flex;justify-content:center;gap:2px;background:#fff;border-radius:12px;padding:3px 4px;border:0;cursor:pointer;flex:0 0 auto;box-shadow:0 3px 0 #0003}
+.keep .item{box-shadow:0 3px 0 #1fa94b,0 0 0 2px #6be585 inset}.disc .item{box-shadow:0 3px 0 #e0364e,0 0 0 2px #ff8a99 inset}
+.item.new{animation:pop .45s cubic-bezier(.2,1.5,.4,1)}
+.item.dupe{animation:shake .4s}
+.item svg{display:block}
+
+.builder{background:#0003;border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:10px;align-items:center}
+.slots{display:flex;gap:10px}
+.slot{width:74px;height:74px;border-radius:16px;border:3px dashed #ffffff66;background:#ffffff14;display:grid;place-items:center;cursor:pointer;padding:0;color:#fff;font:inherit;font-size:30px}
+.slot.sel{border-style:solid;border-color:#ffd23f;background:#ffffff26;box-shadow:0 0 14px #ffd23f88}
+.palette{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pal{width:56px;height:50px;border-radius:12px;border:0;background:#fff;cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:0 4px 0 #0004;transition:transform .08s}
+.pal:active{transform:translateY(3px);box-shadow:0 1px 0 #0004}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+#overlay{position:fixed;inset:0;background:#0d0a26c4;display:grid;place-items:center;padding:12px;z-index:60;backdrop-filter:blur(3px);overflow:auto}
+#overlay[hidden]{display:none}
+#card{background:#fff;color:#2b2350;border-radius:26px;padding:22px 22px 24px;text-align:center;width:min(100%,380px);box-shadow:0 20px 50px #0006;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+#card h1{font-size:44px;line-height:.95;margin:0 0 8px;color:#5b3fd0}
+#card h2{margin:4px 0 8px;font-size:26px}
+#card p{margin:6px 0;font-size:16px;opacity:.8;font-weight:700}
+#card .big-emoji{font-size:50px}
+#card .btn.wide{display:block;width:100%;margin-top:10px}
+.exrow{display:flex;align-items:center;gap:6px;margin:6px 0;justify-content:space-between}
+.exrow .item{box-shadow:0 3px 0 #0003;border:2px solid #e3e0f4}
+.tog{display:flex;gap:4px}
+.tog button{font:inherit;font-size:13px;border:0;border-radius:10px;padding:8px 9px;cursor:pointer;background:#ece8ff;color:#5b3fd0;font-weight:800}
+.tog button.k.on{background:#1fa94b;color:#fff}.tog button.d.on{background:#e0364e;color:#fff}
+.rule{background:#f3efff;border-radius:14px;padding:10px 12px;margin:8px 0;font-size:17px;color:#3a2a8a}
+.stars{font-size:42px;letter-spacing:4px;color:#ffb300}
+.adbar{height:10px;border-radius:9px;background:#0001;overflow:hidden;margin-top:14px}
+.adbar i{display:block;height:100%;background:#2a7de1;animation:fill 1.5s linear forwards}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#000c;color:#fff;border-radius:99px;padding:10px 18px;z-index:70;font-size:15px;animation:pop .25s}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@keyframes fill{from{width:0}to{width:100%}}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<main>
+  <header class="hud">
+    <div class="pill">Level<b id="lv">1</b></div>
+    <div class="pill">Tests left<b id="tests">0</b></div>
+    <div class="gap"></div>
+    <button class="btn blue icon" id="help" aria-label="How to play">?</button>
+    <button class="btn blue icon" id="snd" aria-label="Toggle sound">🔊</button>
+  </header>
+  <section class="boards" aria-label="Known examples">
+    <div class="panel keep"><h3>✓ KEEP</h3><div class="list" id="keepList"></div></div>
+    <div class="panel disc"><h3>✗ DISCARD</h3><div class="list" id="discList"></div></div>
+  </section>
+  <section class="builder" aria-label="Build a test item">
+    <div class="slots" id="slots"></div>
+    <div class="palette" id="palette"></div>
+    <div class="row">
+      <button class="btn blue" id="rnd">🎲 Random</button>
+      <button class="btn blue" id="clr">Clear</button>
+      <button class="btn green big" id="test">Test it</button>
+    </div>
+  </section>
+  <div class="row">
+    <button class="btn" id="exam">🎓 I know the rule</button>
+    <button class="btn blue" id="more">+3 tests <i>AD</i></button>
+  </div>
+</main>
+<div id="overlay" hidden><div id="card" role="dialog" aria-live="polite"></div></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const ri = n => Math.random() * n | 0;
+const shuffle = a => { for (let i = a.length; i > 1;) { const j = Math.random() * i-- | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+// ---- Overlay + Ads: replace the two Ads bodies with the portal SDK (e.g. Poki commercialBreak / rewardedBreak) ----
+function overlay(html){ $('card').innerHTML = html; $('overlay').hidden = false; }
+const hide = () => { $('overlay').hidden = true; };
+function adBreak(title, done){
+  overlay(`<p>${title}</p><h2>Placeholder ad</h2><div class="adbar"><i></i></div>`);
+  setTimeout(() => { hide(); done(); }, 1500);
+}
+let adCalls = 0;   // placeholder ads: show one break in three
+const Ads = { interstitial: done => ++adCalls % 3 ? done() : adBreak('Advertisement', done), rewarded: done => adBreak('Watch to claim your reward', done) };
+
+// ---- Sound ----
+let ac, muted = false;
+try { muted = localStorage.getItem('rh-mute') === '1'; } catch {}
+function tone(f, t = 0, d = .12, type = 'sine', v = .08){
+  if (muted) return;
+  try {
+    ac ??= new AudioContext();
+    const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + t;
+    o.type = type; o.frequency.value = f; g.gain.setValueAtTime(v, s); g.gain.exponentialRampToValueAtTime(.001, s + d);
+    o.connect(g).connect(ac.destination); o.start(s); o.stop(s + d);
+  } catch {}
+}
+const sfx = {
+  tap: () => tone(520, 0, .05, 'triangle'),
+  keep: () => { tone(660, 0, .1, 'triangle'); tone(880, .09, .14, 'triangle'); },
+  disc: () => { tone(330, 0, .1, 'square', .05); tone(220, .09, .16, 'square', .05); },
+  win: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .11, .3, 'triangle', .12)),
+  no: () => tone(150, 0, .3, 'sawtooth', .06),
+};
+$('snd').textContent = muted ? '🔇' : '🔊';
+$('snd').onclick = () => { muted = !muted; $('snd').textContent = muted ? '🔇' : '🔊'; try { localStorage.setItem('rh-mute', muted ? '1' : '0'); } catch {} sfx.tap(); };
+
+// ---- Items: three shapes in a row. Shape = { c: colour 0-3, f: form 0-2 } ----
+const COL = ['Red', 'Blue', 'Green', 'Yellow'], HEX = ['#ff4d5e', '#3aa0ff', '#2fd36b', '#ffd23f'], INIT = ['R', 'B', 'G', 'Y'];
+const FORM = ['circle', 'square', 'triangle'], POS = ['left', 'middle', 'right'];
+const randShape = () => ({ c: ri(4), f: ri(3) });
+const randItem = () => [randShape(), randShape(), randShape()];
+const key = it => it.map(s => s.c * 3 + s.f).join('-');
+const label = it => it.map(s => `${COL[s.c]} ${FORM[s.f]}`).join(', ');
+
+function shapeSVG(s, size = 40){
+  const body = s.f === 0 ? '<circle cx="20" cy="20" r="15"/>' : s.f === 1 ? '<rect x="6" y="6" width="28" height="28" rx="5"/>' : '<polygon points="20,5 35,33 5,33" stroke-linejoin="round"/>';
+  return `<svg viewBox="0 0 40 40" width="${size}" height="${size}" aria-hidden="true"><g fill="${HEX[s.c]}" stroke="#1b1033" stroke-width="2.5">${body}</g>` +
+    `<ellipse cx="14" cy="${s.f === 2 ? 24 : 13}" rx="5" ry="3" fill="#fff" opacity=".4"/>` +
+    `<text x="20" y="${s.f === 2 ? 29 : 25}" text-anchor="middle" font-size="12" font-weight="900" fill="#1b1033" opacity=".55" font-family="system-ui,sans-serif">${INIT[s.c]}</text></svg>`;
+}
+const itemHTML = (it, size = 38) => it.map(s => shapeSVG(s, size)).join('');
+
+// ---- Rule library. Each rule is a yes/no test on an item; tiers grow from single facts to relations and combinations ----
+const cnt = (it, fn) => it.filter(fn).length;
+const ATOMS = (() => {
+  const A = [], add = (tier, text, f) => A.push({ tier, text, f });
+  for (let c = 0; c < 4; c++) {
+    add(1, `it has a ${COL[c]} shape`, it => it.some(s => s.c === c));
+    add(1, `it has at least two ${COL[c]} shapes`, it => cnt(it, s => s.c === c) >= 2);
+  }
+  for (let f = 0; f < 3; f++) {
+    add(1, `it has no ${FORM[f]}s`, it => !it.some(s => s.f === f));
+    add(1, `it has exactly one ${FORM[f]}`, it => cnt(it, s => s.f === f) === 1);
+    add(1, `it has exactly two ${FORM[f]}s`, it => cnt(it, s => s.f === f) === 2);
+  }
+  for (let p = 0; p < 3; p++) {
+    for (let c = 0; c < 4; c++) { add(2, `the ${POS[p]} shape is ${COL[c]}`, it => it[p].c === c); add(2, `the ${POS[p]} shape is not ${COL[c]}`, it => it[p].c !== c); }
+    for (let f = 0; f < 3; f++) add(2, `the ${POS[p]} shape is a ${FORM[f]}`, it => it[p].f === f);
+  }
+  add(3, 'all three colours are different', it => new Set(it.map(s => s.c)).size === 3);
+  add(3, 'at least two shapes share a colour', it => new Set(it.map(s => s.c)).size < 3);
+  add(3, 'all three forms are different', it => new Set(it.map(s => s.f)).size === 3);
+  add(3, 'no two neighbours have the same colour', it => it[0].c !== it[1].c && it[1].c !== it[2].c);
+  add(3, 'two neighbours have the same form', it => it[0].f === it[1].f || it[1].f === it[2].f);
+  add(3, 'the left and right shapes have the same colour', it => it[0].c === it[2].c);
+  add(3, 'the left and right shapes have the same form', it => it[0].f === it[2].f);
+  add(3, 'the middle shape differs in colour from both neighbours', it => it[1].c !== it[0].c && it[1].c !== it[2].c);
+  for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) if (a !== b) add(3, `there are more ${COL[a]} shapes than ${COL[b]} shapes`, it => cnt(it, s => s.c === a) > cnt(it, s => s.c === b));
+  return A;
+})();
+const TIER_BUDGET = [0, 6, 7, 8, 12];
+const tierOf = lv => lv <= 3 ? 1 : lv <= 8 ? 2 : lv <= 14 ? 3 : 4;
+
+function makeRule(tier, avoid){
+  for (let tries = 0; tries < 400; tries++) {
+    let r;
+    if (tier === 4) {
+      const pool = ATOMS.filter(a => a.tier <= 2), a = pool[ri(pool.length)], b = pool[ri(pool.length)];
+      if (a === b) continue;
+      const op = ri(3);
+      r = op === 0 ? { text: `${a.text} and ${b.text}`, f: it => a.f(it) && b.f(it) }
+        : op === 1 ? { text: `${a.text} or ${b.text}`, f: it => a.f(it) || b.f(it) }
+        : { text: `either ${a.text} or ${b.text}, but not both`, f: it => a.f(it) !== b.f(it) };
+    } else {
+      const pool = ATOMS.filter(a => (Math.random() < .7 ? a.tier === tier : a.tier <= tier));
+      r = pool[ri(pool.length)];
+    }
+    if (!r || r.text === avoid) continue;
+    let keep = 0; const N = 600;
+    for (let i = 0; i < N; i++) if (r.f(randItem())) keep++;
+    const p = keep / N;
+    if (p >= (tier === 4 ? .22 : .25) && p <= (tier === 4 ? .78 : .75)) return { text: r.text, f: r.f, tier };
+  }
+  return makeRule(1, avoid);
+}
+
+// ---- State ----
+let level = 1, rule, known, slots, selSlot, tests, budget, used, attempts, solvedCount = 0, exam = null;
+try { level = +localStorage.getItem('rh-level') || 1; } catch {}
+
+function pickExamples(n){                                       // n examples of each class, all distinct
+  const keeps = new Map(), discs = new Map();
+  for (let i = 0; i < 3000 && (keeps.size < n || discs.size < n); i++) {
+    const it = randItem(), k = key(it), side = rule.f(it) ? keeps : discs;
+    if (side.size < n && !side.has(k)) side.set(k, it);
+  }
+  return [[...keeps.values(), true], [...discs.values(), false]];
+}
+function newLevel(){
+  const tier = tierOf(level);
+  rule = makeRule(tier, rule?.text);
+  budget = TIER_BUDGET[tier]; tests = budget; used = 0; attempts = 0; known = new Map(); slots = [null, null, null]; selSlot = 0;
+  const n = tier >= 3 ? 3 : 2;
+  for (const group of pickExamples(n)) { const keep = group.pop(); group.forEach(it => known.set(key(it), { it, keep })); }
+  renderAll();
+}
+
+// ---- Rendering ----
+const itemBtn = (it, cls = '') => `<button class="item ${cls}" data-k="${key(it)}" aria-label="${label(it)}. Tap to copy into the builder.">${itemHTML(it)}</button>`;
+function renderLists(newKey){
+  const fill = keep => [...known.entries()].filter(([, v]) => v.keep === keep).reverse().map(([k, v]) => itemBtn(v.it, k === newKey ? 'new' : '')).join('');
+  $('keepList').innerHTML = fill(true); $('discList').innerHTML = fill(false);
+}
+function renderBuilder(){
+  $('slots').innerHTML = slots.map((s, i) => `<button class="slot${i === selSlot ? ' sel' : ''}" data-i="${i}" aria-label="Slot ${i + 1}: ${s ? COL[s.c] + ' ' + FORM[s.f] : 'empty'}">${s ? shapeSVG(s, 56) : '+'}</button>`).join('');
+  $('test').disabled = slots.some(s => !s) || tests <= 0;
+}
+function renderAll(){
+  $('lv').textContent = level; $('tests').textContent = tests;
+  renderLists(); renderBuilder();
+  if (!$('palette').children.length) {
+    $('palette').innerHTML = [0, 1, 2].flatMap(f => [0, 1, 2, 3].map(c => `<button class="pal" data-c="${c}" data-f="${f}" aria-label="${COL[c]} ${FORM[f]}">${shapeSVG({ c, f }, 36)}</button>`)).join('');
+  }
+}
+function toast(text){
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = text; document.body.append(t); setTimeout(() => t.remove(), 1700);
+}
+
+// ---- Interaction ----
+$('slots').onclick = e => { const b = e.target.closest('.slot'); if (b) { selSlot = +b.dataset.i; sfx.tap(); renderBuilder(); } };
+$('palette').onclick = e => {
+  const b = e.target.closest('.pal'); if (!b) return;
+  slots[selSlot] = { c: +b.dataset.c, f: +b.dataset.f };
+  const empty = slots.findIndex(s => !s); selSlot = empty >= 0 ? empty : Math.min(2, selSlot + 1); sfx.tap(); renderBuilder();
+};
+const loadItem = e => { const b = e.target.closest('.item'); if (!b) return; const v = known.get(b.dataset.k); if (v) { slots = v.it.map(s => ({ ...s })); selSlot = 0; sfx.tap(); renderBuilder(); } };
+$('keepList').onclick = loadItem; $('discList').onclick = loadItem;
+$('rnd').onclick = () => { slots = randItem(); selSlot = 0; sfx.tap(); renderBuilder(); };
+$('clr').onclick = () => { slots = [null, null, null]; selSlot = 0; renderBuilder(); };
+$('test').onclick = () => {
+  if (slots.some(s => !s) || tests <= 0) return;
+  const it = slots.map(s => ({ ...s })), k = key(it);
+  if (known.has(k)) {                                           // asking the same question twice costs nothing
+    toast('You already know that one!'); const el = document.querySelector(`[data-k="${k}"]`); el?.classList.remove('dupe'); void el?.offsetWidth; el?.classList.add('dupe'); return;
+  }
+  const keep = !!rule.f(it); known.set(k, { it, keep }); tests--; used++;
+  keep ? sfx.keep() : sfx.disc(); slots = [null, null, null]; selSlot = 0;
+  $('tests').textContent = tests; renderLists(k); renderBuilder();
+};
+$('more').onclick = () => Ads.rewarded(() => { tests += 3; $('tests').textContent = tests; renderBuilder(); toast('+3 tests'); });
+$('help').onclick = () => { overlay(`<h2>How to play</h2><p>A secret rule decides which items to <b style="color:#1fa94b">KEEP</b> and which to <b style="color:#e0364e">DISCARD</b>.</p>` +
+  `<p>Study the examples, build your own items and test them. Each test shows whether the rule keeps it. Tap any example to copy it, then change one shape to find what matters.</p>` +
+  `<p>When you think you know the rule, take the exam: sort 5 new items correctly. Fewer tests = more stars!</p><button class="btn wide green" id="okh">Got it</button>`); $('okh').onclick = hide; };
+
+// ---- Exam: five unseen items, near-misses included ----
+function makeExam(){
+  const keeps = new Map(), discs = new Map();
+  for (let i = 0; i < 1200; i++) { const it = randItem(), k = key(it); if (known.has(k)) continue; (rule.f(it) ? keeps : discs).set(k, it); }
+  const nk = 2 + ri(2), kp = shuffle([...keeps.values()]).slice(0, nk), items = [...kp];
+  let guard = 0;
+  while (items.length < 5 && guard++ < 60) {
+    let cand;
+    if (Math.random() < .6 && kp.length) {                      // a near miss: change one shape of a KEEP item so that it is now DISCARD
+      const m = kp[ri(kp.length)].map(s => ({ ...s })); m[ri(3)] = randShape(); cand = m;
+      if (rule.f(cand) || known.has(key(cand))) cand = null;
+    }
+    cand ??= [...discs.values()][ri(discs.size)];
+    if (cand && !items.some(x => key(x) === key(cand))) items.push(cand);
+  }
+  return shuffle(items).map(it => ({ it, truth: !!rule.f(it), ans: null, locked: false }));
+}
+function openExam(){
+  if (!exam) exam = makeExam();
+  const rows = exam.map((r, i) => `<div class="exrow"><div class="item">${itemHTML(r.it, 34)}</div><div class="tog" data-i="${i}">` +
+    `<button class="k${r.ans === true ? ' on' : ''}" data-v="1">Keep</button><button class="d${r.ans === false ? ' on' : ''}" data-v="0">Discard</button></div></div>`).join('');
+  overlay(`<h2>The exam</h2><p>Attempt ${attempts + 1} of 3 · sort all 5 correctly</p>${rows}` +
+    `<button class="btn wide green" id="sub" ${exam.every(r => r.ans !== null) ? '' : 'disabled'}>Submit answers</button>` +
+    `<button class="btn wide blue" id="peek">💡 Reveal one answer <i>AD</i></button><button class="btn wide" id="back" style="background:#ece8ff;color:#5b3fd0;border-bottom-color:#c9c2ea">Back to testing</button>`);
+  $('card').querySelectorAll('.tog button').forEach(b => b.onclick = () => {
+    const r = exam[+b.parentElement.dataset.i]; if (r.locked) return; r.ans = b.dataset.v === '1'; sfx.tap(); openExamKeep();
+  });
+  $('sub').onclick = submitExam; $('back').onclick = hide;
+  $('peek').onclick = () => Ads.rewarded(() => { const r = shuffle(exam.filter(x => !x.locked))[0]; if (r) { r.ans = r.truth; r.locked = true; } openExam(); });
+}
+const openExamKeep = () => { const y = $('overlay').scrollTop; openExam(); $('overlay').scrollTop = y; };
+function submitExam(){
+  const right = exam.filter(r => r.ans === r.truth).length;
+  if (right === 5) return solved();
+  attempts++; sfx.no(); exam = null;
+  if (attempts >= 3) return failed();
+  overlay(`<div class="big-emoji">🤔</div><h2>${right} of 5 right</h2><p>Not quite. Run a few more tests, then try again with fresh items.</p><button class="btn wide green" id="ok">Keep testing</button>`);
+  $('ok').onclick = hide;
+}
+$('exam').onclick = () => openExam();
+function solved(){
+  const ratio = used / budget, stars = Math.max(1, (ratio <= .4 ? 3 : ratio <= .75 ? 2 : 1) - attempts);
+  solvedCount++; sfx.win();
+  overlay(`<div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div><h2>Rule cracked!</h2><div class="rule">KEEP items where <b>${rule.text}</b></div><p>${used} test${used === 1 ? '' : 's'} used${attempts ? ` · exam attempt ${attempts + 1}` : ''}</p>` +
+    `<button class="btn wide green" id="next">Next level</button>`);
+  level++; exam = null; try { localStorage.setItem('rh-level', level); } catch {}
+  $('next').onclick = () => { hide(); Ads.interstitial(newLevel); };
+}
+function failed(){
+  exam = null;
+  overlay(`<div class="big-emoji">🕵️</div><h2>Case closed</h2><p>The rule was:</p><div class="rule">KEEP items where <b>${rule.text}</b></div><button class="btn wide green" id="next">Try a new rule</button>`);
+  $('next').onclick = () => { hide(); newLevel(); };
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden && $('overlay').hidden) { overlay('<h2>Paused</h2><button class="btn wide" id="res">Resume</button>'); $('res').onclick = hide; } });
+
+newLevel();
+overlay('<h1>Rule<br>Hunter</h1><p>A secret rule sorts items into KEEP and DISCARD. Test items, work out the rule, then prove it.</p><button class="btn wide green big" id="go">Start hunting</button>');
+$('go').onclick = () => { ac?.resume?.(); hide(); };
+</script>
+<script>
+/* Portal adapter. Injected by build.py after each game's own script.
+ * It replaces the game's placeholder `Ads` with the portal SDK and reports gameplay start/stop.
+ * window.PORTAL_TARGET is set by the build: 'poki' | 'crazygames'. Without it (dev builds) nothing happens. */
+(() => {
+  const target = window.PORTAL_TARGET;
+  if (target === 'site') {                    // my own website: no ads, so hints, undo and revive are simply free
+    if (typeof Ads !== 'undefined') { Ads.interstitial = done => done(); Ads.rewarded = done => done(); }
+    document.head.insertAdjacentHTML('beforeend', '<style>.btn>i{display:none!important}</style>');   // hides the "AD" badges
+    return;
+  }
+  if (!['poki', 'crazygames'].includes(target) || typeof Ads === 'undefined') return;
+
+  // ---- Audio: head.js tracked every AudioContext the game created, so they can be silenced during ads ----
+  const ctxs = window.__portalCtxs || [];
+  const audio = on => ctxs.forEach(c => { try { on ? c.resume() : c.suspend(); } catch {} });
+
+  // ---- Shield: blocks input while an ad is loading or playing ----
+  const shield = document.createElement('div');
+  shield.style.cssText = 'position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;color:#fff;font:700 20px system-ui,sans-serif';
+  document.body.append(shield);
+  const shieldOn = dark => { shield.style.display = 'flex'; shield.style.background = dark ? '#000b' : 'transparent'; shield.textContent = dark ? 'Ad playing…' : ''; };
+  const shieldOff = () => { shield.style.display = 'none'; };
+  function toast(text){
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000d;color:#fff;border-radius:99px;padding:10px 18px;z-index:100000;font:700 15px system-ui,sans-serif';
+    t.textContent = text; document.body.append(t); setTimeout(() => t.remove(), 2200);
+  }
+
+  // ---- Gameplay start/stop follows the game's #overlay: menus, game over and pause cards are "not playing" ----
+  let playing = false, adActive = false, sdk;
+  const overlayEl = document.getElementById('overlay');
+  function sync(){
+    const should = !adActive && !!overlayEl && overlayEl.hidden;
+    if (should && !playing) { playing = true; sdk.start(); }
+    else if (!should && playing) { playing = false; sdk.stop(); }
+  }
+  if (overlayEl) new MutationObserver(sync).observe(overlayEl, { attributes: true, attributeFilter: ['hidden'] });
+
+  // ---- One ad flow for both portals: `request(kind, hooks)` is portal specific ----
+  function runAd(kind, onReward, onDone){
+    adActive = true; sync(); shieldOn(false);
+    let finished = false;
+    const end = rewarded => {
+      if (finished) return; finished = true;
+      audio(true); shieldOff(); adActive = false;
+      if (kind === 'rewarded') rewarded ? onReward() : toast('Reward not earned: the ad was unavailable or skipped');
+      else onDone();
+      sync();
+    };
+    const start = () => { audio(false); shieldOn(true); };
+    try { sdk.request(kind, start, end); } catch { end(false); }
+  }
+  Ads.interstitial = done => runAd('midgame', null, done);
+  Ads.rewarded = done => runAd('rewarded', done, null);
+
+  // ---- Portal SDKs ----
+  if (target === 'poki') {
+    const P = () => window.PokiSDK;
+    sdk = {
+      start: () => P()?.gameplayStart?.(),
+      stop: () => P()?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!P()) return end(kind !== 'rewarded');              // SDK blocked: interstitials just continue, rewards are not given
+        if (kind === 'midgame') Promise.resolve(P().commercialBreak(onStart)).then(() => end(true), () => end(true));
+        else {                                                  // accept both the callback and the options form of rewardedBreak
+          const opts = Object.assign(() => onStart(), { onStart, size: 'small' });
+          Promise.resolve(P().rewardedBreak(opts)).then(ok => end(!!ok), () => end(false));
+        }
+      },
+    };
+    if (location.hostname === 'localhost') P()?.setDebug?.(true);
+    Promise.resolve(P()?.init?.()).then(() => P()?.gameLoadingFinished?.(), () => P()?.gameLoadingFinished?.());
+  } else if (target === 'crazygames') {
+    const C = () => window.CrazyGames?.SDK;
+    sdk = {
+      start: () => C()?.game?.gameplayStart?.(),
+      stop: () => C()?.game?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!C()) return end(kind !== 'rewarded');
+        C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+      },
+    };
+    Promise.resolve(C()?.init?.()).then(() => { C()?.game?.loadingStart?.(); C()?.game?.loadingStop?.(); }, () => {});
+  } else return;
+
+  // Keyboard is disabled while an ad runs (Poki asks for this); the capture phase runs before the game's own handlers
+  for (const type of ['keydown', 'keyup']) addEventListener(type, e => { if (adActive) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  // The page sits in an iframe: stop arrow keys and space from scrolling the host page. The wheel is only blocked for
+  // canvas games, because the two puzzle games with long pages need to scroll on small screens.
+  addEventListener('keydown', e => { if ([' ', 'ArrowUp', 'ArrowDown'].includes(e.key) && e.target === document.body) e.preventDefault(); });
+  if (document.querySelector('canvas')) addEventListener('wheel', e => e.preventDefault(), { passive: false });
+  sync();
+})();
+
+</script>
+</body>
+</html>

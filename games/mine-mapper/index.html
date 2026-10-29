@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.PORTAL_TARGET='site'</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#1f7a4d">
+<title>Mine Mapper</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;min-height:100%}
+body{display:flex;flex-direction:column;align-items:center;gap:12px;padding:max(12px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom));
+  font:800 16px "Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Nunito","Trebuchet MS",system-ui,sans-serif;color:#fff;touch-action:manipulation;
+  background:radial-gradient(circle at 85% 8%,#fff3a855,transparent 34%),linear-gradient(180deg,#58c4e8 0%,#7fd6a0 38%,#2f9e5f 100%);background-attachment:fixed}
+.hud{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;max-width:560px}
+.pill{background:#0004;border-radius:999px;padding:7px 14px;box-shadow:inset 0 -3px 0 #0002;white-space:nowrap}
+.pill b{margin-left:5px;font-size:19px;font-variant-numeric:tabular-nums}
+.gap{flex:1}
+.btn{font:inherit;color:#4a2f00;background:linear-gradient(#ffe066,#ffb300);border:0;border-bottom:5px solid #c78500;border-radius:14px;padding:10px 14px;cursor:pointer;position:relative;
+  box-shadow:0 6px 12px #0003;transition:transform .08s,filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.06)}
+.btn:active:not(:disabled){transform:translateY(3px);border-bottom-width:2px}
+.btn:focus-visible,.cell:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.btn.blue{color:#fff;background:linear-gradient(#5ec2ff,#2a7de1);border-bottom-color:#1a55a0}
+.btn.green{color:#fff;background:linear-gradient(#6be585,#1fa94b);border-bottom-color:#127a32}
+.btn.red{color:#fff;background:linear-gradient(#ff7a8a,#e0364e);border-bottom-color:#9c1f33}
+.btn.icon{width:42px;height:42px;padding:0;font-size:18px}
+.btn.on{color:#fff;background:linear-gradient(#ff7a8a,#e0364e);border-bottom-color:#9c1f33}
+.btn.big{font-size:21px;padding:13px 24px}
+.btn i{position:absolute;top:-8px;right:-6px;font-style:normal;font-size:11px;color:#fff;background:#e0364e;border-radius:99px;padding:2px 7px}
+
+#frame{background:#7a4a24;border-radius:18px;padding:10px;box-shadow:0 8px 0 #5a3416,0 18px 30px #0005;max-width:100%;max-height:calc(100dvh - 250px);overflow:auto;touch-action:pan-x pan-y}
+#board{display:grid;gap:var(--gap,3px);justify-content:center;width:max-content;margin:0 auto}
+.cell{position:relative;width:var(--cs);height:var(--cs);padding:0;border:0;border-radius:22%;cursor:pointer;display:grid;place-items:center;line-height:1;color:#fff;
+  font:900 max(9px,calc(var(--cs)*.6))/1 "Fredoka","Baloo 2",ui-rounded,"Segoe UI Rounded","Trebuchet MS",system-ui,sans-serif;
+  background:linear-gradient(#86e57f,#3fbb55);box-shadow:inset 0 -4px 0 #24803a,inset 0 2px 0 #c6f8bd}
+.cell.alt{background:linear-gradient(#7bdc78,#37b04d)}
+.cell:hover:not(.rev){filter:brightness(1.1)}
+.cell.rev{cursor:default;background:#f6e7bd;box-shadow:inset 0 2px 5px #0003;animation:pop .28s var(--d,0ms) backwards}
+.cell.rev.alt{background:#efdcab}
+.cell.flag::after{content:"🚩";font-size:max(9px,calc(var(--cs)*.55));filter:drop-shadow(0 2px 0 #0004)}
+.cell.mine{background:#ffd9d2;box-shadow:inset 0 2px 5px #0003}
+.cell.mine::after{content:"💣";font-size:max(9px,calc(var(--cs)*.58))}
+.cell.boom{background:#ff6b5e;animation:boom .55s}
+.cell.wrong::after{content:"❌";font-size:max(9px,calc(var(--cs)*.5))}
+.cell.hintglow{animation:glow .9s 2}
+.n1{color:#2a7de1}.n2{color:#1fa94b}.n3{color:#e0364e}.n4{color:#7b3fa0}.n5{color:#c45a00}.n6{color:#118a8a}.n7{color:#333}.n8{color:#777}
+.bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tip{margin:0;text-align:center;font-size:14px;opacity:.9;max-width:520px}
+
+#overlay{position:fixed;inset:0;background:#0b2f1fc4;display:grid;place-items:center;padding:12px;z-index:60;backdrop-filter:blur(3px);overflow:auto}
+#overlay[hidden]{display:none}
+#card{background:#fff;color:#1d3b2a;border-radius:26px;padding:22px 22px 24px;text-align:center;width:min(100%,380px);box-shadow:0 20px 50px #0006;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+#card h1{font-size:46px;line-height:.95;margin:0 0 8px;color:#e0364e}
+#card h2{margin:4px 0 8px;font-size:28px}
+#card p{margin:6px 0;font-size:16px;opacity:.82;font-weight:700}
+#card .big-emoji{font-size:54px}
+#card .btn.wide{display:block;width:100%;margin-top:10px}
+.stars{font-size:42px;letter-spacing:4px;color:#ffb300}
+.lvgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+.lv{font:inherit;font-size:20px;color:#fff;border:0;border-bottom:4px solid #127a32;border-radius:12px;padding:7px 0 4px;cursor:pointer;background:linear-gradient(#6be585,#1fa94b);line-height:1.1}
+.lv small{display:block;font-size:10px;letter-spacing:1px;color:#fff6b0;min-height:12px}
+.lv.lock{background:#c9d4cd;border-bottom-color:#9fb0a6;color:#6d7f74;cursor:default}
+.lv:active:not(:disabled){transform:translateY(2px)}
+.btn small{font-size:13px;opacity:.9}
+.adbar{height:10px;border-radius:9px;background:#0001;overflow:hidden;margin-top:14px}
+.adbar i{display:block;height:100%;background:#2a7de1;animation:fill 1.5s linear forwards}
+.fx{position:fixed;width:9px;height:9px;border-radius:50%;pointer-events:none;z-index:50}
+.shake{animation:shake .4s}
+@keyframes pop{from{transform:scale(.55);opacity:.2}}
+@keyframes fill{from{width:0}to{width:100%}}
+@keyframes boom{30%{transform:scale(1.35)}}
+@keyframes glow{50%{box-shadow:0 0 0 4px #fff,0 0 18px 6px #ffe066}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header class="hud">
+  <div class="pill"><span id="lvname">Easy</span></div>
+  <div class="pill">🚩<b id="left">0</b></div>
+  <div class="pill">⏱<b id="time">0</b></div>
+  <div class="gap"></div>
+  <button class="btn blue icon" id="help" aria-label="How to play">?</button>
+  <button class="btn blue icon" id="snd" aria-label="Toggle sound">🔊</button>
+</header>
+<div id="frame"><div id="board" role="grid" aria-label="Minefield"></div></div>
+<div class="bar">
+  <button class="btn" id="mode">⛏ Digging</button>
+  <button class="btn green" id="hint">💡 Hint <i>AD</i></button>
+  <button class="btn blue" id="zoom">🔍 Zoom in</button>
+  <button class="btn blue" id="again">↻ New game</button>
+</div>
+<p class="tip" id="tip">Click a square to dig. Right-click, long-press, or switch to Flag mode to plant a flag.</p>
+<div id="overlay" hidden><div id="card" role="dialog" aria-live="polite"></div></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// ---- Overlay + Ads: replace the two Ads bodies with the portal SDK (e.g. Poki commercialBreak / rewardedBreak) ----
+function overlay(html){ $('card').innerHTML = html; $('overlay').hidden = false; }
+const hide = () => { $('overlay').hidden = true; };
+function adBreak(title, done){
+  overlay(`<p>${title}</p><h2>Placeholder ad</h2><div class="adbar"><i></i></div>`);
+  setTimeout(() => { hide(); done(); }, 1500);
+}
+let adCalls = 0;   // placeholder ads: show one break in three
+const Ads = { interstitial: done => ++adCalls % 3 ? done() : adBreak('Advertisement', done), rewarded: done => adBreak('Watch to claim your reward', done) };
+
+// ---- Sound ----
+let ac, muted = false;
+try { muted = localStorage.getItem('mm-mute') === '1'; } catch {}
+function tone(f, t = 0, d = .1, type = 'sine', v = .08, slide = 0){
+  if (muted) return;
+  try {
+    ac ??= new AudioContext();
+    const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + t;
+    o.type = type; o.frequency.setValueAtTime(f, s); if (slide) o.frequency.exponentialRampToValueAtTime(f + slide, s + d);
+    g.gain.setValueAtTime(v, s); g.gain.exponentialRampToValueAtTime(.001, s + d);
+    o.connect(g).connect(ac.destination); o.start(s); o.stop(s + d);
+  } catch {}
+}
+const sfx = {
+  dig: n => tone(300 + Math.min(n, 8) * 40, 0, .07, 'triangle'),
+  flag: () => tone(700, 0, .08, 'square', .04),
+  boom: () => { tone(120, 0, .5, 'sawtooth', .12, -70); tone(70, 0, .6, 'square', .08, -30); },
+  win: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .1, .3, 'triangle', .12)),
+};
+$('snd').textContent = muted ? '🔇' : '🔊';
+$('snd').onclick = () => { muted = !muted; $('snd').textContent = muted ? '🔇' : '🔊'; try { localStorage.setItem('mm-mute', muted ? '1' : '0'); } catch {} sfx.flag(); $('snd').blur(); };
+
+// ---- Game state. state: 0 hidden, 1 dug, 2 flagged ----
+// 20 levels. Each one is one row and one column bigger than the last (6x6 up to 25x25), and the share of squares hiding a mine climbs from 12% to 22%.
+const TOTAL = 20;
+const SIZES = Array.from({ length: TOTAL }, (_, i) => [6 + i, 6 + i]);
+const spec = n => { const [c, r] = SIZES[n - 1]; return { c, r, m: Math.round(c * r * (.12 + .10 * (n - 1) / (TOTAL - 1))) }; };
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+let unlocked = Math.min(TOTAL, Math.max(1, +load('mm-unlocked', 1) || 1));
+let level = 1, C, R, M, mine, adj, st, cells = [], started, over, shown, boomAt, flags, dug, secs, timer, flagMode = false, usedRevive = false, games = 0, nbCache = [];
+const rnd = n => Math.random() * n | 0;
+const nb = i => nbCache[i];
+
+// Square size: the biggest that makes the whole board fit the screen (never below 11px). Zoom switches to a larger size and the board scrolls.
+let zoomed = false;
+const gapOf = cs => cs >= 26 ? 3 : cs >= 16 ? 2 : 1;
+function fitSize(){
+  const availW = Math.min(innerWidth, 760) - 24 - 20, availH = innerHeight - 270;
+  for (let cs = 46; cs > 11; cs--) { const g = gapOf(cs); if (cs * C + g * (C - 1) <= availW && cs * R + g * (R - 1) <= availH) return cs; }
+  return 11;
+}
+function applySize(){
+  const cs = zoomed ? Math.max(30, fitSize()) : fitSize(), root = document.documentElement.style;
+  root.setProperty('--cs', cs + 'px'); root.setProperty('--gap', gapOf(cs) + 'px');
+  $('board').style.gridTemplateColumns = `repeat(${C},var(--cs))`;
+  $('zoom').classList.toggle('on', zoomed); $('zoom').textContent = zoomed ? '🔍 Fit screen' : '🔍 Zoom in';
+}
+let resizeTimer; addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => C && applySize(), 150); });
+
+function newGame(lv = level){
+  level = lv; ({ c: C, r: R, m: M } = spec(lv));
+  nbCache = Array.from({ length: C * R }, (_, i) => {
+    const x = i % C, y = i / C | 0, out = [];
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const a = x + dx, b = y + dy; if ((dx || dy) && a >= 0 && b >= 0 && a < C && b < R) out.push(b * C + a); }
+    return out;
+  });
+  mine = Array(C * R).fill(false); adj = Array(C * R).fill(0); st = Array(C * R).fill(0);
+  started = over = shown = false; boomAt = -1; flags = dug = secs = 0; usedRevive = false;
+  clearInterval(timer); timer = setInterval(tick, 1000);
+  applySize();
+  const b = $('board');
+  b.innerHTML = Array.from({ length: C * R }, (_, i) => `<button class="cell${((i % C) + (i / C | 0)) % 2 ? ' alt' : ''}" data-i="${i}" role="gridcell" aria-label="Hidden square"></button>`).join('');
+  cells = [...b.children]; $('lvname').textContent = `Level ${lv} · ${C}×${R}`; hide(); hud();
+}
+function placeMines(first){                                       // levels 1-10: the first dig and its neighbours are safe (it opens up); later levels: only the square itself
+  const safe = new Set(level <= 10 ? [first, ...nb(first)] : [first]), pool = [...Array(C * R).keys()].filter(i => !safe.has(i));
+  for (let k = 0; k < M; k++) { const j = k + rnd(pool.length - k); [pool[k], pool[j]] = [pool[j], pool[k]]; mine[pool[k]] = true; }
+  for (let i = 0; i < C * R; i++) adj[i] = nb(i).filter(j => mine[j]).length;
+}
+const tick = () => { if (started && !over && $('overlay').hidden && !document.hidden) { secs++; hud(); } };
+const hud = () => { $('left').textContent = M - flags; $('time').textContent = secs; };
+
+// ---- Drawing one square ----
+function paint(i, depth = 0){
+  const el = cells[i], s = st[i], alt = el.classList.contains('alt');
+  let cls = 'cell' + (alt ? ' alt' : ''), txt = '', label = 'Hidden square';
+  if (s === 1) { cls += ' rev'; if (adj[i]) { cls += ' n' + adj[i]; txt = adj[i]; label = adj[i] + ' nearby mines'; } else label = 'Empty square'; }
+  else if (shown && mine[i] && s !== 2) { cls += ' mine' + (i === boomAt ? ' boom' : ''); label = 'Mine'; }
+  else if (shown && s === 2 && !mine[i]) { cls += ' wrong'; label = 'Wrong flag'; }
+  else if (s === 2) { cls += ' flag'; label = 'Flag'; }
+  el.className = cls; el.textContent = txt; el.setAttribute('aria-label', label);
+  el.style.setProperty('--d', Math.min(depth, 24) * 22 + 'ms');
+}
+const paintAll = () => cells.forEach((_, i) => paint(i));
+
+// ---- Moves ----
+function dig(i){
+  if (over || st[i] !== 0) return;
+  if (!started) { started = true; placeMines(i); }
+  if (mine[i]) return explode(i);
+  const q = [[i, 0]]; st[i] = 1; let got = 0;
+  while (q.length) {                                              // flood fill: empty squares open their neighbours, with a ripple delay
+    const [k, d] = q.shift(); dug++; got++; paint(k, d);
+    if (adj[k] === 0) for (const j of nb(k)) if (st[j] === 0) { st[j] = 1; q.push([j, d + 1]); }
+  }
+  sfx.dig(adj[i]); checkWin();
+}
+function chord(i){                                                // dig around a number whose flags are all placed
+  if (st[i] !== 1 || !adj[i]) return;
+  if (nb(i).filter(j => st[j] === 2).length !== adj[i]) return;
+  nb(i).forEach(j => { if (st[j] === 0) dig(j); });
+}
+function toggleFlag(i){
+  if (over || st[i] === 1) return;
+  st[i] = st[i] === 2 ? 0 : 2; flags += st[i] === 2 ? 1 : -1; paint(i); sfx.flag(); hud();
+}
+function explode(i){
+  over = true; shown = true; boomAt = i; clearInterval(timer); sfx.boom(); paintAll();
+  $('frame').classList.add('shake'); setTimeout(() => $('frame').classList.remove('shake'), 450);
+  setTimeout(lose, 1000);
+}
+function checkWin(){
+  if (over || dug !== C * R - M) return;
+  over = true; clearInterval(timer);
+  for (let i = 0; i < C * R; i++) if (mine[i] && st[i] !== 2) { st[i] = 2; flags++; paint(i); }
+  hud(); sfx.win(); confetti();
+  const bests = load('mm-best', {}), starMap = load('mm-stars', {}), stars = secs <= M * 3 ? 3 : secs <= M * 7 ? 2 : 1;
+  if (!bests[level] || secs < bests[level]) bests[level] = secs;
+  starMap[level] = Math.max(starMap[level] || 0, stars); store('mm-best', bests); store('mm-stars', starMap);
+  if (level < TOTAL && level >= unlocked) { unlocked = level + 1; store('mm-unlocked', unlocked); }
+  const last = level === TOTAL, n = level;
+  setTimeout(() => {
+    overlay(`<div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div><h2>${last ? '🏆 All 20 levels cleared!' : 'Field cleared!'}</h2><p>Level ${n} · ${secs}s · best ${bests[n]}s</p>` +
+      (last ? '' : '<button class="btn wide green" id="n1">Next level ▶</button>') + `<button class="btn wide blue" id="n3">Play this level again</button><button class="btn wide" id="n2">Level select</button>`);
+    if (!last) $('n1').onclick = () => Ads.interstitial(() => newGame(n + 1));
+    $('n3').onclick = () => Ads.interstitial(() => newGame(n)); $('n2').onclick = menu;
+  }, 900);
+}
+function lose(){
+  overlay(`<div class="big-emoji">💥</div><h2>Boom!</h2><p>Level ${level} · ${dug} of ${C * R - M} safe squares found</p>` +
+    (usedRevive ? '' : '<button class="btn wide green" id="rev">🛡 Undo the mine <i>AD</i></button>') +
+    `<button class="btn wide blue" id="n1">Try again</button><button class="btn wide" id="n2">Level select</button>`);
+  const r = $('rev'); if (r) r.onclick = () => Ads.rewarded(() => {                 // the mine you stepped on becomes a flag and play continues
+    usedRevive = true; over = false; shown = false; st[boomAt] = 2; flags++; boomAt = -1; hide(); paintAll(); hud(); timer = setInterval(tick, 1000);
+  });
+  $('n1').onclick = () => Ads.interstitial(() => newGame()); $('n2').onclick = menu;
+}
+function confetti(){
+  const cols = ['#ffd23f', '#ff5d73', '#38bdf8', '#3ddc97', '#fff'];
+  for (let i = 0; i < 60; i++) {
+    const d = document.createElement('i'); d.className = 'fx'; d.style.cssText = `left:${innerWidth / 2}px;top:${innerHeight / 3}px;background:${cols[i % 5]}`; document.body.append(d);
+    const a = Math.random() * 6.28, r = 80 + Math.random() * 260;
+    d.animate([{ transform: 'translate(0,0)', opacity: 1 }, { transform: `translate(${Math.cos(a) * r}px,${Math.sin(a) * r + 120}px)`, opacity: 0 }], { duration: 900 + Math.random() * 600, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = () => d.remove();
+  }
+}
+
+// ---- Input: tap/click digs, right-click or long-press flags, tapping a satisfied number digs around it ----
+let press = null;
+$('board').addEventListener('pointerdown', e => {
+  const b = e.target.closest('.cell'); if (!b || e.button > 0) return; ac?.resume?.();
+  const i = +b.dataset.i; press = { i, x: e.clientX, y: e.clientY, fired: false, timer: setTimeout(() => { press.fired = true; toggleFlag(i); }, 450) };
+});
+const endPress = () => { if (press) { clearTimeout(press.timer); press = null; } };
+// A finger or mouse that moves (or a board that scrolls) is a drag, not a tap: it must never dig or flag
+$('board').addEventListener('pointermove', e => { if (press && !press.fired && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 8) endPress(); });
+$('frame').addEventListener('scroll', endPress, { passive: true });
+$('board').addEventListener('pointerup', e => {
+  const b = e.target.closest('.cell'); if (!press || !b || +b.dataset.i !== press.i) return endPress();
+  const { i, fired } = press; endPress(); if (fired || over) return;
+  if (st[i] === 1) chord(i); else if (flagMode) toggleFlag(i); else if (st[i] === 0) dig(i);
+});
+$('board').addEventListener('pointerleave', endPress); $('board').addEventListener('pointercancel', endPress);
+$('board').addEventListener('contextmenu', e => { e.preventDefault(); const b = e.target.closest('.cell'); if (b) { endPress(); toggleFlag(+b.dataset.i); } });
+$('zoom').onclick = () => { zoomed = !zoomed; applySize(); };
+$('mode').onclick = () => { flagMode = !flagMode; $('mode').textContent = flagMode ? '🚩 Flagging' : '⛏ Digging'; $('mode').classList.toggle('on', flagMode); };
+
+// ---- Buttons ----
+$('hint').onclick = () => { if (!over) Ads.rewarded(() => {
+  if (over) return;
+  if (!started) return dig(C * (R >> 1) + (C >> 1));
+  const hidden = [...Array(C * R).keys()].filter(i => st[i] === 0 && !mine[i]);
+  const edge = hidden.filter(i => nb(i).some(j => st[j] === 1)), pickFrom = edge.length ? edge : hidden;
+  if (!pickFrom.length) return;
+  const i = pickFrom[rnd(pickFrom.length)]; cells[i].classList.add('hintglow'); setTimeout(() => dig(i), 500);   // a square that is certainly safe
+}); };
+$('again').onclick = () => { if (!started || over) return newGame(); overlay('<h2>Start over?</h2><p>This field will be lost.</p><button class="btn wide red" id="y">New game</button><button class="btn wide blue" id="n">Keep playing</button>'); $('y').onclick = () => newGame(); $('n').onclick = hide; };
+$('help').onclick = () => { overlay(`<h2>How to play</h2><p>Dig squares without hitting a 💣. A number shows how many mines touch that square.</p><p>Plant a 🚩 where you think a mine is: right-click, long-press, or use the Flag button. Tap a number whose flags are all placed to dig around it. Big boards too small? Press Zoom in.</p><p>The first dig is always safe. Clear every safe square to win!</p><button class="btn wide green" id="okh">Got it</button>`); $('okh').onclick = hide; };
+function menu(){
+  const stars = load('mm-stars', {});
+  const tiles = Array.from({ length: TOTAL }, (_, k) => {
+    const n = k + 1, ok = n <= unlocked, s = stars[n] || 0;
+    return `<button class="lv${ok ? '' : ' lock'}" data-n="${n}" ${ok ? '' : 'disabled'} aria-label="Level ${n}${ok ? `, ${s} stars` : ', locked'}">${ok ? n : '🔒'}<small>${ok ? '★'.repeat(s) + `<span style="opacity:.35">${'★'.repeat(3 - s)}</span>` : ''}</small></button>`;
+  }).join('');
+  overlay(`<h1>Mine<br>Mapper</h1><p>20 fields. Each is bigger and trickier than the last.</p>` +
+    `<button class="btn wide green" id="cont">Continue · Level ${unlocked} <small>(${spec(unlocked).c}×${spec(unlocked).r}, ${spec(unlocked).m} mines)</small></button><div class="lvgrid">${tiles}</div>`);
+  $('cont').onclick = () => { ac?.resume?.(); newGame(unlocked); };
+  $('card').querySelectorAll('.lv:not(.lock)').forEach(b => b.onclick = () => { ac?.resume?.(); newGame(+b.dataset.n); });
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden && started && !over && $('overlay').hidden) { overlay('<h2>Paused</h2><button class="btn wide" id="res">Resume</button>'); $('res').onclick = hide; } });
+
+newGame(unlocked); menu();
+</script>
+<script>
+/* Portal adapter. Injected by build.py after each game's own script.
+ * It replaces the game's placeholder `Ads` with the portal SDK and reports gameplay start/stop.
+ * window.PORTAL_TARGET is set by the build: 'poki' | 'crazygames'. Without it (dev builds) nothing happens. */
+(() => {
+  const target = window.PORTAL_TARGET;
+  if (target === 'site') {                    // my own website: no ads, so hints, undo and revive are simply free
+    if (typeof Ads !== 'undefined') { Ads.interstitial = done => done(); Ads.rewarded = done => done(); }
+    document.head.insertAdjacentHTML('beforeend', '<style>.btn>i{display:none!important}</style>');   // hides the "AD" badges
+    return;
+  }
+  if (!['poki', 'crazygames'].includes(target) || typeof Ads === 'undefined') return;
+
+  // ---- Audio: head.js tracked every AudioContext the game created, so they can be silenced during ads ----
+  const ctxs = window.__portalCtxs || [];
+  const audio = on => ctxs.forEach(c => { try { on ? c.resume() : c.suspend(); } catch {} });
+
+  // ---- Shield: blocks input while an ad is loading or playing ----
+  const shield = document.createElement('div');
+  shield.style.cssText = 'position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;color:#fff;font:700 20px system-ui,sans-serif';
+  document.body.append(shield);
+  const shieldOn = dark => { shield.style.display = 'flex'; shield.style.background = dark ? '#000b' : 'transparent'; shield.textContent = dark ? 'Ad playing…' : ''; };
+  const shieldOff = () => { shield.style.display = 'none'; };
+  function toast(text){
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000d;color:#fff;border-radius:99px;padding:10px 18px;z-index:100000;font:700 15px system-ui,sans-serif';
+    t.textContent = text; document.body.append(t); setTimeout(() => t.remove(), 2200);
+  }
+
+  // ---- Gameplay start/stop follows the game's #overlay: menus, game over and pause cards are "not playing" ----
+  let playing = false, adActive = false, sdk;
+  const overlayEl = document.getElementById('overlay');
+  function sync(){
+    const should = !adActive && !!overlayEl && overlayEl.hidden;
+    if (should && !playing) { playing = true; sdk.start(); }
+    else if (!should && playing) { playing = false; sdk.stop(); }
+  }
+  if (overlayEl) new MutationObserver(sync).observe(overlayEl, { attributes: true, attributeFilter: ['hidden'] });
+
+  // ---- One ad flow for both portals: `request(kind, hooks)` is portal specific ----
+  function runAd(kind, onReward, onDone){
+    adActive = true; sync(); shieldOn(false);
+    let finished = false;
+    const end = rewarded => {
+      if (finished) return; finished = true;
+      audio(true); shieldOff(); adActive = false;
+      if (kind === 'rewarded') rewarded ? onReward() : toast('Reward not earned: the ad was unavailable or skipped');
+      else onDone();
+      sync();
+    };
+    const start = () => { audio(false); shieldOn(true); };
+    try { sdk.request(kind, start, end); } catch { end(false); }
+  }
+  Ads.interstitial = done => runAd('midgame', null, done);
+  Ads.rewarded = done => runAd('rewarded', done, null);
+
+  // ---- Portal SDKs ----
+  if (target === 'poki') {
+    const P = () => window.PokiSDK;
+    sdk = {
+      start: () => P()?.gameplayStart?.(),
+      stop: () => P()?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!P()) return end(kind !== 'rewarded');              // SDK blocked: interstitials just continue, rewards are not given
+        if (kind === 'midgame') Promise.resolve(P().commercialBreak(onStart)).then(() => end(true), () => end(true));
+        else {                                                  // accept both the callback and the options form of rewardedBreak
+          const opts = Object.assign(() => onStart(), { onStart, size: 'small' });
+          Promise.resolve(P().rewardedBreak(opts)).then(ok => end(!!ok), () => end(false));
+        }
+      },
+    };
+    if (location.hostname === 'localhost') P()?.setDebug?.(true);
+    Promise.resolve(P()?.init?.()).then(() => P()?.gameLoadingFinished?.(), () => P()?.gameLoadingFinished?.());
+  } else if (target === 'crazygames') {
+    const C = () => window.CrazyGames?.SDK;
+    sdk = {
+      start: () => C()?.game?.gameplayStart?.(),
+      stop: () => C()?.game?.gameplayStop?.(),
+      request(kind, onStart, end){
+        if (!C()) return end(kind !== 'rewarded');
+        C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+      },
+    };
+    Promise.resolve(C()?.init?.()).then(() => { C()?.game?.loadingStart?.(); C()?.game?.loadingStop?.(); }, () => {});
+  } else return;
+
+  // Keyboard is disabled while an ad runs (Poki asks for this); the capture phase runs before the game's own handlers
+  for (const type of ['keydown', 'keyup']) addEventListener(type, e => { if (adActive) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  // The page sits in an iframe: stop arrow keys and space from scrolling the host page. The wheel is only blocked for
+  // canvas games, because the two puzzle games with long pages need to scroll on small screens.
+  addEventListener('keydown', e => { if ([' ', 'ArrowUp', 'ArrowDown'].includes(e.key) && e.target === document.body) e.preventDefault(); });
+  if (document.querySelector('canvas')) addEventListener('wheel', e => e.preventDefault(), { passive: false });
+  sync();
+})();
+
+</script>
+</body>
+</html>
