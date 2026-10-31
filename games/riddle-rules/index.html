@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a49">
-<title>Rule Hunter</title>
+<title>Riddle Rules</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 html,body{margin:0;min-height:100%}
@@ -335,7 +335,7 @@ function failed(){
 document.addEventListener('visibilitychange', () => { if (document.hidden && $('overlay').hidden) { overlay('<h2>Paused</h2><button class="btn wide" id="res">Resume</button>'); $('res').onclick = hide; } });
 
 newLevel();
-overlay('<h1>Rule<br>Hunter</h1><p>A secret rule sorts items into KEEP and DISCARD. Test items, work out the rule, then prove it.</p><button class="btn wide green big" id="go">Start hunting</button>');
+overlay('<h1>Riddle<br>Rules</h1><p>A secret rule sorts items into KEEP and DISCARD. Test items, work out the rule, then prove it.</p><button class="btn wide green big" id="go">Start hunting</button>');
 $('go').onclick = () => { ac?.resume?.(); hide(); };
 </script>
 <script>
@@ -413,15 +413,19 @@ $('go').onclick = () => { ac?.resume?.(); hide(); };
     Promise.resolve(P()?.init?.()).then(() => P()?.gameLoadingFinished?.(), () => P()?.gameLoadingFinished?.());
   } else if (target === 'crazygames') {
     const C = () => window.CrazyGames?.SDK;
+    // The SDK's modules may only be used once init() has resolved; a hung init gives up after 4s so ads never block the game
+    const ready = Promise.race([Promise.resolve(C()?.init?.()).then(() => true, () => false), new Promise(r => setTimeout(r, 4000, false))]);
+    ready.then(ok => { if (ok) { C().game?.loadingStart?.(); C().game?.loadingStop?.(); } });
     sdk = {
-      start: () => C()?.game?.gameplayStart?.(),
-      stop: () => C()?.game?.gameplayStop?.(),
+      start: () => ready.then(ok => ok && C().game?.gameplayStart?.()),
+      stop: () => ready.then(ok => ok && C().game?.gameplayStop?.()),
       request(kind, onStart, end){
-        if (!C()) return end(kind !== 'rewarded');
-        C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+        ready.then(ok => {
+          if (!ok || !C()?.ad) return end(kind !== 'rewarded');
+          C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+        });
       },
     };
-    Promise.resolve(C()?.init?.()).then(() => { C()?.game?.loadingStart?.(); C()?.game?.loadingStop?.(); }, () => {});
   } else return;
 
   // Keyboard is disabled while an ad runs (Poki asks for this); the capture phase runs before the game's own handlers

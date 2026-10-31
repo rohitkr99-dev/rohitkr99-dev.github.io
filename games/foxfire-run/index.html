@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0b1033">
-<title>Fox Dash</title>
+<title>Foxfire Run</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 html,body{margin:0;height:100%;overflow:hidden;background:#0b1033}
@@ -41,7 +41,7 @@ canvas{display:block;border-radius:14px;box-shadow:0 10px 40px #0008}
 </style>
 </head>
 <body>
-<canvas id="c" aria-label="Fox Dash game"></canvas>
+<canvas id="c" aria-label="Foxfire Run game"></canvas>
 <button class="btn blue" id="sound" aria-label="Toggle sound">🔊</button>
 <button class="btn green" id="duck" aria-label="Duck">▼<br>Duck</button>
 <div id="overlay" hidden><div id="card" role="dialog" aria-live="polite"></div></div>
@@ -596,7 +596,7 @@ let last = performance.now();
 function frame(now){ const dt = Math.min(.05, (now - last) / 1000); last = now; update(dt); draw(); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
 
-overlay(`<h1>Fox<br>Dash</h1><p>Race through jungles, neon cities, volcanoes and the moon.</p>` +
+overlay(`<h1>Foxfire<br>Run</h1><p>Race through jungles, neon cities, volcanoes and the moon.</p>` +
         `<p class="hint">Space / ↑ / tap = jump (hold for higher) · ↓ = duck</p>`,
         'Play', () => { ac?.resume?.(); startRun(); });
 </script>
@@ -675,15 +675,19 @@ overlay(`<h1>Fox<br>Dash</h1><p>Race through jungles, neon cities, volcanoes and
     Promise.resolve(P()?.init?.()).then(() => P()?.gameLoadingFinished?.(), () => P()?.gameLoadingFinished?.());
   } else if (target === 'crazygames') {
     const C = () => window.CrazyGames?.SDK;
+    // The SDK's modules may only be used once init() has resolved; a hung init gives up after 4s so ads never block the game
+    const ready = Promise.race([Promise.resolve(C()?.init?.()).then(() => true, () => false), new Promise(r => setTimeout(r, 4000, false))]);
+    ready.then(ok => { if (ok) { C().game?.loadingStart?.(); C().game?.loadingStop?.(); } });
     sdk = {
-      start: () => C()?.game?.gameplayStart?.(),
-      stop: () => C()?.game?.gameplayStop?.(),
+      start: () => ready.then(ok => ok && C().game?.gameplayStart?.()),
+      stop: () => ready.then(ok => ok && C().game?.gameplayStop?.()),
       request(kind, onStart, end){
-        if (!C()) return end(kind !== 'rewarded');
-        C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+        ready.then(ok => {
+          if (!ok || !C()?.ad) return end(kind !== 'rewarded');
+          C().ad.requestAd(kind, { adStarted: onStart, adFinished: () => end(true), adError: () => end(kind !== 'rewarded') });
+        });
       },
     };
-    Promise.resolve(C()?.init?.()).then(() => { C()?.game?.loadingStart?.(); C()?.game?.loadingStop?.(); }, () => {});
   } else return;
 
   // Keyboard is disabled while an ad runs (Poki asks for this); the capture phase runs before the game's own handlers

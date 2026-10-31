@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#2a0f45">
-<title>Jelly Slice</title>
+<title>Wobble Cut</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 html,body{margin:0;height:100%;overflow:hidden;background:#0b0620}
@@ -39,7 +39,7 @@ canvas{display:block;border-radius:14px;box-shadow:0 10px 40px #000a;touch-actio
 </style>
 </head>
 <body>
-<canvas id="c" aria-label="Jelly Slice game"></canvas>
+<canvas id="c" aria-label="Wobble Cut game"></canvas>
 <div id="bar"><button class="btn blue" id="pause">⏸ Pause</button></div>
 <div id="overlay" hidden><div id="card" role="dialog" aria-live="polite"></div></div>
 
@@ -298,7 +298,7 @@ function loop(now){
 // ---- Flow ----
 function menu(){
   state = 'menu';
-  overlay(`<h1>Jelly<br>Slice</h1><p>Swipe to slice the jellies.</p>
+  overlay(`<h1>Wobble<br>Cut</h1><p>Swipe to slice the jellies.</p>
     <ul class="how"><li><b>Target shape</b> (top): worth 3 points. Miss it and you lose a ♥.</li>
     <li>Other jellies are worth 1 and can fall freely.</li>
     <li>Slice the <b>same jelly</b> again and again in one swipe for ×2, ×3…</li>
